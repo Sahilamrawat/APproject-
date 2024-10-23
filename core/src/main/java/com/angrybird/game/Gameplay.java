@@ -6,13 +6,19 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+<<<<<<< HEAD
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+=======
+>>>>>>> 423f72e (first commit)
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+<<<<<<< HEAD
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+=======
+>>>>>>> 423f72e (first commit)
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -81,6 +87,7 @@ public class Gameplay implements Screen {
         backButton.setPosition(20, 20); // Positioning the back button
         stage.addActor(backButton);
 
+<<<<<<< HEAD
      // Array of circular bird images (ensure these images are circular and in your assets)
         Bird[] birds = new Bird[]{
         	    new redbird(50, 105),  // Specify position for redbird
@@ -97,6 +104,8 @@ public class Gameplay implements Screen {
         }
 
         
+=======
+>>>>>>> 423f72e (first commit)
         // Add listener to Settings button to navigate to the Settings screen
         settingsButton.addListener(new ClickListener() {
             @Override
@@ -115,6 +124,7 @@ public class Gameplay implements Screen {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(previousScreen);
             }
         });
+<<<<<<< HEAD
         
      // Create an instance of the Catapult
         Catapult catapult = new Catapult("catapult.png", 200, 150); // Example position at (100, 100)
@@ -143,6 +153,10 @@ public class Gameplay implements Screen {
     
  // Method to update positions based on screen size
     
+=======
+    }
+
+>>>>>>> 423f72e (first commit)
 
     // Method to update the points label
     private void increasePoints(int amount) {
@@ -187,6 +201,7 @@ public class Gameplay implements Screen {
         backgroundImage.setSize(width, height); // Update background size when screen is resized
         updateSettingsButtonPosition();  // Update the settings button position when resized
         pointsLabel.setPosition(20, height - 50); // Update the points label position when resized
+<<<<<<< HEAD
      // Update the bird buttons positions when resized
         float buttonStartY = height - 90; // Start position below the points label
         int buttonIndex = 0;
@@ -200,6 +215,8 @@ public class Gameplay implements Screen {
                 buttonIndex++;
             }
         }
+=======
+>>>>>>> 423f72e (first commit)
     }
 
     public void setPaused(boolean paused) {
