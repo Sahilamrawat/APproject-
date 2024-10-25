@@ -83,10 +83,10 @@ public class Gameplay implements Screen {
 
      // Array of circular bird images (ensure these images are circular and in your assets)
         Bird[] birds = new Bird[]{
-        	    new redbird(50, 105),  // Specify position for redbird
-        	    new yellowbird(110, 105), // Specify position for yellowbird
-        	    new bluebird(170, 105), // Specify position for bluebird
-        	    new blackbird(230, 105) // Specify position for blackbird
+        	    new redbird(50, 92),  // Specify position for redbird
+        	    new yellowbird(110, 102), // Specify position for yellowbird
+        	    new bluebird(170, 97), // Specify position for bluebird
+        	    new blackbird(230, 102) // Specify position for blackbird
         };
 
         	// Add each bird actor to the stage
@@ -117,7 +117,7 @@ public class Gameplay implements Screen {
         });
         
      // Create an instance of the Catapult
-        Catapult catapult = new Catapult("catapult.png", 200, 150); // Example position at (100, 100)
+        Catapult catapult = new Catapult("catapult.png", 250, 102); // Example position at (100, 100)
 
         // Create an Image to display the catapult (or use an ImageButton if you want it to be clickable)
         TextureRegionDrawable catapultDrawable = new TextureRegionDrawable(new TextureRegion(catapult.getTexture()));
