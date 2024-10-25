@@ -83,10 +83,10 @@ public class Gameplay implements Screen {
 
      // Array of circular bird images (ensure these images are circular and in your assets)
         Bird[] birds = new Bird[]{
-        	    new redbird(50, 92),  // Specify position for redbird
-        	    new yellowbird(110, 102), // Specify position for yellowbird
-        	    new bluebird(170, 97), // Specify position for bluebird
-        	    new blackbird(230, 102) // Specify position for blackbird
+        		new redbird(230, 92),  // Specify position for redbird
+        	    new yellowbird(170, 102), // Specify position for yellowbird
+        	    new bluebird(110, 97), // Specify position for bluebird
+        	    new blackbird(50, 102) // Specify position for blackbird
         };
 
         	// Add each bird actor to the stage
@@ -138,12 +138,59 @@ public class Gameplay implements Screen {
 
         // Add the catapult to the stage
         stage.addActor(catapultImage);
+        
+        addBlocksToStage();
+        addPigsToStage();
 
     }
     
  // Method to update positions based on screen size
     
+    private void addBlocksToStage() {
+        // Create instances of different materials
+        Material woodMaterial = new WoodMaterial();
+        Material stoneMaterial = new StoneMaterial();
+        Material iceMaterial = new IceMaterial();
 
+        // Create blocks with different sizes and materials
+        for(int i=0;i<3;i++) {
+        	Block woodBlock = new Block(woodMaterial, 50, 50);
+        	woodBlock.setPosition(1000, 100+(i*50)); // Example position
+        	stage.addActor(woodBlock);
+        }
+        
+        for(int i=0;i<3;i++) {
+        	Block woodBlock = new Block(woodMaterial, 50, 50);
+        	woodBlock.setPosition(1150, 100+(i*50)); // Example position
+        	stage.addActor(woodBlock);
+        }
+        	
+        Block stoneBlock = new Block(stoneMaterial, 25, 25); // (width,height)
+        stoneBlock.setPosition(1085, 250); // Example position
+        stage.addActor(stoneBlock);
+
+        Block iceBlock = new Block(iceMaterial, 50, 50);
+        iceBlock.setPosition(1075, 265); // Example position
+        stage.addActor(iceBlock);
+    }
+    
+    private void addPigsToStage() {
+        // Create and position different pig types
+        BigPig bigPig = new BigPig();
+        bigPig.setPosition(1050, 90);
+        stage.addActor(bigPig);
+
+        MediumPig mediumPig = new MediumPig();
+        mediumPig.setPosition(1075, 315);
+        stage.addActor(mediumPig);
+        
+        for(int i=0;i<2;i++) {
+        	SmallPig smallPig = new SmallPig();
+        	smallPig.setPosition(1015+(i*125), 265);
+        	stage.addActor(smallPig);        	
+        }
+    }
+    
     // Method to update the points label
     private void increasePoints(int amount) {
         points += amount;

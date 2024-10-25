@@ -15,8 +15,8 @@ public class yellowbird extends Actor implements Bird {
         texture = new Texture(Gdx.files.internal("yellowbird.png"));
 
         // Set the size for the bird based on the desired width and height
-        float birdWidth = 50; // Set desired width
-        float birdHeight = 50; // Set desired height
+        float birdWidth = 40; // Set desired width
+        float birdHeight = 40; // Set desired height
 
         // Set size and bounds for the bird actor
         setSize(birdWidth, birdHeight);
