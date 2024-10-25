@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
@@ -17,7 +18,8 @@ public class Levels implements Screen {
     private Stage stage;
     private Skin skin;
     private Table table;
-    private TextButton backButton;
+    private ImageTextButton backButton;
+    private Texture backTexture;
     private Game game;
     private Image backgroundImage; // Image actor for background
     private boolean[] levelUnlocked;
@@ -36,7 +38,7 @@ public class Levels implements Screen {
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
+        backTexture = new Texture(Gdx.files.internal("back.png"));
         // Load the background image
         Texture backgroundTexture = new Texture(Gdx.files.internal("background1.jpeg"));
         backgroundImage = new Image(backgroundTexture);
@@ -46,7 +48,7 @@ public class Levels implements Screen {
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
         // Load the locked icon texture
-        lockedIconTexture = new Texture(Gdx.files.internal("locked_icon.png")); // Ensure you have this image in your assets
+        lockedIconTexture = new Texture(Gdx.files.internal("lock.png")); // Ensure you have this image in your assets
 
         // Add background image to the stage first so it appears behind other UI elements
         stage.addActor(backgroundImage);
@@ -66,9 +68,9 @@ public class Levels implements Screen {
         int levelsPerRow = 4; // Number of levels per row
         float buttonSize = 100; // Set a fixed size for buttons
 
-        for (int i = 0; i < 3; i++) { // Iterate through all 20 levels
+        for (int i = 0; i < 4; i++) { // Iterate through all 20 levels
             final int level = i + 1; // Level number (1 to 20)
-            TextButton playButton = new TextButton("", skin); // Empty text initially
+            ImageTextButton playButton = new ImageTextButton("", skin); // Use ImageTextButton
 
             // If the level is locked, use the locked icon
             if (!levelUnlocked[i]) {
@@ -87,9 +89,7 @@ public class Levels implements Screen {
 
             // Set the button size
             playButton.setSize(buttonSize, buttonSize); // Use fixed button size
-
-            // Scale label font for better visibility
-            playButton.getLabel().setFontScale(3f);
+            playButton.getLabel().setFontScale(3f); // Scale label font for better visibility
 
             // Add the button to the levels table
             levelsTable.add(playButton).size(buttonSize, buttonSize).pad(10); // Set fixed size with padding
@@ -105,19 +105,34 @@ public class Levels implements Screen {
         table.row();
 
         // Back button to return to the Main Menu
-        backButton = new TextButton("Back", skin);
-        backButton.pad(10);
+        backButton = new ImageTextButton("", skin);
+        Image backImage = new Image(backTexture);
+        backImage.setScaling(Scaling.fill); // Ensure it scales correctly
+        backButton.add(backImage).size(60, 60).expand().fill(); // Adjust size as needed
+
+// Set the position and size of the settings button
+        backButton.setSize(60, 60);
+        updateBackButtonPosition(); // Position it as required
+
+        backButton.setSize(100, 50); // Set size as needed
+
+// Position the button
+        backButton.setPosition(20, 20);
+        stage.addActor(backButton);
+
+// Add ClickListener for the back button
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
-
-        table.add(backButton).padBottom(20);
         stage.addActor(table);
     }
-
+    private void updateBackButtonPosition() {
+        backButton.setPosition(Gdx.graphics.getWidth() - backButton.getWidth() - 20,
+            Gdx.graphics.getHeight() - backButton.getHeight() - 20);
+    }
     @Override
     public void render(float delta) {
         // Clear the screen

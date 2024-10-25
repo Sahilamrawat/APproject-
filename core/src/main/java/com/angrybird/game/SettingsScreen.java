@@ -34,11 +34,10 @@ public class SettingsScreen implements Screen {
         TextureAtlas atlas = new TextureAtlas("ui/atlas.pack");
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
-
         // Create a semi-transparent overlay (background color for overlay effect)
         Table overlayTable = new Table();
         overlayTable.setFillParent(true);
-        overlayTable.setColor(0, 0, 0, 1); // Black color with 70% transparency
+        overlayTable.setColor(0, 0, 0, 0.7f); // Black color with 70% transparency
         stage.addActor(overlayTable); // Adding semi-transparent background overlay
 
         // Load and set partial background image for the settings menu area only
@@ -54,18 +53,22 @@ public class SettingsScreen implements Screen {
 
         // Create a table to hold the buttons and background image
         table = new Table();
-        table.setBackground(new Image(new Texture(Gdx.files.internal("Settingbackground.jpg"))).getDrawable());
+
         table.setSize(400, 600); // Adjust to fit buttons
-        table.setPosition(Gdx.graphics.getWidth() / 2 - 150, Gdx.graphics.getHeight() / 2 - 300); // Centered
+
+        // Center the table based on the current screen dimensions
+        table.setPosition(
+            Gdx.graphics.getWidth() / 2 - table.getWidth() / 2,
+            Gdx.graphics.getHeight() / 2 - table.getHeight() / 2
+        );
 
         // Add the buttons to the table
-        table.add(new Label("SETTINGS", skin,"title")).padBottom(30).row();
+        table.add(new Label("ANGRY BIRD", skin,"title")).padBottom(30).row();
         table.add(resumeButton).padBottom(10).row();
         table.add(restartButton).padBottom(10).row();
         table.add(saveButton).padBottom(10).row();
         table.add(mainMenuButton).padBottom(10).row();
         table.add(exitButton).padBottom(10).row();
-
 
         stage.addActor(table); // Add the table with buttons to the stage
 
@@ -128,7 +131,11 @@ public class SettingsScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        table.setPosition(width / 2 - 150, height / 2 - 300); // Recenter table
+        // Recalculate and set the position of the table when resizing
+        table.setPosition(
+            width / 2 - table.getWidth() / 2,
+            height / 2 - table.getHeight() / 2
+        );
     }
 
     @Override

@@ -6,19 +6,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
-
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
-
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -27,17 +21,28 @@ public class Gameplay implements Screen {
     private Skin skin;
     private Game game;
     private Image backgroundImage;
-    private Label pointsLabel; // Label to display points
-    private int points = 10;    // Points variable
-    private Screen previousScreen; // Store reference to the previous screen
-    private ImageTextButton settingsButton; // Class-level variable for the settings button
+    private Label pointsLabel;
+    private int points = 10;
+    private Screen previousScreen;
+    private ImageTextButton settingsButton;
+    private ImageTextButton backButton;
     private boolean isPaused = false;
 
     private Texture settingTexture;
+    private Texture backTexture;
+    private Image catapultImage;
+    private Bird[] birds;
+    private BigPig bigPig;
+    private MediumPig mediumPig;
+    private SmallPig smallPig1;
+    private SmallPig smallPig2;
 
     public Gameplay(Game game, Screen previousScreen) {
         this.game = game;
-        this.previousScreen = previousScreen; // Set the previous screen
+        this.previousScreen = previousScreen;
+    }
+
+    public Gameplay() {
     }
 
     @Override
@@ -45,180 +50,299 @@ public class Gameplay implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // Load skin and atlas
         TextureAtlas atlas = new TextureAtlas("ui/atlas.pack");
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
-        settingTexture = new Texture(Gdx.files.internal("settingButton.png"));
-
-        // Create and add the background image
+        settingTexture = new Texture(Gdx.files.internal("settings.png"));
+        backTexture = new Texture(Gdx.files.internal("back.png"));
         Texture backgroundTexture = new Texture(Gdx.files.internal("gameplayBackground.jpg"));
         backgroundImage = new Image(backgroundTexture);
-        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Set size to full screen
-        stage.addActor(backgroundImage);  // Add the background image first, so it's behind everything
+        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        stage.addActor(backgroundImage);
 
-        // Create a label to display points in the top-left corner
         pointsLabel = new Label("Points: " + points, skin, "title");
-        pointsLabel.setPosition(20, Gdx.graphics.getHeight() - 50); // Set position to top-left
+        pointsLabel.setPosition(20, Gdx.graphics.getHeight() - 50);
         stage.addActor(pointsLabel);
 
-        // Create a TextButtonStyle using the skin
-        ImageTextButton.ImageTextButtonStyle buttonStyle = new ImageTextButton.ImageTextButtonStyle();
-        buttonStyle.up = skin.getDrawable("button"); // Set the up drawable from your skin
-        buttonStyle.down = skin.getDrawable("button-down"); // Set the down drawable from your skin
-        buttonStyle.font = skin.getFont("button"); // Set the font from your skin
-        buttonStyle.fontColor = skin.getColor("button"); // Set the font color from your skin
+        // Setup Settings Button
 
-        // Create the settings button using ImageTextButton
-        settingsButton = new ImageTextButton("", buttonStyle); // Set the text to an empty string
 
-        // Create an Image for the settings texture with a larger size
+
+        settingsButton = new ImageTextButton("", skin);
+
+// Create the settings image and set its size
         Image settingsImage = new Image(settingTexture);
-        settingsImage.setSize(100, 100); // Set size for the image
-        settingsImage.setScaling(Scaling.fill); // Ensure the image fills the space without distortion
+        settingsImage.setScaling(Scaling.fill); // Ensure it scales correctly
+        settingsButton.add(settingsImage).size(60, 60).expand().fill(); // Adjust size as needed
 
-        settingsButton.add(settingsImage).expand().fill(); // Add the image to the button
-        settingsButton.setSize(60, 60); // Set the button size to be square
-        updateSettingsButtonPosition();  // Initially set the position
+// Set the position and size of the settings button
+        settingsButton.setSize(60, 60);
+        updateSettingsButtonPosition(); // Position it as required
         stage.addActor(settingsButton);
 
-        // Create Back button at the bottom-left corner
-        TextButton backButton = new TextButton("Back", skin);
-        backButton.setPosition(20, 20); // Positioning the back button
-        stage.addActor(backButton);
-
-
-     // Array of circular bird images (ensure these images are circular and in your assets)
-        Bird[] birds = new Bird[]{
-        		new redbird(230, 92),  // Specify position for redbird
-        	    new yellowbird(170, 102), // Specify position for yellowbird
-        	    new bluebird(110, 97), // Specify position for bluebird
-        	    new blackbird(50, 102) // Specify position for blackbird
-        };
-
-        	// Add each bird actor to the stage
-        for (Bird bird : birds) {
-            if (bird instanceof Actor) {
-                stage.addActor((Actor) bird);
-            }
-        }
-
-
-
-
-        // Add listener to Settings button to navigate to the Settings screen
+// Add ClickListener to act like a button without showing text
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Pause the gameplay and navigate to the SettingsScreen
-                setPaused(true); // Pause the gameplay
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingsScreen(game, Gameplay.this)); // Show settings screen
+                game.setScreen(new SettingsScreen(game, Gameplay.this)); // Your desired action
             }
         });
 
-        // Add listener to Back button to navigate back to the previous screen
+
+        backButton = new ImageTextButton("", skin);
+        Image backImage = new Image(backTexture);
+        backImage.setScaling(Scaling.fill); // Ensure it scales correctly
+        backButton.add(backImage).size(60, 60).expand().fill(); // Adjust size as needed
+
+// Set the position and size of the settings button
+        backButton.setSize(60, 60);
+        updateBackButtonPosition(); // Position it as required
+
+        backButton.setSize(100, 50); // Set size as needed
+
+// Position the button
+        backButton.setPosition(20, 20);
+        stage.addActor(backButton);
+
+// Add ClickListener for the back button
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Navigate back to the previous screen
-                ((Game) Gdx.app.getApplicationListener()).setScreen(previousScreen);
+                game.setScreen(previousScreen); // Action to go back
             }
         });
 
+        // Initialize birds
+        birds = new Bird[]{
+            new redbird("redbird.png", 50, 50),
+            new yellowbird("yellowbird.png", 50, 50),
+            new bluebird("bluebird.png", 50, 50),
+            new blackbird("blackbird.png", 50, 50)
+        };
 
-     // Create an instance of the Catapult
-        Catapult catapult = new Catapult("catapult.png", 250, 102); // Example position at (100, 100)
 
-        // Create an Image to display the catapult (or use an ImageButton if you want it to be clickable)
-        TextureRegionDrawable catapultDrawable = new TextureRegionDrawable(new TextureRegion(catapult.getTexture()));
-        Image catapultImage = new Image(catapultDrawable);
+//        settingsButton.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                setPaused(true);
+//                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingsScreen(game, Gameplay.this));
+//            }
+//        });
 
-        // Set the position of the catapult image on the stage based on its coordinates
-        catapultImage.setPosition(catapult.getX(), catapult.getY());
-        catapultImage.setSize(100, 100); // Set the size as required
+//        backButton.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                game.setScreen(previousScreen);
+//            }
+//        });
 
-        // Add listener if you want to handle clicks on the catapult (optional)
-        catapultImage.addListener(new ClickListener() {
+        addBlocksToStage();
+        createBirdsAndCatapultTable();
+        TextButton winButton = new TextButton("Win", skin);
+        TextButton loseButton = new TextButton("Lose", skin);
+
+// Position both buttons at the bottom center
+        float buttonWidth = 100;
+        float buttonHeight = 50;
+        winButton.setSize(buttonWidth, buttonHeight);
+        loseButton.setSize(buttonWidth, buttonHeight);
+
+// Calculate positions to center the buttons at the bottom
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+        float buttonSpacing = 20;
+
+// Position win button
+        winButton.setPosition(screenWidth / 2f - buttonWidth - buttonSpacing / 2, buttonHeight + 10);
+// Position lose button
+        loseButton.setPosition(screenWidth / 2f + buttonSpacing / 2, buttonHeight + 10);
+
+// Add buttons to the stage
+        stage.addActor(winButton);
+        stage.addActor(loseButton);
+
+// Define click listeners to navigate to WinScreen and LoseScreen
+        winButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Catapult clicked!");
-                catapult.launchBird(); // Call the catapult action method
+                game.setScreen(new WinScreen(game)); // Navigate to WinScreen
             }
         });
 
-        // Add the catapult to the stage
-        stage.addActor(catapultImage);
-        
-        addBlocksToStage();
-        addPigsToStage();
+        loseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new LoseScreen(game)); // Navigate to LoseScreen
+            }
+        });
 
     }
 
- // Method to update positions based on screen size
+    private void updateBackButtonPosition() {
+        backButton.setPosition(Gdx.graphics.getWidth() - backButton.getWidth() - 20,
+            Gdx.graphics.getHeight() - backButton.getHeight() - 20);
+    }
 
-    
+
+    private void createBirdsAndCatapultTable() {
+        // Create a main table for birds and the catapult
+        Table birdsAndCatapultTable = new Table();
+
+        birdsAndCatapultTable.setName("birdsAndCatapultTable");
+
+        // Set size based on screen dimensions
+        float width =400;// 80% of screen width
+        float height = 100; // Fixed height
+        birdsAndCatapultTable.setSize(width, height);
+
+        // Position it at the bottom of the screen, with some padding
+        birdsAndCatapultTable.setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.15f - birdsAndCatapultTable.getHeight() * 0.15f); // 10% from left and 20 pixels from bottom
+        stage.addActor(birdsAndCatapultTable);
+
+        // Add birds to the table
+        for (Bird bird : birds) {
+            birdsAndCatapultTable.add((Actor) bird).size(50, 50).bottom();
+        }
+
+        // Initialize and add the catapult
+        Catapult catapult = new Catapult("catapult.png");
+        catapultImage = new Image(new TextureRegionDrawable(new TextureRegion(catapult.getTexture())));
+        catapultImage.setSize(100, 100);
+        birdsAndCatapultTable.add(catapultImage).size(100, 100);
+    }
+
+
     private void addBlocksToStage() {
-        // Create instances of different materials
         Material woodMaterial = new WoodMaterial();
         Material stoneMaterial = new StoneMaterial();
         Material iceMaterial = new IceMaterial();
 
-        // Create blocks with different sizes and materials
-        for(int i=0;i<3;i++) {
-        	Block woodBlock = new Block(woodMaterial, 50, 50);
-        	woodBlock.setPosition(1000, 100+(i*50)); // Example position
-        	stage.addActor(woodBlock);
-        }
-        
-        for(int i=0;i<3;i++) {
-        	Block woodBlock = new Block(woodMaterial, 50, 50);
-        	woodBlock.setPosition(1150, 100+(i*50)); // Example position
-        	stage.addActor(woodBlock);
-        }
-        	
-        Block stoneBlock = new Block(stoneMaterial, 25, 25); // (width,height)
-        stoneBlock.setPosition(1085, 250); // Example position
-        stage.addActor(stoneBlock);
+        // Create a main table for blocks
+        Table blockTable = new Table();
+        blockTable.setName("blockTable");
+        blockTable.setSize(200, 200);
+        blockTable.setPosition(Gdx.graphics.getWidth() - blockTable.getWidth() - 90, Gdx.graphics.getHeight() * 0.15f - blockTable.getHeight() * 0.15f);
 
+
+        Table zeroFloor=new Table();
+        zeroFloor.setSize(200,50);
+        Pig mediumPig = new MediumPig();
+        zeroFloor.add(mediumPig).size(50,50);
+        blockTable.add(zeroFloor);
+        blockTable.row();
+        // Create a dedicated table for the ice block
+        Table pigTable1=new Table();
+        pigTable1.setSize(50,50);
+        Pig smallPig1 = new SmallPig();
+        pigTable1.add(smallPig1);
+
+
+        Table firstFloor=new Table();
+        firstFloor.setSize(200,50);
+
+        Table iceTable = new Table();
+        iceTable.setSize(50, 50);
         Block iceBlock = new Block(iceMaterial, 50, 50);
-        iceBlock.setPosition(1075, 265); // Example position
-        stage.addActor(iceBlock);
-    }
-    
-    private void addPigsToStage() {
-        // Create and position different pig types
-        BigPig bigPig = new BigPig();
-        bigPig.setPosition(1050, 90);
-        stage.addActor(bigPig);
 
-        MediumPig mediumPig = new MediumPig();
-        mediumPig.setPosition(1075, 315);
-        stage.addActor(mediumPig);
-        
-        for(int i=0;i<2;i++) {
-        	SmallPig smallPig = new SmallPig();
-        	smallPig.setPosition(1015+(i*125), 265);
-        	stage.addActor(smallPig);        	
+
+        iceTable.add(iceBlock).center();
+        Table pigTable2=new Table();
+        Pig smallPig2 = new SmallPig();
+        pigTable2.add(smallPig2);
+//
+        firstFloor.add(pigTable1).size(50,50).bottom();
+        firstFloor.add(iceTable).size(70, 70).bottom(); // Add ice table to blockTable
+        firstFloor.add(pigTable2).size(50,50).bottom();
+
+        blockTable.add(firstFloor);
+        blockTable.row(); // Move to a new row for the stone block
+
+        // Create a dedicated table for the stone block
+        Table stoneTable = new Table();
+        stoneTable.setSize(100, 40);
+        Block stoneBlock = new Block(stoneMaterial, 60, 40);
+        stoneTable.add(stoneBlock).center().size(60, 40);
+        blockTable.add(stoneTable).expandX().bottom(); // Center the stone table in the blockTable
+        blockTable.row(); // Move to a new row for the wood blocks
+
+        // Create two wood tables for two columns of wood blocks
+        Table Wood = new Table();
+        Wood.setSize(200, 100);
+        Table woodTable1 = new Table();
+        Table woodTable2 = new Table();
+        woodTable1.setSize(50, 100);
+        woodTable2.setSize(50, 100);
+
+        // Add wood blocks in a column format within woodTable1 and woodTable2
+        for (int i = 0; i < 3; i++) {
+            Block woodBlock1 = new Block(woodMaterial, 30, 30);
+            woodTable1.add(woodBlock1).size(30, 30);
+            woodTable1.row(); // Move to the next row after each block
+
+
+            Block woodBlock2 = new Block(woodMaterial, 30, 30);
+            woodTable2.add(woodBlock2).size(30, 30);
+            woodTable2.row();
+
         }
-    }
-    
-    // Method to update the points label
-    private void increasePoints(int amount) {
-        points += amount;
-        pointsLabel.setText("Points: " + points); // Update the label's text
+
+        // Add both woodTables to the main blockTable as separate columns
+        Wood.add(woodTable1).uniform().bottom().size(50, 100).padRight(30);
+        bigPig = new BigPig();
+        bigPig.setPosition(1100, 90);
+        Wood.add(bigPig);
+        Wood.add(woodTable2).uniform().bottom().size(50, 100).padLeft(30);
+        blockTable.add(Wood).bottom();
+        stage.addActor(blockTable);
     }
 
-    // Method to update the Settings button position (top-right corner)
+
+
     private void updateSettingsButtonPosition() {
         settingsButton.setPosition(Gdx.graphics.getWidth() - settingsButton.getWidth() - 20,
             Gdx.graphics.getHeight() - settingsButton.getHeight() - 20);
     }
 
-    public void restartGame() {
-        points = 0; // Reset points
-        pointsLabel.setText("Points: " + points); // Update label
-        // Any other logic to reset game state can be added here
-        System.out.println("Game Restarted"); // Log restart action
+
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+        backgroundImage.setSize(width, height);
+        pointsLabel.setPosition(20, height - 50);
+        updateSettingsButtonPosition();
+
+
+        // Example bird positions
+        // Update the birdsAndCatapultTable position
+        updateBirdsAndCatapultTablePosition(width, height);
+
+        // Resize blocks if necessary
+        for (Actor actor : stage.getActors()) {
+            if (actor instanceof Block) {
+                Block block = (Block) actor;
+                block.setSize(50, 50);
+            }
+        }
+
+        // Update blockTable position after resizing
+        updateBlockTablePosition(width, height);
+    }
+
+    private void updateBirdsAndCatapultTablePosition(int width, int height) {
+        Actor birdsAndCatapultTable = stage.getRoot().findActor("birdsAndCatapultTable");
+        if (birdsAndCatapultTable != null) {
+            // Position it at the bottom of the screen, with some padding
+            birdsAndCatapultTable.setPosition(width * 0.05f, height * 0.15f - birdsAndCatapultTable.getHeight() * 0.15f); // 10% from left and 20 pixels from bottom
+        }
+    }
+
+
+    // Method to update the blockTable position dynamically
+    private void updateBlockTablePosition(int width, int height) {
+        Actor blockTable = stage.getRoot().findActor("blockTable");
+        if (blockTable != null) {
+            blockTable.setPosition(width - blockTable.getWidth() - 130, height * 0.21f - blockTable.getHeight() * 0.21f);
+        }
     }
 
     @Override
@@ -238,48 +362,37 @@ public class Gameplay implements Screen {
         // Draw the stage
         stage.draw();
     }
-
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-        backgroundImage.setSize(width, height); // Update background size when screen is resized
-        updateSettingsButtonPosition();  // Update the settings button position when resized
-        pointsLabel.setPosition(20, height - 50); // Update the points label position when resized
-
-     // Update the bird buttons positions when resized
-        float buttonStartY = height - 90; // Start position below the points label
-        int buttonIndex = 0;
-
-        // Loop through actors to find and update ImageButtons (excluding the settings button)
-        for (Actor actor : stage.getActors()) {
-            if (actor instanceof ImageButton && actor != settingsButton) {
-                ImageButton birdButton = (ImageButton) actor;
-                // Update the position of each button dynamically based on the screen height
-                birdButton.setPosition(20, buttonStartY - buttonIndex * 70);
-                buttonIndex++;
-            }
-        }
-
+    public void restartGame() {
+        points = 0; // Reset points
+        pointsLabel.setText("Points: " + points); // Update label
+        // Any other logic to reset game state can be added here
+        System.out.println("Game Restarted"); // Log restart action
     }
 
-    public void setPaused(boolean paused) {
-        this.isPaused = paused; // Set the pause state
+
+    @Override
+    public void pause() {
+        isPaused = true;
     }
 
     @Override
-    public void pause() {}
+    public void resume() {
+        isPaused = false;
+    }
 
     @Override
-    public void resume() {}
-
-    @Override
-    public void hide() {}
+    public void hide() {
+        // Cleanup resources if necessary
+    }
 
     @Override
     public void dispose() {
         stage.dispose();
         skin.dispose();
-        backgroundImage.remove();  // Remove the background image
-        settingTexture.dispose(); // Dispose of the texture to avoid memory leaks
+        settingTexture.dispose();
+    }
+
+    public void setPaused(boolean paused) {
+        isPaused = paused;
     }
 }

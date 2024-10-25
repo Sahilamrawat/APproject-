@@ -87,8 +87,9 @@
     "default": {
       "font": "button",
       "fontColor": "button",
-      "up": "button",
       "down": "button-down"
+
+
     }
   },
   "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -101,7 +102,12 @@
       "fontColor": "white"
     },
     "title": {
-      "font": "title"
+      "font": "title",
+      "fontColor": "button"
+    },
+    "title1": {
+      "font": "title",
+      "fontColor": "white"
     },
     "dark": {
       "font": "font",

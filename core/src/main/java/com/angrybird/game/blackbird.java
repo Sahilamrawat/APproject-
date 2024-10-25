@@ -9,18 +9,19 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 public class blackbird extends Actor implements Bird {
     private Texture texture;
+    private float initialWidth, initialHeight; // Store initial dimensions
 
-    public blackbird(float x,float y) {
+    public blackbird(String texturePath, float initialWidth, float initialHeight) {
         // Load the texture
-        texture = new Texture(Gdx.files.internal("blackbird.png"));
+        texture = new Texture(Gdx.files.internal(texturePath));
+        this.initialWidth = initialWidth;
+        this.initialHeight = initialHeight;
 
-        // Set the size for the bird based on the desired width and height
-        float birdWidth = 50; // Set desired width
-        float birdHeight = 50; // Set desired height
+        // Set size and bounds for the bird actor based on initial dimensions
+        setSize(initialWidth, initialHeight);
 
-        // Set size and bounds for the bird actor
-        setSize(birdWidth, birdHeight);
-        setPosition(x,y);
+        // Set initial position
+        setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.1f); // 10% from the left and bottom
 
         // Add listener for touch or click interactions
         addListener(new InputListener() {
@@ -40,11 +41,47 @@ public class blackbird extends Actor implements Bird {
 
     @Override
     public void performAction() {
-        System.out.println("BlueBird is launching!");
+        System.out.println("Blackbird is launching!");
         // Add specific action logic here
     }
 
+    @Override
     public Texture getTexture() {
         return texture;
+    }
+
+    @Override
+    public void resize(float screenWidth, float screenHeight) {
+        // Adjust position and size based on the new screen dimensions
+        setPosition(screenWidth * 0.1f, screenHeight * 0.1f); // Keep 10% from the left and bottom
+
+        // Optionally scale the bird texture based on the screen size
+        float scale = Math.min(screenWidth / Gdx.graphics.getWidth(), screenHeight / Gdx.graphics.getHeight());
+        setSize(initialWidth * scale, initialHeight * scale);
+    }
+
+    @Override
+    public float getX() {
+        return super.getX(); // Use Actor's getX
+    }
+
+    @Override
+    public float getY() {
+        return super.getY(); // Use Actor's getY
+    }
+
+    @Override
+    public float getWidth() {
+        return super.getWidth(); // Use Actor's getWidth
+    }
+
+    @Override
+    public float getHeight() {
+        return super.getHeight(); // Use Actor's getHeight
+    }
+
+    @Override
+    public void dispose() {
+        texture.dispose(); // Dispose of the texture to free resources
     }
 }

@@ -9,18 +9,17 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 public class yellowbird extends Actor implements Bird {
     private Texture texture;
+    private float initialWidth, initialHeight; // Store initial dimensions
 
-    public yellowbird(float x,float y) {
+    public yellowbird(String texturePath, float initialWidth, float initialHeight) {
         // Load the texture
-        texture = new Texture(Gdx.files.internal("yellowbird.png"));
+        texture = new Texture(Gdx.files.internal(texturePath));
+        this.initialWidth = initialWidth;
+        this.initialHeight = initialHeight;
 
-        // Set the size for the bird based on the desired width and height
-        float birdWidth = 40; // Set desired width
-        float birdHeight = 40; // Set desired height
-
-        // Set size and bounds for the bird actor
-        setSize(birdWidth, birdHeight);
-        setPosition(x,y);
+        // Set initial size and position for the bird actor
+        setSize(initialWidth, initialHeight);
+        setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.1f);
 
         // Add listener for touch or click interactions
         addListener(new InputListener() {
@@ -39,12 +38,31 @@ public class yellowbird extends Actor implements Bird {
     }
 
     @Override
+    public Texture getTexture() {
+        return texture;
+    }
+
+    @Override
     public void performAction() {
-        System.out.println("BlueBird is launching!");
+        System.out.println("YellowBird is launching!"); // Updated action message
         // Add specific action logic here
     }
 
-    public Texture getTexture() {
-        return texture;
+    @Override
+    public void dispose() {
+        // Dispose of the texture to free memory
+        if (texture != null) {
+            texture.dispose();
+        }
+    }
+
+    // Method to resize the bird based on screen size
+    public void resize(float screenWidth, float screenHeight) {
+        // Adjust position and size based on the new screen dimensions
+        setPosition(screenWidth * 0.1f, screenHeight * 0.1f); // Keep 10% from the left and bottom
+
+        // Optionally scale the bird texture based on the screen size
+        float scale = Math.min(screenWidth / Gdx.graphics.getWidth(), screenHeight / Gdx.graphics.getHeight());
+        setSize(initialWidth * scale, initialHeight * scale);
     }
 }

@@ -90,7 +90,7 @@ public class MainMenu implements Screen {
         });
         profile.pad(15);
 
-        heading = new Label("MAIN MENU", skin,"title");
+        heading = new Label("MAIN MENU", skin,"title1");
         heading.setFontScale(2);
 
         // Set up the table layout
