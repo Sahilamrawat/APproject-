@@ -64,13 +64,26 @@ public class FirstScreen implements Screen {
         batch.end();
     }
 
+    
     @Override
     public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
-//        splash.setSize(1280,380);
-        splash.setBounds(0,200,1280,320);
-        splash.setScale(0.7f);
+        // Set a smaller size for the splash image
+        float desiredWidth = 1280f;  // Set your desired width
+        float desiredHeight = 320f; // Set your desired height
+
+        // Adjust the size of the splash image
+        splash.setSize(desiredWidth, desiredHeight);
+
+        // Calculate the center position based on the new size of the splash image
+        float centerX = (width - splash.getWidth()) / 2;
+        float centerY = (height - splash.getHeight()) / 2;
+
+        // Set the splash's position to the calculated center position
+        splash.setPosition(centerX, centerY);
     }
+
+
+    
     @Override
     public void pause() {
         // Invoked when your application is paused.

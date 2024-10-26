@@ -10,7 +10,7 @@ public class DesktopLauncher {
         Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
 
         cfg.setTitle(AngryBird.NAME + " v" + AngryBird.VERSION);
-        cfg.setWindowedMode(1280, 720);  // Set window size
+        cfg.setWindowedMode(1920, 1080);  // Set window size
         cfg.useVsync(true);  // Enable VSync
 
         new Lwjgl3Application(new AngryBird(), cfg);  // Launch with LWJGL3

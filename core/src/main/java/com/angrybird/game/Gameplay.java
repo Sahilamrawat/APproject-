@@ -114,10 +114,10 @@ public class Gameplay implements Screen {
 
         // Initialize birds
         birds = new Bird[]{
-            new redbird("redbird.png", 50, 50),
-            new yellowbird("yellowbird.png", 50, 50),
-            new bluebird("bluebird.png", 50, 50),
-            new blackbird("blackbird.png", 50, 50)
+            new blackbird("blackbird.png", 50, 50),
+            new bluebird("bluebird.png", 40, 40),
+            new yellowbird("yellowbird.png", 40, 40),
+            new redbird("redbird.png", 50, 50)
         };
 
 
@@ -201,7 +201,7 @@ public class Gameplay implements Screen {
 
         // Add birds to the table
         for (Bird bird : birds) {
-            birdsAndCatapultTable.add((Actor) bird).size(50, 50).bottom();
+            birdsAndCatapultTable.add((Actor) bird).bottom();
         }
 
         // Initialize and add the catapult

@@ -26,12 +26,16 @@ public class Levels implements Screen {
 
     // Locked icon texture
     private Texture lockedIconTexture;
+    private Texture levelOneTexture;
 
     public Levels(Game game) {
         this.game = game;
         // Initialize the unlock state (Level 1 is unlocked, others are locked)
         levelUnlocked = new boolean[20];
         levelUnlocked[0] = true; // Unlock Level 1
+
+        // Load the texture for Level 1
+        levelOneTexture = new Texture(Gdx.files.internal("l1_image.png")); // Ensure you have this image in your assets
     }
 
     @Override
@@ -72,9 +76,23 @@ public class Levels implements Screen {
             final int level = i + 1; // Level number (1 to 20)
             ImageTextButton playButton = new ImageTextButton("", skin); // Use ImageTextButton
 
-            // If the level is locked, use the locked icon
-            if (!levelUnlocked[i]) {
-                playButton.add(new Image(lockedIconTexture)); // Add locked icon
+            if (level == 1 && levelUnlocked[i]) { // If it's Level 1 and it is unlocked
+                // Create an Image with the special Level 1 texture
+                Image levelOneImage = new Image(levelOneTexture);
+                playButton.clearChildren(); // Clear any default children like text
+                playButton.add(levelOneImage).size(buttonSize, buttonSize).expand().fill();
+                playButton.setDisabled(false); // Enable button since Level 1 is unlocked
+
+                // Set a listener for Level 1
+                playButton.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        // Switch to the Gameplay screen when Level 1 is clicked
+                        game.setScreen(new Gameplay(game, Levels.this));
+                    }
+                });
+            } else if (!levelUnlocked[i]) {
+                playButton.add(new Image(lockedIconTexture)); // Add locked icon for locked levels
                 playButton.setDisabled(true); // Disable the button for locked levels
             } else {
                 playButton.setText("" + level); // Set the level number as text
@@ -99,6 +117,8 @@ public class Levels implements Screen {
                 levelsTable.row(); // Create a new row after every `levelsPerRow` buttons
             }
         }
+        
+          
 
         // Add levels table to the main table
         table.add(levelsTable).center().padBottom(30);
