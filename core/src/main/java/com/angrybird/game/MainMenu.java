@@ -46,13 +46,13 @@ public class MainMenu implements Screen {
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
         // Load textures for each button
-        playTexture = new Texture(Gdx.files.internal("play.png"));
+        playTexture = new Texture(Gdx.files.internal("play1.png"));
         exitTexture = new Texture(Gdx.files.internal("exit.png"));
         loadTexture = new Texture(Gdx.files.internal("load.png"));
         profileTexture = new Texture(Gdx.files.internal("profile.png"));
 
         // Play button
-        playButton = createImageTextButton(playTexture, 250, 250);
+        playButton = createImageTextButton(playTexture, 120, 120);
         // Exit button
         exitButton = createImageTextButton(exitTexture, 80, 80);
         // Load button
@@ -101,12 +101,12 @@ public class MainMenu implements Screen {
         table.setFillParent(true);
 
         // Create the heading
-        heading = new Label("Angry Bird !!!", skin, "title1");
-        heading.setFontScale(2);
+//        heading = new Label("Angry Bird !!!", skin, "title1");
+//        heading.setFontScale(2);
 
         // Add heading and buttons to the table
-        table.add(heading).colspan(2).padBottom(10).center();
-        table.row();
+//        table.add(heading).colspan(2).padBottom(10).center();
+//        table.row();
         table.add(playButton).colspan(2).center().padBottom(10); // Center Play button
         table.row();
         table.add(loadButton).colspan(2).padBottom(20).center();    // Load Game button on the left
@@ -126,18 +126,18 @@ public class MainMenu implements Screen {
         // Initialize tween manager and animations
         tweenManager = new TweenManager();
         Tween.registerAccessor(Actor.class, new ActorAccessor());
-
-        // Animate heading color
-        Timeline.createSequence().beginSequence()
-            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 0, 1))
-            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 1, 0))
-            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 0, 0))
-            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 0))
-            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 0, 1))
-            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 1))
-            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 1, 1))
-            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 0))
-            .end().repeat(Tween.INFINITY, .5f).start(tweenManager);
+//
+//        // Animate heading color
+//        Timeline.createSequence().beginSequence()
+//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 0, 1))
+//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 1, 0))
+//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 0, 0))
+//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 0))
+//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 0, 1))
+//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 1))
+//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 1, 1))
+//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 0))
+//            .end().repeat(Tween.INFINITY, .5f).start(tweenManager);
 
         // Animate fade-in for buttons and background
         Timeline.createSequence().beginSequence()
