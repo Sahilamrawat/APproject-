@@ -32,11 +32,20 @@ public class MainMenu implements Screen {
     private BitmapFont white, black;
     private TextureAtlas atlas;
     private ImageTextButton playButton, exitButton, loadButton, profileButton;
+    private Gameplay gameplayScreen;
     private Texture playTexture, exitTexture, loadTexture, profileTexture;
     private Image buttonImage1, buttonImage2, buttonImage3, buttonImage4;
 
     private Image backgroundImage;
     private TweenManager tweenManager;
+
+    public MainMenu() {
+    }
+
+    public MainMenu(Game game, Gameplay gameplayScreen) {
+        this.game = game;
+        this.gameplayScreen = gameplayScreen;
+    }
 
     @Override
     public void show() {
@@ -58,7 +67,7 @@ public class MainMenu implements Screen {
         // Load button
         loadButton = createImageTextButton(loadTexture, 80, 80);
         // Profile button
-        profileButton = createImageTextButton(profileTexture, 50, 50);
+        profileButton = createImageTextButton(profileTexture, 120, 120);
 
         // Add listeners for each button
         playButton.addListener(new ClickListener() {
@@ -78,7 +87,7 @@ public class MainMenu implements Screen {
         loadButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGame(game));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGame(game,gameplayScreen));
             }
         });
 
@@ -114,8 +123,8 @@ public class MainMenu implements Screen {
         table.add(exitButton).colspan(2).center(); // Center Exit button
 
         profileButton.setPosition(
-            Gdx.graphics.getWidth() - 100, // 20 pixels from the right edge
-            Gdx.graphics.getHeight()  - 100 // 20 pixels from the top edge
+            Gdx.graphics.getWidth() - 200, // 20 pixels from the right edge
+            Gdx.graphics.getHeight()  - 130 // 20 pixels from the top edge
         );
         stage.addActor(profileButton);
         stage.addActor(table);
@@ -153,9 +162,9 @@ public class MainMenu implements Screen {
             .end().start(tweenManager);
 
         // Background image fade-in
-        Tween.to(backgroundImage, ActorAccessor.ALPHA, 1f)
+        Tween.to(backgroundImage, ActorAccessor.ALPHA, 0.3f)
             .target(1)
-            .delay(0.1f)
+//            .delay(0.1f)
             .start(tweenManager);
 
         // Add hover effects

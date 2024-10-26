@@ -27,17 +27,19 @@ public class LoadGame implements Screen {
     private Game game;
     private SpriteBatch batch;
     private Array<String> savedGames;
+    private Gameplay gameplayScreen;
     private Image buttonImage1;
 
     private Image backgroundImage;
 
-    public LoadGame(Game game) {
+    public LoadGame(Game game,Gameplay gameplayScreen) {
         this.game = game;
         savedGames = new Array<>();
 
         // Example saved games
         savedGames.add("LOAD Game 1");
 
+        this.gameplayScreen = gameplayScreen;
     }
 
     @Override
@@ -89,7 +91,7 @@ public class LoadGame implements Screen {
         scrollPane = new ScrollPane(gamesTable, skin);
         scrollPane.setFadeScrollBars(false); // Disable fading scrollbars
         scrollPane.setScrollingDisabled(true, false); // Only vertical scrolling
-        table.add(scrollPane).width(400).height(300).padBottom(30);
+        table.add(scrollPane).width(400).height(300).padBottom(5);
         table.row();
 
         // Back button as ImageTextButton to return to the Main Menu
@@ -99,7 +101,8 @@ public class LoadGame implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                gameplayScreen.setPaused(false); // Resume gameplay
+                ((Game)Gdx.app.getApplicationListener()).setScreen(gameplayScreen); // Go back to gameplay
             }
         });
 
