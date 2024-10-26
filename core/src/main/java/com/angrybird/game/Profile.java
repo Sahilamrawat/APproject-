@@ -7,11 +7,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Profile implements Screen {
@@ -27,6 +30,10 @@ public class Profile implements Screen {
     private Label playerAgeLabel;
     private Table table;
 
+    private ImageTextButton updateButton, backButton;
+    private Texture updateTexture, backTexture;
+
+    private Image buttonImage1, buttonImage2;
     // Overlay image
     private Image overlayImage;
 
@@ -45,6 +52,9 @@ public class Profile implements Screen {
         TextureAtlas atlas = new TextureAtlas("ui/atlas.pack");
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
+        updateTexture = new Texture(Gdx.files.internal("update.png"));
+        backTexture = new Texture(Gdx.files.internal("back.png"));
+
         // Load and set the background image
         backgroundImage = new Image(new Texture(Gdx.files.internal("background.jpg")));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -52,18 +62,22 @@ public class Profile implements Screen {
         stage.addActor(backgroundImage);  // Add background image
 
         // Initialize overlay image
-        overlayImage = new Image(new Texture(Gdx.files.internal("profile.jpeg")));
-        overlayImage.setColor(1, 1, 1, 0); // Initially invisible
-        overlayImage.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2); // Set size
+        overlayImage = new Image(new Texture(Gdx.files.internal("profilebackground.png")));
+//        overlayImage.setColor(1, 1, 1, 0); // Initially invisible
+        overlayImage.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2+100); // Set size
         overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2, (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
         stage.addActor(overlayImage); // Add overlay image
 
         // Create table for layout
         table = new Table();
         table.setFillParent(true);
-        stage.addActor(table);
 
-        // Create labels for Player Name, Player Level, Player Age
+
+        updateButton = createImageTextButton(updateTexture, 80, 80);
+        // Exit button
+        backButton = createImageTextButton(backTexture, 80, 80);
+
+
         playerNameLabel = new Label("Player Name: Mavrick", skin,"button");
         playerLevelLabel = new Label("Player Level: 1", skin,"button");
         playerAgeLabel = new Label("Player Age: 21", skin,"button");
@@ -74,9 +88,15 @@ public class Profile implements Screen {
         table.add(playerLevelLabel).padBottom(10).row();
         table.add(playerAgeLabel).padBottom(10).row();
 
-        // Create Update Profile button
-        TextButton updateProfileButton = new TextButton("Update Profile", skin);
-        updateProfileButton.addListener(new ClickListener() {
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Transition back to main menu
+                ((Game) Gdx.app.getApplicationListener()).setScreen(mainMenuScreen);
+            }
+        });
+
+        updateButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Logic to update player profile fields
@@ -86,26 +106,48 @@ public class Profile implements Screen {
                 System.out.println("Profile updated");
             }
         });
-        table.add(updateProfileButton).padTop(20).row();
-
-        // Create Back button to go back to the Main Menu screen
-        TextButton backButton = new TextButton("Back", skin);
-        backButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Transition back to main menu
-                ((Game) Gdx.app.getApplicationListener()).setScreen(mainMenuScreen);
-            }
-        });
+        table.add(updateButton).padTop(20).row();
         table.add(backButton).padTop(10).row();
-
-        // Fade in overlay when the Profile screen is shown
-
+        stage.addActor(table);
+        addHoverEffect(buttonImage1, updateButton);
+        addHoverEffect(buttonImage2, backButton);
     }
 
 
+    private void addHoverEffect(final Image image, final ImageTextButton button) {
+        button.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true; // return true to handle the event
+            }
 
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Scale up the image on hover
+                image.setScale(1.1f);
+            }
 
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                // Scale down the image when not hovered
+                image.setScale(1f);
+            }
+        });
+    }
+    private ImageTextButton createImageTextButton(Texture texture, float width, float height) {
+        ImageTextButton button = new ImageTextButton("", skin);
+        Image buttonImage = new Image(texture);
+        buttonImage.setScaling(Scaling.fill);
+        button.add(buttonImage).size(width, height).expand().fill();
+        if (texture == updateTexture) {
+            buttonImage1 = buttonImage;
+        } else if (texture == backTexture) {
+            buttonImage2 = buttonImage;
+        }
+
+        return button;
+
+    }
 
     @Override
     public void render(float delta) {
@@ -123,7 +165,7 @@ public class Profile implements Screen {
         stage.getViewport().update(width, height, true);
         // Update background image size to match the new screen dimensions
         backgroundImage.setSize(width, height);
-        overlayImage.setSize(width / 2, height / 2);
+        overlayImage.setSize(width / 2-30, height / 2+80);
         overlayImage.setPosition((width - overlayImage.getWidth()) / 2, (height - overlayImage.getHeight()) / 2);
     }
 

@@ -157,8 +157,9 @@ public class MainMenu implements Screen {
             .push(Tween.from(heading, ActorAccessor.ALPHA, 0.25f).target(0))
             .push(Tween.to(playButton, ActorAccessor.ALPHA, 0.25f).target(1))
             .push(Tween.to(loadButton, ActorAccessor.ALPHA, 0.25f).target(1))
-            .push(Tween.to(profileButton, ActorAccessor.ALPHA, 0.25f).target(1))
             .push(Tween.to(exitButton, ActorAccessor.ALPHA, 0.25f).target(1))
+            .push(Tween.to(profileButton, ActorAccessor.ALPHA, 0.25f).target(1))
+
             .end().start(tweenManager);
 
         // Background image fade-in
