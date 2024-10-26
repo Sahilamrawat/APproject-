@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -36,6 +37,7 @@ public class Gameplay implements Screen {
     private MediumPig mediumPig;
     private SmallPig smallPig1;
     private SmallPig smallPig2;
+    private Image buttonImage1, buttonImage2;
 
     public Gameplay(Game game, Screen previousScreen) {
         this.game = game;
@@ -53,8 +55,10 @@ public class Gameplay implements Screen {
         TextureAtlas atlas = new TextureAtlas("ui/atlas.pack");
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
-        settingTexture = new Texture(Gdx.files.internal("settings.png"));
+        settingTexture = new Texture(Gdx.files.internal("pause.png"));
         backTexture = new Texture(Gdx.files.internal("back.png"));
+        settingsButton=createImageTextButton(settingTexture,80,80);
+        backButton=createImageTextButton(backTexture,50,50);
         Texture backgroundTexture = new Texture(Gdx.files.internal("gameplayBackground.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -68,49 +72,52 @@ public class Gameplay implements Screen {
 
 
 
-        settingsButton = new ImageTextButton("", skin);
+//        settingsButton = new ImageTextButton("", skin);
 
 // Create the settings image and set its size
-        Image settingsImage = new Image(settingTexture);
-        settingsImage.setScaling(Scaling.fill); // Ensure it scales correctly
-        settingsButton.add(settingsImage).size(60, 60).expand().fill(); // Adjust size as needed
+//        Image settingsImage = new Image(settingTexture);
+//        settingsImage.setScaling(Scaling.fill); // Ensure it scales correctly
+//        settingsButton.add(settingsImage).size(60, 60).expand().fill(); // Adjust size as needed
 
 // Set the position and size of the settings button
-        settingsButton.setSize(60, 60);
+//        settingsButton.setSize(60, 60);
         updateSettingsButtonPosition(); // Position it as required
-        stage.addActor(settingsButton);
+
 
 // Add ClickListener to act like a button without showing text
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new SettingsScreen(game, Gameplay.this)); // Your desired action
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new SettingsScreen(game, Gameplay.this)); // Your desired action
             }
         });
+        addHoverEffect(buttonImage2, settingsButton);
+        stage.addActor(settingsButton);
 
 
-        backButton = new ImageTextButton("", skin);
-        Image backImage = new Image(backTexture);
-        backImage.setScaling(Scaling.fill); // Ensure it scales correctly
-        backButton.add(backImage).size(60, 60).expand().fill(); // Adjust size as needed
+//        backButton = new ImageTextButton("", skin);
+//        Image backImage = new Image(backTexture);
+//        backImage.setScaling(Scaling.fill); // Ensure it scales correctly
+//        backButton.add(backImage).size(60, 60).expand().fill(); // Adjust size as needed
 
 // Set the position and size of the settings button
-        backButton.setSize(60, 60);
+//        backButton.setSize(60, 60);
         updateBackButtonPosition(); // Position it as required
 
-        backButton.setSize(100, 50); // Set size as needed
+        backButton.setSize(70, 70); // Set size as needed
 
 // Position the button
-        backButton.setPosition(20, 20);
+        backButton.setPosition(50, 50);
         stage.addActor(backButton);
 
 // Add ClickListener for the back button
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(previousScreen); // Action to go back
+                ((Game)Gdx.app.getApplicationListener()).setScreen(previousScreen); // Action to go back
             }
         });
+        addHoverEffect(buttonImage1, backButton);
 
         // Initialize birds
         birds = new Bird[]{
@@ -176,7 +183,47 @@ public class Gameplay implements Screen {
             }
         });
 
+
+
     }
+    private void addHoverEffect(final Image image, final ImageTextButton button) {
+        button.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true; // return true to handle the event
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Scale up the image on hover
+                image.setScale(1.1f);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                // Scale down the image when not hovered
+                image.setScale(1f);
+            }
+        });
+
+    }
+
+    private ImageTextButton createImageTextButton(Texture texture, float width, float height) {
+        ImageTextButton button = new ImageTextButton("", skin);
+        Image buttonImage = new Image(texture);
+        buttonImage.setScaling(Scaling.fill);
+        button.add(buttonImage).size(width, height).expand().fill();
+        if (texture == backTexture) {
+            buttonImage1 = buttonImage;
+        } else if (texture == settingTexture) {
+            buttonImage2 = buttonImage;
+
+        }
+
+        return button;
+
+    }
+
 
     private void updateBackButtonPosition() {
         backButton.setPosition(Gdx.graphics.getWidth() - backButton.getWidth() - 20,
@@ -299,8 +346,8 @@ public class Gameplay implements Screen {
 
 
     private void updateSettingsButtonPosition() {
-        settingsButton.setPosition(Gdx.graphics.getWidth() - settingsButton.getWidth() - 20,
-            Gdx.graphics.getHeight() - settingsButton.getHeight() - 20);
+        settingsButton.setPosition(Gdx.graphics.getWidth() - settingsButton.getWidth() - 70,
+            Gdx.graphics.getHeight() - settingsButton.getHeight() - 70);
     }
 
 

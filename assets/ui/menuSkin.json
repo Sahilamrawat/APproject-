@@ -87,7 +87,6 @@
     "default": {
       "font": "button",
       "fontColor": "button",
-      "down": "button-down"
 
 
     }

@@ -7,22 +7,27 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class LoadGame implements Screen {
     private Stage stage;
     private Skin skin;
     private Table table;
-    private ScrollPane scrollPane; // ScrollPane for saved games list
-    private TextButton backButton;
+    private ScrollPane scrollPane;
+    private ImageTextButton backButton;
+    private Texture backTexture;
     private Game game;
     private SpriteBatch batch;
-    private Array<String> savedGames; // Array to hold saved game names
+    private Array<String> savedGames;
+    private Image buttonImage1;
 
     private Image backgroundImage;
 
@@ -32,9 +37,6 @@ public class LoadGame implements Screen {
 
         // Example saved games
         savedGames.add("LOAD Game 1");
-        savedGames.add("LOAD Game 2");
-        savedGames.add("LOAD Game 3");
-        savedGames.add("LOAD Game 4");
 
     }
 
@@ -42,6 +44,8 @@ public class LoadGame implements Screen {
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+
+        backTexture = new Texture(Gdx.files.internal("back.png"));
 
         // Load the background texture
         Texture backgroundTexture = new Texture(Gdx.files.internal("background1.jpeg"));
@@ -59,7 +63,7 @@ public class LoadGame implements Screen {
         table.setFillParent(true);
 
         // Add heading
-        Label heading = new Label("SELECT A GAME TO LOAD", skin);
+        Label heading = new Label("SELECT A GAME TO LOAD", skin,"title");
         heading.setFontScale(2);
         table.add(heading).padBottom(30);
         table.row();
@@ -88,8 +92,9 @@ public class LoadGame implements Screen {
         table.add(scrollPane).width(400).height(300).padBottom(30);
         table.row();
 
-        // Back button to return to the Main Menu
-        backButton = new TextButton("Back", skin);
+        // Back button as ImageTextButton to return to the Main Menu
+        backButton =createImageTextButton(backTexture,70,70);
+
         backButton.pad(10);
         backButton.addListener(new ClickListener() {
             @Override
@@ -99,7 +104,41 @@ public class LoadGame implements Screen {
         });
 
         table.add(backButton).padBottom(20);
+        addHoverEffect(buttonImage1, backButton);
         stage.addActor(table);
+    }
+    private ImageTextButton createImageTextButton(Texture texture, float width, float height) {
+        ImageTextButton button = new ImageTextButton("", skin);
+        Image buttonImage = new Image(texture);
+        buttonImage.setScaling(Scaling.fill);
+        button.add(buttonImage).size(width, height).expand().fill();
+        if (texture ==backTexture) {
+            buttonImage1 = buttonImage;
+        }
+
+        return button;
+
+    }
+
+    private void addHoverEffect(final Image image, final ImageTextButton button) {
+        button.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true; // return true to handle the event
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Scale up the image on hover
+                image.setScale(1.1f);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                // Scale down the image when not hovered
+                image.setScale(1f);
+            }
+        });
     }
 
     private void loadGame(String gameName) {
@@ -116,8 +155,6 @@ public class LoadGame implements Screen {
         // Clear the screen
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // Draw the background
 
         // Draw the stage
         stage.act(delta);
@@ -144,6 +181,5 @@ public class LoadGame implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-
     }
 }

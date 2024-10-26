@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class ActorAccessor implements TweenAccessor<Actor> {
-    public static final int Y=0, RGB=1,ALPHA=2;
+    public static final int Y=0, RGB=1,ALPHA=2,SCALE = 3;;
 
 
 
@@ -22,6 +22,9 @@ public class ActorAccessor implements TweenAccessor<Actor> {
                 return 3;
             case ALPHA:
                 returnValues[0]=target.getColor().a;
+                return 1;
+            case SCALE: // Handle SCALE
+                returnValues[0] = target.getScaleX(); // or target.getScaleY() if uniform scaling
                 return 1;
             default:
                 assert false;
@@ -40,6 +43,9 @@ public class ActorAccessor implements TweenAccessor<Actor> {
                 break;
             case ALPHA:
                 target.setColor(target.getColor().r,target.getColor().g,target.getColor().b,newValues[0]);
+                break;
+            case SCALE: // Handle SCALE
+                target.setScale(newValues[0]); // Set scale
                 break;
             default:
                 assert false;

@@ -6,7 +6,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -25,9 +27,11 @@ public class Levels implements Screen {
     private boolean[] levelUnlocked;
 
     // Locked icon texture
+    private ImageTextButton lockerIconButton;
+    private ImageTextButton levelOneButton;
     private Texture lockedIconTexture;
     private Texture levelOneTexture;
-
+    private Image buttonImage1, buttonImage2,buttonImage3;
     public Levels(Game game) {
         this.game = game;
         // Initialize the unlock state (Level 1 is unlocked, others are locked)
@@ -53,6 +57,7 @@ public class Levels implements Screen {
 
         // Load the locked icon texture
         lockedIconTexture = new Texture(Gdx.files.internal("lock.png")); // Ensure you have this image in your assets
+        levelOneTexture=new Texture(Gdx.files.internal("l1_image.png"));
 
         // Add background image to the stage first so it appears behind other UI elements
         stage.addActor(backgroundImage);
@@ -72,72 +77,46 @@ public class Levels implements Screen {
         int levelsPerRow = 4; // Number of levels per row
         float buttonSize = 100; // Set a fixed size for buttons
 
-        for (int i = 0; i < 4; i++) { // Iterate through all 20 levels
-            final int level = i + 1; // Level number (1 to 20)
-            ImageTextButton playButton = new ImageTextButton("", skin); // Use ImageTextButton
+        for (int i = 0; i < 4; i++) { // Iterate through 4 levels (for example)
+            final int level = i + 1; // Level number (1 to 4)
 
             if (level == 1 && levelUnlocked[i]) { // If it's Level 1 and it is unlocked
-                // Create an Image with the special Level 1 texture
-                Image levelOneImage = new Image(levelOneTexture);
-                playButton.clearChildren(); // Clear any default children like text
-                playButton.add(levelOneImage).size(buttonSize, buttonSize).expand().fill();
-                playButton.setDisabled(false); // Enable button since Level 1 is unlocked
+                levelOneButton = createImageTextButton(levelOneTexture, buttonSize, buttonSize);
 
-                // Set a listener for Level 1
-                playButton.addListener(new ClickListener() {
+                levelOneButton.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        // Switch to the Gameplay screen when Level 1 is clicked
-                        game.setScreen(new Gameplay(game, Levels.this));
+                        ((Game)Gdx.app.getApplicationListener()).setScreen(new Gameplay(game, Levels.this));
                     }
                 });
-            } else if (!levelUnlocked[i]) {
-                playButton.add(new Image(lockedIconTexture)); // Add locked icon for locked levels
-                playButton.setDisabled(true); // Disable the button for locked levels
-            } else {
-                playButton.setText("" + level); // Set the level number as text
-                playButton.addListener(new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        // Switch to the Gameplay screen when the level is clicked
-                        game.setScreen(new Gameplay(game, Levels.this));
-                    }
-                });
+                levelsTable.add(levelOneButton).pad(10);
+
+                addHoverEffect(buttonImage1, levelOneButton);
+
+            } else { // Locked level case
+                lockerIconButton = createImageTextButton(lockedIconTexture, buttonSize, buttonSize);
+                lockerIconButton.setDisabled(true);
+                levelsTable.add(lockerIconButton).pad(10);
+                addHoverEffect(buttonImage2, lockerIconButton);
             }
 
-            // Set the button size
-            playButton.setSize(buttonSize, buttonSize); // Use fixed button size
-            playButton.getLabel().setFontScale(3f); // Scale label font for better visibility
-
-            // Add the button to the levels table
-            levelsTable.add(playButton).size(buttonSize, buttonSize).pad(10); // Set fixed size with padding
-
-            // Move to the next row after a specified number of levels
             if ((i + 1) % levelsPerRow == 0) {
-                levelsTable.row(); // Create a new row after every `levelsPerRow` buttons
+                levelsTable.row(); // Move to the next row after every `levelsPerRow` buttons
             }
         }
-        
-          
+
+
 
         // Add levels table to the main table
         table.add(levelsTable).center().padBottom(30);
         table.row();
 
         // Back button to return to the Main Menu
-        backButton = new ImageTextButton("", skin);
-        Image backImage = new Image(backTexture);
-        backImage.setScaling(Scaling.fill); // Ensure it scales correctly
-        backButton.add(backImage).size(60, 60).expand().fill(); // Adjust size as needed
+        backButton =createImageTextButton(backTexture,70,70);
 
-// Set the position and size of the settings button
-        backButton.setSize(60, 60);
-        updateBackButtonPosition(); // Position it as required
-
-        backButton.setSize(100, 50); // Set size as needed
 
 // Position the button
-        backButton.setPosition(20, 20);
+        backButton.setPosition(50, 50);
         stage.addActor(backButton);
 
 // Add ClickListener for the back button
@@ -147,12 +126,55 @@ public class Levels implements Screen {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
+        addHoverEffect(buttonImage3, backButton);
         stage.addActor(table);
+
     }
+
+    private ImageTextButton createImageTextButton(Texture texture, float width, float height) {
+        ImageTextButton button = new ImageTextButton("", skin);
+        Image buttonImage = new Image(texture);
+        buttonImage.setScaling(Scaling.fill);
+        button.add(buttonImage).size(width, height).expand().fill();
+        if (texture == levelOneTexture) {
+            buttonImage1 = buttonImage;
+        } else if (texture == lockedIconTexture) {
+            buttonImage2 = buttonImage;
+        }
+        else if (texture ==backTexture) {
+            buttonImage3 = buttonImage;
+        }
+
+        return button;
+
+    }
+
     private void updateBackButtonPosition() {
         backButton.setPosition(Gdx.graphics.getWidth() - backButton.getWidth() - 20,
             Gdx.graphics.getHeight() - backButton.getHeight() - 20);
     }
+
+    private void addHoverEffect(final Image image, final ImageTextButton button) {
+        button.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true; // return true to handle the event
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Scale up the image on hover
+                image.setScale(1.1f);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                // Scale down the image when not hovered
+                image.setScale(1f);
+            }
+        });
+    }
+
     @Override
     public void render(float delta) {
         // Clear the screen

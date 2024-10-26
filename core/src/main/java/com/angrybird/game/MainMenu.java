@@ -16,7 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+
 import tween.ActorAccessor;
 
 public class MainMenu implements Screen {
@@ -28,90 +31,103 @@ public class MainMenu implements Screen {
     private Label heading;
     private BitmapFont white, black;
     private TextureAtlas atlas;
+    private ImageTextButton playButton, exitButton, loadButton, profileButton;
+    private Texture playTexture, exitTexture, loadTexture, profileTexture;
+    private Image buttonImage1, buttonImage2, buttonImage3, buttonImage4;
 
     private Image backgroundImage;
     private TweenManager tweenManager;
 
     @Override
     public void show() {
-        // Load the texture atlas and skin
+        // Initialize the stage, skin, and atlas
         stage = new Stage(new ScreenViewport());
-
-        // Load the background image
-        Texture backgroundTexture = new Texture(Gdx.files.internal("background.jpg"));
-        backgroundImage = new Image(backgroundTexture);
-
-        // Initially set the alpha of the background image to 0 (invisible)
-        backgroundImage.getColor().a = 0f;
-
-        stage.addActor(backgroundImage); // Add the background image to the stage first
-
-        // Load the texture atlas and skin
         atlas = new TextureAtlas("ui/atlas.pack");
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
-        table = new Table(skin);
-        table.setFillParent(true);
+        // Load textures for each button
+        playTexture = new Texture(Gdx.files.internal("play.png"));
+        exitTexture = new Texture(Gdx.files.internal("exit.png"));
+        loadTexture = new Texture(Gdx.files.internal("load.png"));
+        profileTexture = new Texture(Gdx.files.internal("profile.png"));
 
-        // Create buttons
-        buttonExit = new TextButton("EXIT", skin);
-        buttonExit.addListener(new ClickListener() {
+        // Play button
+        playButton = createImageTextButton(playTexture, 250, 250);
+        // Exit button
+        exitButton = createImageTextButton(exitTexture, 80, 80);
+        // Load button
+        loadButton = createImageTextButton(loadTexture, 80, 80);
+        // Profile button
+        profileButton = createImageTextButton(profileTexture, 50, 50);
+
+        // Add listeners for each button
+        playButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Levels(game));
+            }
+        });
+
+        exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
             }
         });
-        buttonExit.pad(15);
 
-        buttonPlay = new TextButton("PLAY", skin);
-        buttonPlay.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Levels((Game) Gdx.app.getApplicationListener()));
-            }
-        });
-        buttonPlay.pad(15);
-
-        buttonLoad = new TextButton("LOAD GAME", skin);
-        buttonLoad.addListener(new ClickListener() {
+        loadButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGame(game));
             }
         });
-        buttonLoad.pad(15);
 
-        profile = new TextButton("PROFILE", skin);
-        profile.addListener(new ClickListener() {
+        profileButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new Profile(game, MainMenu.this));
             }
         });
-        profile.pad(15);
 
-        heading = new Label("MAIN MENU", skin,"title1");
-        heading.setFontScale(2);
+        // Load the background image
+        Texture backgroundTexture = new Texture(Gdx.files.internal("background.jpg"));
+        backgroundImage = new Image(backgroundTexture);
+        backgroundImage.getColor().a = 0f;
+        stage.addActor(backgroundImage);
 
         // Set up the table layout
-        table.add(heading).colspan(2); // Center the heading across two columns
-        table.row().padBottom(60);
+        table = new Table(skin);
 
-        // Add buttons to the table
-        table.add(buttonLoad).left(); // Load Game button at the top left
-        table.add(profile).right(); // Profile button at the top right
-        table.row().padBottom(20);
-        table.add(buttonPlay).colspan(2).center(); // Center Play button
+        table.setFillParent(true);
+
+        // Create the heading
+        heading = new Label("Angry Bird !!!", skin, "title1");
+        heading.setFontScale(2);
+
+        // Add heading and buttons to the table
+        table.add(heading).colspan(2).padBottom(10).center();
         table.row();
-        table.add(buttonExit).colspan(2).center(); // Center Exit button
+        table.add(playButton).colspan(2).center().padBottom(10); // Center Play button
+        table.row();
+        table.add(loadButton).colspan(2).padBottom(20).center();    // Load Game button on the left
+        table.row();
+        table.add(exitButton).colspan(2).center(); // Center Exit button
 
+        profileButton.setPosition(
+            Gdx.graphics.getWidth() - 100, // 20 pixels from the right edge
+            Gdx.graphics.getHeight()  - 100 // 20 pixels from the top edge
+        );
+        stage.addActor(profileButton);
         stage.addActor(table);
 
+        // Set up input processor
         Gdx.input.setInputProcessor(stage);
+
+        // Initialize tween manager and animations
         tweenManager = new TweenManager();
         Tween.registerAccessor(Actor.class, new ActorAccessor());
 
-        // Animate the heading's color
+        // Animate heading color
         Timeline.createSequence().beginSequence()
             .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 0, 1))
             .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 1, 0))
@@ -123,26 +139,50 @@ public class MainMenu implements Screen {
             .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 0))
             .end().repeat(Tween.INFINITY, .5f).start(tweenManager);
 
-        // Animate fade-in for buttons
+        // Animate fade-in for buttons and background
         Timeline.createSequence().beginSequence()
-            .push(Tween.set(buttonPlay, ActorAccessor.ALPHA).target(0))
-            .push(Tween.set(buttonLoad, ActorAccessor.ALPHA).target(0))
-            .push(Tween.set(profile, ActorAccessor.ALPHA).target(0))
-            .push(Tween.set(buttonExit, ActorAccessor.ALPHA).target(0))
+            .push(Tween.set(playButton, ActorAccessor.ALPHA).target(0))
+            .push(Tween.set(loadButton, ActorAccessor.ALPHA).target(0))
+            .push(Tween.set(profileButton, ActorAccessor.ALPHA).target(0))
+            .push(Tween.set(exitButton, ActorAccessor.ALPHA).target(0))
             .push(Tween.from(heading, ActorAccessor.ALPHA, 0.25f).target(0))
-            .push(Tween.to(buttonPlay, ActorAccessor.ALPHA, 0.25f).target(1))
-            .push(Tween.to(buttonLoad, ActorAccessor.ALPHA, 0.25f).target(1))
-            .push(Tween.to(profile, ActorAccessor.ALPHA, 0.25f).target(1))
-            .push(Tween.to(buttonExit, ActorAccessor.ALPHA, 0.25f).target(1))
+            .push(Tween.to(playButton, ActorAccessor.ALPHA, 0.25f).target(1))
+            .push(Tween.to(loadButton, ActorAccessor.ALPHA, 0.25f).target(1))
+            .push(Tween.to(profileButton, ActorAccessor.ALPHA, 0.25f).target(1))
+            .push(Tween.to(exitButton, ActorAccessor.ALPHA, 0.25f).target(1))
             .end().start(tweenManager);
 
-        // Animate fade-in for the background image after a 0.5-second delay
+        // Background image fade-in
         Tween.to(backgroundImage, ActorAccessor.ALPHA, 1f)
-            .target(1) // Fully visible
+            .target(1)
             .delay(0.1f)
             .start(tweenManager);
+
+        // Add hover effects
+        addHoverEffect(buttonImage1, playButton);
+        addHoverEffect(buttonImage2, exitButton);
+        addHoverEffect(buttonImage3, loadButton);
+        addHoverEffect(buttonImage4, profileButton);
     }
 
+    private ImageTextButton createImageTextButton(Texture texture, float width, float height) {
+        ImageTextButton button = new ImageTextButton("", skin);
+        Image buttonImage = new Image(texture);
+        buttonImage.setScaling(Scaling.fill);
+        button.add(buttonImage).size(width, height).expand().fill();
+        if (texture == playTexture) {
+            buttonImage1 = buttonImage;
+        } else if (texture == exitTexture) {
+            buttonImage2 = buttonImage;
+        } else if (texture == loadTexture) {
+            buttonImage3 = buttonImage;
+        } else if (texture == profileTexture) {
+            buttonImage4 = buttonImage;
+        }
+
+        return button;
+
+    }
 
     @Override
     public void render(float delta) {
@@ -161,22 +201,46 @@ public class MainMenu implements Screen {
         backgroundImage.setSize(width, height);
     }
 
-    @Override
-    public void pause() {
-    }
+    private void addHoverEffect(final Image image, final ImageTextButton button) {
+        button.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true; // return true to handle the event
+            }
 
-    @Override
-    public void resume() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Scale up the image on hover
+                image.setScale(1.1f);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                // Scale down the image when not hovered
+                image.setScale(1f);
+            }
+        });
     }
 
     @Override
     public void hide() {
+        // Dispose of resources
+        stage.dispose();
+        playTexture.dispose();
+        exitTexture.dispose();
+        loadTexture.dispose();
+        profileTexture.dispose();
     }
 
     @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+
+    @Override
     public void dispose() {
-        skin.dispose();
-        atlas.dispose();
         stage.dispose();
+        skin.dispose();
     }
 }
