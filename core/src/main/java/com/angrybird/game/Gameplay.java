@@ -88,17 +88,11 @@ public class Gameplay implements Screen {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new SettingsScreen(game, Gameplay.this)); // Your desired action
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new Pause(game, Gameplay.this)); // Your desired action
             }
         });
         addHoverEffect(buttonImage2, settingsButton);
         stage.addActor(settingsButton);
-
-
-//        backButton = new ImageTextButton("", skin);
-//        Image backImage = new Image(backTexture);
-//        backImage.setScaling(Scaling.fill); // Ensure it scales correctly
-//        backButton.add(backImage).size(60, 60).expand().fill(); // Adjust size as needed
 
 // Set the position and size of the settings button
 //        backButton.setSize(60, 60);
@@ -128,20 +122,7 @@ public class Gameplay implements Screen {
         };
 
 
-//        settingsButton.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                setPaused(true);
-//                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingsScreen(game, Gameplay.this));
-//            }
-//        });
 
-//        backButton.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                game.setScreen(previousScreen);
-//            }
-//        });
 
         addBlocksToStage();
         createBirdsAndCatapultTable();
@@ -161,6 +142,18 @@ public class Gameplay implements Screen {
 
 // Position win button
         winButton.setPosition(screenWidth / 2f - buttonWidth - buttonSpacing / 2, buttonHeight + 10);
+        winButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+            	((Game)Gdx.app.getApplicationListener()).setScreen(new WinScreen(game, Gameplay.this));
+            }
+        });
+        
+       
+            
+        addHoverEffect(buttonImage2, settingsButton);
+        stage.addActor(settingsButton);
+        
 // Position lose button
         loseButton.setPosition(screenWidth / 2f + buttonSpacing / 2, buttonHeight + 10);
 
@@ -168,20 +161,6 @@ public class Gameplay implements Screen {
         stage.addActor(winButton);
         stage.addActor(loseButton);
 
-// Define click listeners to navigate to WinScreen and LoseScreen
-        winButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new WinScreen(game)); // Navigate to WinScreen
-            }
-        });
-
-        loseButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new LoseScreen(game)); // Navigate to LoseScreen
-            }
-        });
 
 
 

@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class SettingsScreen implements Screen {
+public class Pause implements Screen {
     private Stage stage;
     private Skin skin;
     private Game game;
@@ -20,7 +20,7 @@ public class SettingsScreen implements Screen {
     private Image backgroundImage;
     private Table table; // Table to arrange buttons and background
 
-    public SettingsScreen(Game game, Gameplay gameplayScreen) {
+    public Pause(Game game, Gameplay gameplayScreen) {
         this.game = game;
         this.gameplayScreen = gameplayScreen; // Store reference to the Gameplay screen
     }
