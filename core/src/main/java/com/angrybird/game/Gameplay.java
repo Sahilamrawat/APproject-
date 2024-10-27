@@ -130,7 +130,7 @@ public class Gameplay implements Screen {
         winButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen(game, null,new MainMenu()));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen(game, null,new MainMenu(),Gameplay.this));
             }
         });
 
@@ -144,7 +144,7 @@ public class Gameplay implements Screen {
         loseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoseScreen(game, null,new MainMenu()));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoseScreen(game, null,new MainMenu(),Gameplay.this));
             }
         });
 // Add buttons to the stage

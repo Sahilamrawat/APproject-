@@ -23,6 +23,7 @@ public class WinScreen implements Screen {
     private Game game;
     private Screen nextLevelScreen;
     private Screen mainMenuScreen;
+    private Gameplay gameplayScreen;
 
     // Labels for win information
     private Label winTitleLabel;
@@ -30,16 +31,17 @@ public class WinScreen implements Screen {
     private Label bonusLabel;
 
     private Table table;
-    private ImageTextButton nextButton, mainMenuButton;
-    private Texture nextTexture, mainMenuTexture,birdTexture;
+    private ImageTextButton nextButton, mainMenuButton,restartButton;
+    private Texture nextTexture, mainMenuTexture,restartTexture;
 
-    private Image buttonImage1, buttonImage2;
+    private Image buttonImage1, buttonImage2,buttonImage3;
     private Image overlayImage,birdImage;
 
-    public WinScreen(Game game, Screen nextLevelScreen, Screen mainMenuScreen) {
+    public WinScreen(Game game, Screen nextLevelScreen, Screen mainMenuScreen,Gameplay gameplayScreen) {
         this.game = game;
         this.nextLevelScreen = nextLevelScreen;
         this.mainMenuScreen = mainMenuScreen;
+        this.gameplayScreen = gameplayScreen;
     }
 
 
@@ -57,6 +59,7 @@ public class WinScreen implements Screen {
 
         nextTexture = new Texture(Gdx.files.internal("next.png"));
         mainMenuTexture = new Texture(Gdx.files.internal("mainmenu.png"));
+        restartTexture = new Texture(Gdx.files.internal("restartt.png"));
 
         // Create a semi-transparent black Pixmap for the center overlay
         backgroundImage = new Image(new Texture(Gdx.files.internal("gameplayBackground.jpg")));
@@ -83,6 +86,7 @@ public class WinScreen implements Screen {
         nextButton = createImageTextButton(nextTexture, 80, 80);
         nextButton.setDisabled(true);
         mainMenuButton = createImageTextButton(mainMenuTexture, 80, 80);
+        restartButton = createImageTextButton(restartTexture, 80, 80);
 
         winTitleLabel = new Label("YOU WON ! ! !", skin, "title1");
         scoreLabel = new Label("Score: 1200", skin, "button");
@@ -109,13 +113,23 @@ public class WinScreen implements Screen {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(mainMenuScreen);
             }
         });
+        restartButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameplayScreen.restartGame(); // Call the restart method
+                gameplayScreen.setPaused(false); // Resume gameplay after restart
+                ((Game)Gdx.app.getApplicationListener()).setScreen(gameplayScreen); // Go back to gameplay
+            }
+        });
 
         table.add(nextButton).padTop(5).row();
         table.add(mainMenuButton).padTop(10).row();
+        table.add(restartButton).padTop(5).row();
         stage.addActor(table);
 
         addHoverEffect(buttonImage1, nextButton);
         addHoverEffect(buttonImage2, mainMenuButton);
+        addHoverEffect(buttonImage3, restartButton);
     }
 
 
@@ -149,6 +163,8 @@ public class WinScreen implements Screen {
             buttonImage1 = buttonImage;
         } else if (texture == mainMenuTexture) {
             buttonImage2 = buttonImage;
+        }else if (texture == restartTexture) {
+            buttonImage3 = buttonImage;
         }
 
         return button;

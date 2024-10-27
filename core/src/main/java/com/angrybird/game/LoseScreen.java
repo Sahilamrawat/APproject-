@@ -23,19 +23,21 @@ public class LoseScreen implements Screen {
     private Label scoreLabel;
     private Label bonusLabel;
     private Table table;
+    private Gameplay gameplayScreen;
     private Stage stage;
     private Image backgroundImage;
-    private ImageTextButton nextButton, mainMenuButton;
-    private Texture nextTexture, mainMenuTexture;
+    private ImageTextButton restartButton, mainMenuButton;
+    private Texture restartTexture, mainMenuTexture;
     private Game game;
     private Texture loseTexture;
     private Image overlayImage;
     private Image buttonImage1, buttonImage2;
 
-    public LoseScreen(Game game, Screen nextLevelScreen, Screen mainMenuScreen) {
+    public LoseScreen(Game game, Screen nextLevelScreen, Screen mainMenuScreen,Gameplay gameplayScreen) {
         this.game = game;
         this.nextLevelScreen = nextLevelScreen;
         this.mainMenuScreen = mainMenuScreen;
+        this.gameplayScreen = gameplayScreen;
     }
 
     public void show() {
@@ -49,6 +51,7 @@ public class LoseScreen implements Screen {
 
 
         mainMenuTexture = new Texture(Gdx.files.internal("mainmenu.png"));
+        restartTexture = new Texture(Gdx.files.internal("restartt.png"));
 
         // Create a semi-transparent black Pixmap for the center overlay
         backgroundImage = new Image(new Texture(Gdx.files.internal("gameplayBackground.jpg")));
@@ -74,6 +77,7 @@ public class LoseScreen implements Screen {
 
 
         mainMenuButton = createImageTextButton(mainMenuTexture, 80, 80);
+        restartButton = createImageTextButton(restartTexture, 80, 80);
 
         loseTitleLabel = new Label("YOU LOST ! ! !", skin, "title1");
 
@@ -93,10 +97,21 @@ public class LoseScreen implements Screen {
             }
         });
 
+        restartButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameplayScreen.restartGame(); // Call the restart method
+                gameplayScreen.setPaused(false); // Resume gameplay after restart
+                ((Game)Gdx.app.getApplicationListener()).setScreen(gameplayScreen); // Go back to gameplay
+            }
+        });
+
         table.add(mainMenuButton).padTop(10).row();
+        table.add(restartButton).padTop(5).row();
         stage.addActor(table);
 
         addHoverEffect(buttonImage2, mainMenuButton);
+        addHoverEffect(buttonImage1, restartButton);
     }
 
 
@@ -126,11 +141,12 @@ public class LoseScreen implements Screen {
         Image buttonImage = new Image(texture);
         buttonImage.setScaling(Scaling.fill);
         button.add(buttonImage).size(width, height).expand().fill();
-        if (texture == nextTexture) {
+        if (texture == restartTexture) {
             buttonImage1 = buttonImage;
         } else if (texture == mainMenuTexture) {
             buttonImage2 = buttonImage;
         }
+
 
         return button;
     }

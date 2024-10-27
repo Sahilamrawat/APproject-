@@ -99,7 +99,7 @@ public class MainMenu implements Screen {
         });
 
         // Load the background image
-        Texture backgroundTexture = new Texture(Gdx.files.internal("background.jpg"));
+        Texture backgroundTexture = new Texture(Gdx.files.internal("background2.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.getColor().a = 0f;
         stage.addActor(backgroundImage);
@@ -123,8 +123,8 @@ public class MainMenu implements Screen {
         table.add(exitButton).colspan(2).center(); // Center Exit button
 
         profileButton.setPosition(
-            Gdx.graphics.getWidth() - 200, // 20 pixels from the right edge
-            Gdx.graphics.getHeight()  - 130 // 20 pixels from the top edge
+            Gdx.graphics.getWidth() - 150, // 20 pixels from the right edge
+            Gdx.graphics.getHeight()  - 100 // 20 pixels from the top edge
         );
         stage.addActor(profileButton);
         stage.addActor(table);

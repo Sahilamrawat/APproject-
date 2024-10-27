@@ -55,6 +55,7 @@ public class Profile implements Screen {
         updateTexture = new Texture(Gdx.files.internal("update.png"));
         backTexture = new Texture(Gdx.files.internal("back.png"));
 
+
         // Load and set the background image
         backgroundImage = new Image(new Texture(Gdx.files.internal("background.jpg")));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -64,17 +65,17 @@ public class Profile implements Screen {
         // Initialize overlay image
         overlayImage = new Image(new Texture(Gdx.files.internal("profilebackground.png")));
 //        overlayImage.setColor(1, 1, 1, 0); // Initially invisible
-//        overlayImage.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2+100); // Set size 
+//        overlayImage.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2+100); // Set size
 //        overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2, (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
      // Setting the size with a reduced width
         float reducedWidth = Gdx.graphics.getWidth() / 6; // You can change 6 to another divisor for your desired width
         float height = Gdx.graphics.getHeight() / 2 + 100; // Keep height as desired
 
         overlayImage.setSize(reducedWidth, height); // Set the size with the new width
-        overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2, 
+        overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2,
                                  (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
 
-        
+
         stage.addActor(overlayImage); // Add overlay image
 
         // Create table for layout
@@ -85,6 +86,8 @@ public class Profile implements Screen {
         updateButton = createImageTextButton(updateTexture, 80, 80);
         // Exit button
         backButton = createImageTextButton(backTexture, 80, 80);
+
+
 
 
         playerNameLabel = new Label("Player Name: Mavrick", skin,"button");

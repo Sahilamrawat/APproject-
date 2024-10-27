@@ -22,13 +22,13 @@ public class LoadGame implements Screen {
     private Skin skin;
     private Table table;
     private ScrollPane scrollPane;
-    private ImageTextButton backButton;
-    private Texture backTexture;
+    private ImageTextButton backButton,LoadGame;
+    private Texture backTexture,LoadTexture;
     private Game game;
     private SpriteBatch batch;
     private Array<String> savedGames;
     private Gameplay gameplayScreen;
-    private Image buttonImage1;
+    private Image buttonImage1,buttonImage2;
 
     private Image backgroundImage;
 
@@ -48,6 +48,7 @@ public class LoadGame implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         backTexture = new Texture(Gdx.files.internal("back.png"));
+        LoadTexture = new Texture(Gdx.files.internal("loadGame.png"));
 
         // Load the background texture
         Texture backgroundTexture = new Texture(Gdx.files.internal("background1.jpeg"));
@@ -74,16 +75,17 @@ public class LoadGame implements Screen {
         Table gamesTable = new Table();
         for (int i = 0; i < savedGames.size; i++) {
             final String savedGame = savedGames.get(i);
-            TextButton loadButton = new TextButton(savedGame, skin);
-
-            loadButton.addListener(new ClickListener() {
+            LoadGame =createImageTextButton(LoadTexture,70,70);
+            addHoverEffect(buttonImage2, LoadGame);
+            LoadGame.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     loadGame(savedGame); // Load the selected game
+
                 }
             });
 
-            gamesTable.add(loadButton).width(300).padBottom(10);
+            gamesTable.add(LoadGame).width(300).padBottom(10);
             gamesTable.row();
         }
 
@@ -108,6 +110,7 @@ public class LoadGame implements Screen {
 
         table.add(backButton).padBottom(20);
         addHoverEffect(buttonImage1, backButton);
+
         stage.addActor(table);
     }
     private ImageTextButton createImageTextButton(Texture texture, float width, float height) {
@@ -117,6 +120,8 @@ public class LoadGame implements Screen {
         button.add(buttonImage).size(width, height).expand().fill();
         if (texture ==backTexture) {
             buttonImage1 = buttonImage;
+        }else if (texture ==LoadTexture) {
+            buttonImage2 = buttonImage;
         }
 
         return button;
