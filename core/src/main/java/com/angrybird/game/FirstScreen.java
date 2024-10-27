@@ -46,7 +46,7 @@ public class FirstScreen implements Screen {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
                 // Transition to the MainMenu after the animation finishes
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginSignupScreen());
             }
         }).start(tweenManager);
     }
@@ -64,7 +64,7 @@ public class FirstScreen implements Screen {
         batch.end();
     }
 
-    
+
     @Override
     public void resize(int width, int height) {
         // Set a smaller size for the splash image
@@ -83,7 +83,7 @@ public class FirstScreen implements Screen {
     }
 
 
-    
+
     @Override
     public void pause() {
         // Invoked when your application is paused.
