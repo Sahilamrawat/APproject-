@@ -57,23 +57,23 @@ public class Profile implements Screen {
 
 
         // Load and set the background image
-        backgroundImage = new Image(new Texture(Gdx.files.internal("background.jpg")));
+        backgroundImage = new Image(new Texture(Gdx.files.internal("background2.jpg")));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundImage.setPosition(0, 0); // Position at the bottom-left corner
-        stage.addActor(backgroundImage);  
+        stage.addActor(backgroundImage);
 
         // Initialize overlay image
         overlayImage = new Image(new Texture(Gdx.files.internal("profilebackground.png")));
-//       
-        float reducedWidth = Gdx.graphics.getWidth() / 6; 
-        float height = Gdx.graphics.getHeight() / 2 + 100; 
+//
+        float reducedWidth = Gdx.graphics.getWidth() / 6;
+        float height = Gdx.graphics.getHeight() / 2 + 100;
 
         overlayImage.setSize(reducedWidth, height); // Set the size with the new width
         overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2,
                                  (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
 
 
-        stage.addActor(overlayImage); 
+        stage.addActor(overlayImage);
 
         table = new Table();
         table.setFillParent(true);
