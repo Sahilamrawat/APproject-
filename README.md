@@ -90,8 +90,7 @@ Before running the Angry Bird project, ensure you have the following installed:
 
 1. Stack Overflow
 2. libGDX Tutorial
-3. Angry Birds Wikipedia (for images)
-4. GeeksforGeeks
+
 *********************************************************************************************************************************************************************************************************************
 ## Team Members
 
