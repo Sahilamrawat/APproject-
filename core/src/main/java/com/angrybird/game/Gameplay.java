@@ -145,7 +145,7 @@ public class Gameplay implements Screen {
         winButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            	((Game)Gdx.app.getApplicationListener()).setScreen(new WinScreen(game, Gameplay.this));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen(game, null,new MainMenu()));
             }
         });
         
