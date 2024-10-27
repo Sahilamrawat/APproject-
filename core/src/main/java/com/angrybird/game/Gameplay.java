@@ -23,7 +23,7 @@ public class Gameplay implements Screen {
     private Game game;
     private Image backgroundImage;
     private Label pointsLabel;
-    private int points = 10;
+    private int points = 1200;
     private Screen previousScreen;
     private ImageTextButton settingsButton;
     private ImageTextButton backButton;
