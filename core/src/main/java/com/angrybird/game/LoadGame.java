@@ -101,8 +101,8 @@ public class LoadGame implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameplayScreen.setPaused(false); // Resume gameplay
-                ((Game)Gdx.app.getApplicationListener()).setScreen(gameplayScreen); // Go back to gameplay
+//                gameplayScreen.setPaused(false); // Resume gameplay
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu()); // Go back to gameplay
             }
         });
 

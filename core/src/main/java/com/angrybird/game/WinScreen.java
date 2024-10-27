@@ -31,10 +31,10 @@ public class WinScreen implements Screen {
 
     private Table table;
     private ImageTextButton nextButton, mainMenuButton;
-    private Texture nextTexture, mainMenuTexture;
+    private Texture nextTexture, mainMenuTexture,birdTexture;
 
     private Image buttonImage1, buttonImage2;
-    private Image overlayImage;
+    private Image overlayImage,birdImage;
 
     public WinScreen(Game game, Screen nextLevelScreen, Screen mainMenuScreen) {
         this.game = game;
@@ -43,7 +43,7 @@ public class WinScreen implements Screen {
     }
 
 
-    
+
 
     @Override
     public void show() {
@@ -59,20 +59,21 @@ public class WinScreen implements Screen {
         mainMenuTexture = new Texture(Gdx.files.internal("mainmenu.png"));
 
         // Create a semi-transparent black Pixmap for the center overlay
-        int overlayWidth = Gdx.graphics.getWidth() / 2; // Half of the screen width
-        int overlayHeight = Gdx.graphics.getHeight();   // Full screen height
-        Pixmap pixmap = new Pixmap(overlayWidth, overlayHeight, Pixmap.Format.RGBA8888);
-        pixmap.setColor(0, 0, 0, 0.7f); // Set color to black with 70% opacity
-        pixmap.fill(); // Fill the Pixmap with the semi-transparent color
+        backgroundImage = new Image(new Texture(Gdx.files.internal("gameplayBackground.jpg")));
+        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        backgroundImage.setPosition(0, 0); // Position at the bottom-left corner
+        stage.addActor(backgroundImage);  // Add background image
 
-        // Convert Pixmap to Texture
-        Texture overlayTexture = new Texture(pixmap);
-        pixmap.dispose(); // Dispose of Pixmap to free up memory
+        overlayImage = new Image(new Texture(Gdx.files.internal("winBackground.png")));
 
-        // Create an image using the generated semi-transparent texture
-        overlayImage = new Image(overlayTexture);
-        overlayImage.setSize(overlayWidth, overlayHeight); // Set size to half the screen width
-        overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2, 0); // Center it horizontally
+        float reducedWidth = Gdx.graphics.getWidth() / 2-70; // You can change 6 to another divisor for your desired width
+        float height = Gdx.graphics.getHeight() / 2 + 100; // Keep height as desired
+
+        overlayImage.setSize(reducedWidth, height); // Set the size with the new width
+        overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2,
+            (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
+
+
         stage.addActor(overlayImage); // Add overlay image
 
         // Create table for layout
@@ -80,16 +81,18 @@ public class WinScreen implements Screen {
         table.setFillParent(true);
 
         nextButton = createImageTextButton(nextTexture, 80, 80);
+        nextButton.setDisabled(true);
         mainMenuButton = createImageTextButton(mainMenuTexture, 80, 80);
 
-        winTitleLabel = new Label("Congratulations!", skin, "title1");
+        winTitleLabel = new Label("YOU WON ! ! !", skin, "title1");
         scoreLabel = new Label("Score: 1200", skin, "button");
         bonusLabel = new Label("Bonus: 200", skin, "button");
 
         // Add heading label and information to the table
+
         table.add(winTitleLabel).padBottom(30).row();
         table.add(scoreLabel).padBottom(10).row();
-        table.add(bonusLabel).padBottom(10).row();
+        table.add(bonusLabel).padBottom(5).row();
 
         nextButton.addListener(new ClickListener() {
             @Override
@@ -107,7 +110,7 @@ public class WinScreen implements Screen {
             }
         });
 
-        table.add(nextButton).padTop(20).row();
+        table.add(nextButton).padTop(5).row();
         table.add(mainMenuButton).padTop(10).row();
         stage.addActor(table);
 
@@ -115,7 +118,7 @@ public class WinScreen implements Screen {
         addHoverEffect(buttonImage2, mainMenuButton);
     }
 
-    
+
     private void addHoverEffect(final Image image, final ImageTextButton button) {
         button.addListener(new InputListener() {
             @Override
@@ -165,7 +168,9 @@ public class WinScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
- 
+        overlayImage.setSize(width / 2-200, height / 2+80);
+        overlayImage.setPosition((width - overlayImage.getWidth()) / 2, (height - overlayImage.getHeight()) / 2);
+
     }
 
     @Override

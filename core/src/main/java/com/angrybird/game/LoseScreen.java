@@ -5,29 +5,134 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class LoseScreen implements Screen {
+    private Screen nextLevelScreen;
+    private Screen mainMenuScreen;
+    private Skin skin;
+    private Label loseTitleLabel;
+    private Label scoreLabel;
+    private Label bonusLabel;
+    private Table table;
     private Stage stage;
+    private Image backgroundImage;
+    private ImageTextButton nextButton, mainMenuButton;
+    private Texture nextTexture, mainMenuTexture;
     private Game game;
     private Texture loseTexture;
+    private Image overlayImage;
+    private Image buttonImage1, buttonImage2;
 
-    public LoseScreen(Game game) {
+    public LoseScreen(Game game, Screen nextLevelScreen, Screen mainMenuScreen) {
         this.game = game;
+        this.nextLevelScreen = nextLevelScreen;
+        this.mainMenuScreen = mainMenuScreen;
     }
 
-    @Override
     public void show() {
+        // Set up the stage and input processor
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // Load the lose screen image
-        loseTexture = new Texture(Gdx.files.internal("lose.jpg"));
-        Image loseImage = new Image(loseTexture);
-        loseImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Set to screen size
-        stage.addActor(loseImage);
+        // Load skin and atlas
+        TextureAtlas atlas = new TextureAtlas("ui/atlas.pack");
+        skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
+
+
+        mainMenuTexture = new Texture(Gdx.files.internal("mainmenu.png"));
+
+        // Create a semi-transparent black Pixmap for the center overlay
+        backgroundImage = new Image(new Texture(Gdx.files.internal("gameplayBackground.jpg")));
+        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        backgroundImage.setPosition(0, 0); // Position at the bottom-left corner
+        stage.addActor(backgroundImage);  // Add background image
+
+        overlayImage = new Image(new Texture(Gdx.files.internal("loseBackground.png")));
+
+        float reducedWidth = Gdx.graphics.getWidth() / 2-70; // You can change 6 to another divisor for your desired width
+        float height = Gdx.graphics.getHeight() / 2 + 100; // Keep height as desired
+
+        overlayImage.setSize(reducedWidth, height); // Set the size with the new width
+        overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2,
+            (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
+
+
+        stage.addActor(overlayImage); // Add overlay image
+
+        // Create table for layout
+        table = new Table();
+        table.setFillParent(true);
+
+
+        mainMenuButton = createImageTextButton(mainMenuTexture, 80, 80);
+
+        loseTitleLabel = new Label("YOU LOST ! ! !", skin, "title1");
+
+        // Add heading label and information to the table
+
+        table.add(loseTitleLabel).padBottom(30).row();
+        table.add(scoreLabel).padBottom(10).row();
+        table.add(bonusLabel).padBottom(5).row();
+
+
+
+        mainMenuButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Transition to main menu screen
+                ((Game) Gdx.app.getApplicationListener()).setScreen(mainMenuScreen);
+            }
+        });
+
+        table.add(mainMenuButton).padTop(10).row();
+        stage.addActor(table);
+
+        addHoverEffect(buttonImage2, mainMenuButton);
+    }
+
+
+    private void addHoverEffect(final Image image, final ImageTextButton button) {
+        button.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true; // return true to handle the event
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                // Scale up the image on hover
+                image.setScale(1.1f);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                // Scale down the image when not hovered
+                image.setScale(1f);
+            }
+        });
+    }
+
+    private ImageTextButton createImageTextButton(Texture texture, float width, float height) {
+        ImageTextButton button = new ImageTextButton("", skin);
+        Image buttonImage = new Image(texture);
+        buttonImage.setScaling(Scaling.fill);
+        button.add(buttonImage).size(width, height).expand().fill();
+        if (texture == nextTexture) {
+            buttonImage1 = buttonImage;
+        } else if (texture == mainMenuTexture) {
+            buttonImage2 = buttonImage;
+        }
+
+        return button;
     }
 
     @Override
@@ -42,6 +147,9 @@ public class LoseScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        overlayImage.setSize(width / 2-200, height / 2+80);
+        overlayImage.setPosition((width - overlayImage.getWidth()) / 2, (height - overlayImage.getHeight()) / 2);
+
     }
 
     @Override

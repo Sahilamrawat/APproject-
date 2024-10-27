@@ -67,7 +67,7 @@ public class Levels implements Screen {
         table.setFillParent(true);
 
         // Add heading
-        Label heading = new Label("SELECT LEVEL", skin,"title");
+        Label heading = new Label("SELECT LEVEL", skin,"title1");
         heading.setFontScale(2);
         table.add(heading).padBottom(30);
         table.row();

@@ -57,7 +57,7 @@ public class Gameplay implements Screen {
 
         settingTexture = new Texture(Gdx.files.internal("pause.png"));
         backTexture = new Texture(Gdx.files.internal("back.png"));
-        settingsButton=createImageTextButton(settingTexture,80,80);
+        settingsButton=createImageTextButton(settingTexture,100,100);
         backButton=createImageTextButton(backTexture,50,50);
         Texture backgroundTexture = new Texture(Gdx.files.internal("gameplayBackground.jpg"));
         backgroundImage = new Image(backgroundTexture);
@@ -65,26 +65,12 @@ public class Gameplay implements Screen {
         stage.addActor(backgroundImage);
 
         pointsLabel = new Label("Points: " + points, skin, "title");
-        pointsLabel.setPosition(20, Gdx.graphics.getHeight() - 50);
+        pointsLabel.setPosition(20, Gdx.graphics.getHeight() - 30);
         stage.addActor(pointsLabel);
 
-        // Setup Settings Button
 
+        updateSettingsButtonPosition();
 
-
-//        settingsButton = new ImageTextButton("", skin);
-
-// Create the settings image and set its size
-//        Image settingsImage = new Image(settingTexture);
-//        settingsImage.setScaling(Scaling.fill); // Ensure it scales correctly
-//        settingsButton.add(settingsImage).size(60, 60).expand().fill(); // Adjust size as needed
-
-// Set the position and size of the settings button
-//        settingsButton.setSize(60, 60);
-        updateSettingsButtonPosition(); // Position it as required
-
-
-// Add ClickListener to act like a button without showing text
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -94,11 +80,9 @@ public class Gameplay implements Screen {
         addHoverEffect(buttonImage2, settingsButton);
         stage.addActor(settingsButton);
 
-// Set the position and size of the settings button
-//        backButton.setSize(60, 60);
-        updateBackButtonPosition(); // Position it as required
 
-        backButton.setSize(70, 70); // Set size as needed
+        updateBackButtonPosition();
+        backButton.setSize(70, 70);
 
 // Position the button
         backButton.setPosition(50, 50);
@@ -129,6 +113,7 @@ public class Gameplay implements Screen {
         TextButton winButton = new TextButton("Win", skin);
         TextButton loseButton = new TextButton("Lose", skin);
 
+
 // Position both buttons at the bottom center
         float buttonWidth = 100;
         float buttonHeight = 50;
@@ -148,15 +133,20 @@ public class Gameplay implements Screen {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen(game, null,new MainMenu()));
             }
         });
-        
-       
-            
+
+
+
         addHoverEffect(buttonImage2, settingsButton);
         stage.addActor(settingsButton);
-        
+
 // Position lose button
         loseButton.setPosition(screenWidth / 2f + buttonSpacing / 2, buttonHeight + 10);
-
+        loseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoseScreen(game, null,new MainMenu()));
+            }
+        });
 // Add buttons to the stage
         stage.addActor(winButton);
         stage.addActor(loseButton);
@@ -245,12 +235,15 @@ public class Gameplay implements Screen {
 
         // Create a main table for blocks
         Table blockTable = new Table();
+
+
         blockTable.setName("blockTable");
         blockTable.setSize(200, 200);
         blockTable.setPosition(Gdx.graphics.getWidth() - blockTable.getWidth() - 90, Gdx.graphics.getHeight() * 0.15f - blockTable.getHeight() * 0.15f);
 
 
         Table zeroFloor=new Table();
+
         zeroFloor.setSize(200,50);
         Pig mediumPig = new MediumPig();
         zeroFloor.add(mediumPig).size(50,50);
@@ -326,7 +319,7 @@ public class Gameplay implements Screen {
 
     private void updateSettingsButtonPosition() {
         settingsButton.setPosition(Gdx.graphics.getWidth() - settingsButton.getWidth() - 70,
-            Gdx.graphics.getHeight() - settingsButton.getHeight() - 70);
+            Gdx.graphics.getHeight() - settingsButton.getHeight() - 50);
     }
 
 
@@ -334,7 +327,7 @@ public class Gameplay implements Screen {
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
         backgroundImage.setSize(width, height);
-        pointsLabel.setPosition(20, height - 50);
+        pointsLabel.setPosition(20, height - 100);
         updateSettingsButtonPosition();
 
 
@@ -367,7 +360,7 @@ public class Gameplay implements Screen {
     private void updateBlockTablePosition(int width, int height) {
         Actor blockTable = stage.getRoot().findActor("blockTable");
         if (blockTable != null) {
-            blockTable.setPosition(width - blockTable.getWidth() - 130, height * 0.21f - blockTable.getHeight() * 0.21f);
+            blockTable.setPosition(width - blockTable.getWidth() - 130, height * 0.20f - blockTable.getHeight() * 0.20f);
         }
     }
 
