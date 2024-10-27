@@ -74,7 +74,7 @@ public class Gameplay implements Screen {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new Pause(game, Gameplay.this)); // Your desired action
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new Pause(game, Gameplay.this)); 
             }
         });
         addHoverEffect(buttonImage2, settingsButton);
@@ -281,9 +281,9 @@ public class Gameplay implements Screen {
         stoneTable.setSize(100, 40);
         Block stoneBlock = new Block(stoneMaterial, 60, 40);
         stoneTable.add(stoneBlock).center().size(60, 40);
-        blockTable.add(stoneTable).expandX().bottom(); // Center the stone table in the blockTable
-        blockTable.row(); // Move to a new row for the wood blocks
-
+        blockTable.add(stoneTable).expandX().bottom(); 
+        blockTable.row(); 
+        
         // Create two wood tables for two columns of wood blocks
         Table Wood = new Table();
         Wood.setSize(200, 100);
@@ -292,7 +292,7 @@ public class Gameplay implements Screen {
         woodTable1.setSize(50, 100);
         woodTable2.setSize(50, 100);
 
-        // Add wood blocks in a column format within woodTable1 and woodTable2
+   
         for (int i = 0; i < 3; i++) {
             Block woodBlock1 = new Block(woodMaterial, 30, 30);
             woodTable1.add(woodBlock1).size(30, 30);
@@ -331,7 +331,7 @@ public class Gameplay implements Screen {
         updateSettingsButtonPosition();
 
 
-        // Example bird positions
+  
         // Update the birdsAndCatapultTable position
         updateBirdsAndCatapultTablePosition(width, height);
 
@@ -372,9 +372,8 @@ public class Gameplay implements Screen {
 
         // If the game is paused, do not update gameplay logic
         if (isPaused) {
-            stage.act(); // Allow the stage to act (process input for the settings screen)
+            stage.act(); 
         } else {
-            // Normal rendering and update logic
             stage.act(delta); // Update the stage
         }
 
@@ -384,8 +383,7 @@ public class Gameplay implements Screen {
     public void restartGame() {
         points = 0; // Reset points
         pointsLabel.setText("Points: " + points); // Update label
-        // Any other logic to reset game state can be added here
-        System.out.println("Game Restarted"); // Log restart action
+        System.out.println("Game Restarted"); 
     }
 
 

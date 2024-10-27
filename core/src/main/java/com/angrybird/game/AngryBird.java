@@ -4,7 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+
 public class AngryBird extends Game {
     public static final String NAME="Angry Bird",VERSION="0.0.0.0.really Ea rly";
     @Override

@@ -14,7 +14,7 @@ public class Pig extends Image {
         this.defeated = false;
 
         setSize(width, height);
-        setScaling(Scaling.fill); // Ensure the texture fills the given size
+        setScaling(Scaling.fill); 
     }
 
     public float getHealth() {

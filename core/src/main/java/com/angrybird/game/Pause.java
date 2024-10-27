@@ -57,11 +57,8 @@ public class Pause implements Screen {
         menuButton = createImageTextButton(menuTexture, 80, 80);
 
         overlayImage = new Image(new Texture(Gdx.files.internal("profilebackground.png")));
-//        overlayImage.setColor(1, 1, 1, 0); // Initially invisible
-//        overlayImage.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2+100); // Set size
-//        overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2, (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
-        // Setting the size with a reduced width
-        float reducedWidth = 100; // You can change 6 to another divisor for your desired width
+//        
+        float reducedWidth = 100; 
         float height = 600; // Keep height as desired
 
         overlayImage.setSize(reducedWidth, height); // Set the size with the new width
@@ -193,10 +190,9 @@ public class Pause implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 0); // Keep transparent
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Render the underlying gameplay screen (as if it's paused and visible)
-        gameplayScreen.render(delta); // Render gameplay behind the overlay
+       
+        gameplayScreen.render(delta); 
 
-        // Draw the stage with the settings menu
         stage.act(delta);
         stage.draw();
     }

@@ -17,13 +17,11 @@ public class blackbird extends Actor implements Bird {
         this.initialWidth = initialWidth;
         this.initialHeight = initialHeight;
 
-        // Set size and bounds for the bird actor based on initial dimensions
         setSize(initialWidth, initialHeight);
 
         // Set initial position
-        setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.1f); // 10% from the left and bottom
+        setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.1f); 
 
-        // Add listener for touch or click interactions
         addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -52,7 +50,7 @@ public class blackbird extends Actor implements Bird {
 
     @Override
     public void resize(float screenWidth, float screenHeight) {
-        // Adjust position and size based on the new screen dimensions
+       
         setPosition(screenWidth * 0.1f, screenHeight * 0.1f); // Keep 10% from the left and bottom
 
         // Optionally scale the bird texture based on the screen size

@@ -31,21 +31,16 @@ public class FirstScreen implements Screen {
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 
-        // Load the background texture
-
-
         // Load the splash texture
         Texture splashTexture = new Texture("AngryBird.png");
         splash = new Sprite(splashTexture);
         splash.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Adjust splash size to screen
         splash.setAlpha(0); // Start with transparent splash image
 
-        // Set up the tween animation for the splash screen
         Tween.set(splash, SpriteAccessor.ALPHA).target(0).start(tweenManager);
         Tween.to(splash, SpriteAccessor.ALPHA, 2).target(1).repeatYoyo(1, 2).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                // Transition to the MainMenu after the animation finishes
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginSignupScreen());
             }
         }).start(tweenManager);
@@ -53,7 +48,6 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Draw your screen here. "delta" is the time since last render in seconds.
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tweenManager.update(delta);
@@ -67,18 +61,14 @@ public class FirstScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        // Set a smaller size for the splash image
-        float desiredWidth = 1280f;  // Set your desired width
-        float desiredHeight = 320f; // Set your desired height
-
-        // Adjust the size of the splash image
+        float desiredWidth = 1280f; 
+        float desiredHeight = 320f; 
         splash.setSize(desiredWidth, desiredHeight);
 
         // Calculate the center position based on the new size of the splash image
         float centerX = (width - splash.getWidth()) / 2;
         float centerY = (height - splash.getHeight()) / 2;
 
-        // Set the splash's position to the calculated center position
         splash.setPosition(centerX, centerY);
     }
 

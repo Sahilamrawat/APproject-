@@ -34,12 +34,11 @@ public class Levels implements Screen {
     private Image buttonImage1, buttonImage2,buttonImage3;
     public Levels(Game game) {
         this.game = game;
-        // Initialize the unlock state (Level 1 is unlocked, others are locked)
         levelUnlocked = new boolean[20];
         levelUnlocked[0] = true; // Unlock Level 1
 
         // Load the texture for Level 1
-        levelOneTexture = new Texture(Gdx.files.internal("l1_image.png")); // Ensure you have this image in your assets
+        levelOneTexture = new Texture(Gdx.files.internal("l1_image.png")); 
     }
 
     @Override
@@ -56,7 +55,7 @@ public class Levels implements Screen {
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
         // Load the locked icon texture
-        lockedIconTexture = new Texture(Gdx.files.internal("lock.png")); // Ensure you have this image in your assets
+        lockedIconTexture = new Texture(Gdx.files.internal("lock.png"));
         levelOneTexture=new Texture(Gdx.files.internal("l1_image.png"));
 
         // Add background image to the stage first so it appears behind other UI elements
@@ -75,7 +74,7 @@ public class Levels implements Screen {
         // Create a grid for level buttons
         Table levelsTable = new Table();
         int levelsPerRow = 4; // Number of levels per row
-        float buttonSize = 100; // Set a fixed size for buttons
+        float buttonSize = 100; 
 
         for (int i = 0; i < 4; i++) { // Iterate through 4 levels (for example)
             final int level = i + 1; // Level number (1 to 4)
@@ -207,6 +206,5 @@ public class Levels implements Screen {
         stage.dispose();
         skin.dispose();
         lockedIconTexture.dispose(); // Dispose of the locked icon texture
-        // backgroundImage.dispose(); // Dispose of the background texture
     }
 }

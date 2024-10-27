@@ -64,22 +64,20 @@ public class WinScreen implements Screen {
         // Create a semi-transparent black Pixmap for the center overlay
         backgroundImage = new Image(new Texture(Gdx.files.internal("gameplayBackground.jpg")));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundImage.setPosition(0, 0); // Position at the bottom-left corner
-        stage.addActor(backgroundImage);  // Add background image
+        backgroundImage.setPosition(0, 0); 
+        stage.addActor(backgroundImage);  
 
         overlayImage = new Image(new Texture(Gdx.files.internal("winBackground.png")));
 
-        float reducedWidth = Gdx.graphics.getWidth() / 2-70; // You can change 6 to another divisor for your desired width
-        float height = Gdx.graphics.getHeight() / 2 + 100; // Keep height as desired
+        float reducedWidth = Gdx.graphics.getWidth() / 2-70;
+        float height = Gdx.graphics.getHeight() / 2 + 100; 
 
         overlayImage.setSize(reducedWidth, height); // Set the size with the new width
         overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2,
             (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
 
 
-        stage.addActor(overlayImage); // Add overlay image
-
-        // Create table for layout
+        stage.addActor(overlayImage); 
         table = new Table();
         table.setFillParent(true);
 
@@ -92,8 +90,7 @@ public class WinScreen implements Screen {
         scoreLabel = new Label("Score: 1200", skin, "button");
         bonusLabel = new Label("Bonus: 200", skin, "button");
 
-        // Add heading label and information to the table
-
+       
         table.add(winTitleLabel).padBottom(30).row();
         table.add(scoreLabel).padBottom(10).row();
         table.add(bonusLabel).padBottom(5).row();
@@ -116,7 +113,7 @@ public class WinScreen implements Screen {
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameplayScreen.restartGame(); // Call the restart method
+                gameplayScreen.restartGame(); 
                 gameplayScreen.setPaused(false); // Resume gameplay after restart
                 ((Game)Gdx.app.getApplicationListener()).setScreen(gameplayScreen); // Go back to gameplay
             }
@@ -137,12 +134,11 @@ public class WinScreen implements Screen {
         button.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true; // return true to handle the event
+                return true; 
             }
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Scale up the image on hover
                 image.setScale(1.1f);
             }
 

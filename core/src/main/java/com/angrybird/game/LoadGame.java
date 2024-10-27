@@ -152,10 +152,7 @@ public class LoadGame implements Screen {
     private void loadGame(String gameName) {
         // Logic to load the game, for example:
         System.out.println("Loading " + gameName + "...");
-
-        // You would typically deserialize game state here
-        // Then switch to the Gameplay screen
-        ((Game) Gdx.app.getApplicationListener()).setScreen(new Gameplay(game, LoadGame.this)); // Load the gameplay screen
+        ((Game) Gdx.app.getApplicationListener()).setScreen(new Gameplay(game, LoadGame.this)); 
     }
 
     @Override
@@ -172,7 +169,7 @@ public class LoadGame implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        // Resize background to fit the new screen size
+        
         backgroundImage.setSize(width, height);
     }
 

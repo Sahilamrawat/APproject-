@@ -16,12 +16,8 @@ public class redbird extends Actor implements Bird {
         texture = new Texture(Gdx.files.internal(texturePath));
         this.initialWidth = initialWidth;
         this.initialHeight = initialHeight;
-
-        // Set initial size and position for the bird actor
         setSize(initialWidth, initialHeight);
         setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.1f);
-
-        // Add listener for touch or click interactions
         addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -44,24 +40,19 @@ public class redbird extends Actor implements Bird {
 
     @Override
     public void performAction() {
-        System.out.println("RedBird is launching!"); // Updated action message
-        // Add specific action logic here
+        System.out.println("RedBird is launching!"); 
     }
 
     @Override
     public void dispose() {
-        // Dispose of the texture to free memory
         if (texture != null) {
             texture.dispose();
         }
     }
 
-    // Method to resize the bird based on screen size
+ 
     public void resize(float screenWidth, float screenHeight) {
-        // Adjust position and size based on the new screen dimensions
-        setPosition(screenWidth * 0.1f, screenHeight * 0.1f); // Keep 10% from the left and bottom
-
-        // Optionally scale the bird texture based on the screen size
+        setPosition(screenWidth * 0.1f, screenHeight * 0.1f); 
         float scale = Math.min(screenWidth / Gdx.graphics.getWidth(), screenHeight / Gdx.graphics.getHeight());
         setSize(initialWidth * scale, initialHeight * scale);
     }

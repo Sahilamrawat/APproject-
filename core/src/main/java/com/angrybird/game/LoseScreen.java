@@ -56,13 +56,13 @@ public class LoseScreen implements Screen {
         // Create a semi-transparent black Pixmap for the center overlay
         backgroundImage = new Image(new Texture(Gdx.files.internal("gameplayBackground.jpg")));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundImage.setPosition(0, 0); // Position at the bottom-left corner
-        stage.addActor(backgroundImage);  // Add background image
+        backgroundImage.setPosition(0, 0);
+        stage.addActor(backgroundImage); 
 
         overlayImage = new Image(new Texture(Gdx.files.internal("loseBackground.png")));
 
-        float reducedWidth = Gdx.graphics.getWidth() / 2-70; // You can change 6 to another divisor for your desired width
-        float height = Gdx.graphics.getHeight() / 2 + 100; // Keep height as desired
+        float reducedWidth = Gdx.graphics.getWidth() / 2-70; 
+        float height = Gdx.graphics.getHeight() / 2 + 100; 
 
         overlayImage.setSize(reducedWidth, height); // Set the size with the new width
         overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2,

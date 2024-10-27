@@ -109,13 +109,6 @@ public class MainMenu implements Screen {
 
         table.setFillParent(true);
 
-        // Create the heading
-//        heading = new Label("Angry Bird !!!", skin, "title1");
-//        heading.setFontScale(2);
-
-        // Add heading and buttons to the table
-//        table.add(heading).colspan(2).padBottom(10).center();
-//        table.row();
         table.add(playButton).colspan(2).center().padBottom(10); // Center Play button
         table.row();
         table.add(loadButton).colspan(2).padBottom(20).center();    // Load Game button on the left
@@ -136,17 +129,7 @@ public class MainMenu implements Screen {
         tweenManager = new TweenManager();
         Tween.registerAccessor(Actor.class, new ActorAccessor());
 //
-//        // Animate heading color
-//        Timeline.createSequence().beginSequence()
-//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 0, 1))
-//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 1, 0))
-//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 0, 0))
-//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 0))
-//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 0, 1))
-//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 1))
-//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 1, 1))
-//            .push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 0))
-//            .end().repeat(Tween.INFINITY, .5f).start(tweenManager);
+
 
         // Animate fade-in for buttons and background
         Timeline.createSequence().beginSequence()
@@ -226,7 +209,7 @@ public class MainMenu implements Screen {
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Scale down the image when not hovered
+                
                 image.setScale(1f);
             }
         });

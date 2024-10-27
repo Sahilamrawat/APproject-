@@ -60,25 +60,21 @@ public class Profile implements Screen {
         backgroundImage = new Image(new Texture(Gdx.files.internal("background.jpg")));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundImage.setPosition(0, 0); // Position at the bottom-left corner
-        stage.addActor(backgroundImage);  // Add background image
+        stage.addActor(backgroundImage);  
 
         // Initialize overlay image
         overlayImage = new Image(new Texture(Gdx.files.internal("profilebackground.png")));
-//        overlayImage.setColor(1, 1, 1, 0); // Initially invisible
-//        overlayImage.setSize(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2+100); // Set size
-//        overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2, (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
-     // Setting the size with a reduced width
-        float reducedWidth = Gdx.graphics.getWidth() / 6; // You can change 6 to another divisor for your desired width
-        float height = Gdx.graphics.getHeight() / 2 + 100; // Keep height as desired
+//       
+        float reducedWidth = Gdx.graphics.getWidth() / 6; 
+        float height = Gdx.graphics.getHeight() / 2 + 100; 
 
         overlayImage.setSize(reducedWidth, height); // Set the size with the new width
         overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2,
                                  (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2); // Center it
 
 
-        stage.addActor(overlayImage); // Add overlay image
+        stage.addActor(overlayImage); 
 
-        // Create table for layout
         table = new Table();
         table.setFillParent(true);
 
@@ -194,7 +190,5 @@ public class Profile implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-//        backgroundImage.getTexture().dispose(); // Dispose background texture
-//        overlayImage.getTexture().dispose(); // Dispose overlay texture
     }
 }
