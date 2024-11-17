@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Catapult {
     private Texture texture;
-    private float x, y; 
-    private float width, height; 
-    private float initialWidth, initialHeight; 
+    private float x, y;
+    private float width, height;
+    private float initialWidth, initialHeight;
 
     public Catapult(String texturePath) {
         this.texture = new Texture(Gdx.files.internal(texturePath));
@@ -39,10 +39,10 @@ public class Catapult {
     }
 
     public void resize(float screenWidth, float screenHeight) {
-        this.x = screenWidth * 0.1f; 
-        this.y = screenHeight * 0.1f; 
+        this.x = screenWidth * 0.1f;
+        this.y = screenHeight * 0.1f;
 
-        
+
         float scale = Math.min(screenWidth / Gdx.graphics.getWidth(), screenHeight / Gdx.graphics.getHeight());
         this.width = initialWidth * scale;
         this.height = initialHeight * scale;
@@ -56,9 +56,9 @@ public class Catapult {
         texture.dispose();
     }
 
-  
+
     public void launchBird() {
         System.out.println("Catapult launches a bird!");
-       
+
     }
 }

@@ -38,7 +38,7 @@ public class Levels implements Screen {
         levelUnlocked[0] = true; // Unlock Level 1
 
         // Load the texture for Level 1
-        levelOneTexture = new Texture(Gdx.files.internal("l1_image.png")); 
+        levelOneTexture = new Texture(Gdx.files.internal("l1_image.png"));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class Levels implements Screen {
         // Create a grid for level buttons
         Table levelsTable = new Table();
         int levelsPerRow = 4; // Number of levels per row
-        float buttonSize = 100; 
+        float buttonSize = 100;
 
         for (int i = 0; i < 4; i++) { // Iterate through 4 levels (for example)
             final int level = i + 1; // Level number (1 to 4)
