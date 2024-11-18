@@ -121,14 +121,16 @@ public class Gameplay implements Screen {
         birds.add(new yellowbird("yellowbird.png", 40, 40));
 
 
-        loadNextBird();
-
-
+//        loadNextBird();
+//
+//
 
         addBlocksToStage();
         createBirdsAndCatapultTable();
         TextButton winButton = new TextButton("Win", skin);
         TextButton loseButton = new TextButton("Lose", skin);
+
+
 
         dotTexture = new Texture(Gdx.files.internal("dot.png"));
 
@@ -136,7 +138,38 @@ public class Gameplay implements Screen {
         trajectoryDots = new Array<>();
 
         // Add input listener for tracking mouse events
+        Texture catapultTexture = new Texture(Gdx.files.internal("catapult.png"));
+        catapultImage = new Image(catapultTexture);
+        catapultImage.setPosition(Gdx.graphics.getWidth() * 0.2f, Gdx.graphics.getHeight() * 0.15f);
+        catapultImage.setSize(100, 100); // Adjust as needed
+        stage.addActor(catapultImage);
 
+        // Add input listener for the catapult
+        catapultImage.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                // Check if the touch is within the catapult bounds
+                startPosition.set(catapultImage.getX() + x, catapultImage.getY() + catapultImage.getHeight());
+                return true; // Consume the event
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                // Update the end position and show trajectory
+                endPosition.set(catapultImage.getX() + x, catapultImage.getY() + y);
+                updateTrajectory(startPosition, endPosition);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                // Clear trajectory and calculate velocity for bird launch
+                clearTrajectory();
+                velocity.set(startPosition.x - endPosition.x, startPosition.y - endPosition.y);
+
+                // Optional: Launch the bird (uncomment if implemented)
+                // launchBird();
+            }
+        });
 
 // Position both buttons at the bottom center
         float buttonWidth = 100;
@@ -182,76 +215,76 @@ public class Gameplay implements Screen {
     private boolean isCatapultClicked(float x, float y) {
         return x >= catapultX && x <= catapultX + catapultImage.getWidth() && y >= catapultY && y <= catapultY + catapultImage.getHeight();
     }
-    private void launchBird() {
-        // Log the current bird status for debugging
-        Gdx.app.log("Gameplay", "currentBird: " + currentBird);
-
-        // Check if currentBird is null and return if it is
-        if (currentBird == null) {
-            Gdx.app.log("Gameplay", "Error: currentBird is null, unable to launch the bird.");
-            loadNextBird(); // Load the next bird if current one is null
-            return; // Exit the method
-        }
-
-        // Set the initial position of the bird (catapult position)
-        birdPosition.set(catapultX, catapultY);
-
-        // Check if velocity is set correctly
-        if (velocity == null) {
-            Gdx.app.log("Gameplay", "Error: velocity is null, unable to launch the bird.");
-            return; // Prevent launch if velocity is not set
-        }
-
-        // Calculate the initial velocity as a vector (bird's movement speed)
-        Vector2 initialVelocity = new Vector2(velocity.x, velocity.y);
-
-        // Animate the bird's movement based on the initial velocity
-        animateBirdMovement(initialVelocity);
-    }
-
-
-    private void animateBirdMovement(Vector2 initialVelocity) {
-        float gravity = -9.8f; // Gravity force
-        float timeStep = 0.1f; // Small time steps for smooth animation
-        Vector2 currentPosition = new Vector2(catapultX, catapultY);
-        Vector2 currentVelocity = new Vector2(initialVelocity);
-
-        // Update position of the bird over time (animation loop)
-        Timer.schedule(new Timer.Task() {
-            float time = 0;
-
-            @Override
-            public void run() {
-                // Calculate the new position
-                time += timeStep;
-
-                // Update velocity and position based on physics equations
-                float dx = currentVelocity.x * time;
-                float dy = currentVelocity.y * time + 1f * gravity * time * time;
-
-                currentPosition.set(catapultX + dx, catapultY + dy); // Apply movement
-                currentBird = birds.get(0);
-                // Move the bird to the updated position
-                currentBird.setPosition(currentPosition.x, currentPosition.y);
-
-                // Stop the animation if the bird hits the ground
-                if (currentPosition.y <= 0 || currentPosition.x < 0 || currentPosition.x > Gdx.graphics.getWidth()) {
-                    this.cancel(); // Stop the animation
-                }
-            }
-        }, 0, timeStep);
-    }
-    private void loadNextBird() {
-        if (birds != null && birds.size() > 0) {
-            currentBird = birds.get(0); // Get the first bird
-            birdPosition = new Vector2(catapultX, catapultY); // Position near the catapult
-            birds.remove(0); // Remove the bird from the array
-            currentBird.setPosition(birdPosition.x, birdPosition.y); // Set the position of the new bird
-            stage.addActor((Actor) currentBird); // Add the bird to the stage
-        } else {
-            Gdx.app.log("Gameplay", "Birds left: " + birds.size());
-        }
-    }
+//    private void launchBird() {
+//        // Log the current bird status for debugging
+//        Gdx.app.log("Gameplay", "currentBird: " + currentBird);
+//
+//        // Check if currentBird is null and return if it is
+//        if (currentBird == null) {
+//            Gdx.app.log("Gameplay", "Error: currentBird is null, unable to launch the bird.");
+//            loadNextBird(); // Load the next bird if current one is null
+//            return; // Exit the method
+//        }
+//
+//        // Set the initial position of the bird (catapult position)
+//        birdPosition.set(catapultX, catapultY);
+//
+//        // Check if velocity is set correctly
+//        if (velocity == null) {
+//            Gdx.app.log("Gameplay", "Error: velocity is null, unable to launch the bird.");
+//            return; // Prevent launch if velocity is not set
+//        }
+//
+//        // Calculate the initial velocity as a vector (bird's movement speed)
+//        Vector2 initialVelocity = new Vector2(velocity.x, velocity.y);
+//
+//        // Animate the bird's movement based on the initial velocity
+//        animateBirdMovement(initialVelocity);
+//    }
+//
+//
+//    private void animateBirdMovement(Vector2 initialVelocity) {
+//        float gravity = -9.8f; // Gravity force
+//        float timeStep = 0.1f; // Small time steps for smooth animation
+//        Vector2 currentPosition = new Vector2(catapultX, catapultY);
+//        Vector2 currentVelocity = new Vector2(initialVelocity);
+//
+//        // Update position of the bird over time (animation loop)
+//        Timer.schedule(new Timer.Task() {
+//            float time = 0;
+//
+//            @Override
+//            public void run() {
+//                // Calculate the new position
+//                time += timeStep;
+//
+//                // Update velocity and position based on physics equations
+//                float dx = currentVelocity.x * time;
+//                float dy = currentVelocity.y * time + 1f * gravity * time * time;
+//
+//                currentPosition.set(catapultX + dx, catapultY + dy); // Apply movement
+//                currentBird = birds.get(0);
+//                // Move the bird to the updated position
+//                currentBird.setPosition(currentPosition.x, currentPosition.y);
+//
+//                // Stop the animation if the bird hits the ground
+//                if (currentPosition.y <= 0 || currentPosition.x < 0 || currentPosition.x > Gdx.graphics.getWidth()) {
+//                    this.cancel(); // Stop the animation
+//                }
+//            }
+//        }, 0, timeStep);
+//    }
+//    private void loadNextBird() {
+//        if (birds != null && birds.size() > 0) {
+//            currentBird = birds.get(0); // Get the first bird
+//            birdPosition = new Vector2(catapultX, catapultY); // Position near the catapult
+//            birds.remove(0); // Remove the bird from the array
+//            currentBird.setPosition(birdPosition.x, birdPosition.y); // Set the position of the new bird
+//            stage.addActor((Actor) currentBird); // Add the bird to the stage
+//        } else {
+//            Gdx.app.log("Gameplay", "Birds left: " + birds.size());
+//        }
+//    }
     private void updateTrajectory(Vector2 startPosition, Vector2 endPosition) {
         clearTrajectory(); // Remove old trajectory dots
 
@@ -260,6 +293,11 @@ public class Gameplay implements Screen {
 
         // Physics constants (adjust based on your game)
         float gravity = -9.8f; // Gravity (adjust as per your game's scale)
+
+        // Adjust the starting position to be above the catapult
+        float catapultX = catapultImage.getX();
+        float catapultY = catapultImage.getY() + catapultImage.getHeight(); // Start above the catapult
+        startPosition.set(catapultX + catapultImage.getWidth() / 2, catapultY);
 
         // Determine total flight time using quadratic motion equation
         float totalFlightTime = (-velocity.y - (float) Math.sqrt(velocity.y * velocity.y - 2 * gravity * startPosition.y)) / gravity;
@@ -287,6 +325,7 @@ public class Gameplay implements Screen {
             }
         }
     }
+
 
 
 
@@ -366,56 +405,11 @@ public class Gameplay implements Screen {
         }
 
         // Initialize and add the catapult
-        Catapult catapult = new Catapult("catapult.png");
-        catapultImage = new Image(new TextureRegionDrawable(new TextureRegion(catapult.getTexture())));
-        stage.addListener(new InputListener() {
-            private Vector2 startPosition = new Vector2();
-            private Vector2 endPosition = new Vector2();
-            private boolean isCatapultSelected = false; // Flag to track if catapult is selected
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // Check if the click is within the catapult area
-                if (isCatapultClicked(x, y)) {
-                    isCatapultSelected = true; // Catapult is selected
-                    startPosition.set(x, y); // Save the starting position
-                    trajectoryDots.clear(); // Clear previous trajectory
-                }
-                return isCatapultSelected; // Only proceed if the catapult is selected
-            }
-
-            @Override
-            public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                if (isCatapultSelected) {
-                    endPosition.set(x, y); // Update the end position as the mouse drags
-                    updateTrajectory(startPosition, endPosition); // Show trajectory path
-                    if (currentBird != null) {
-                        currentBird.setPosition(endPosition.x, endPosition.y); // Update bird position while dragging
-                    }
-                }
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (isCatapultSelected) {
-                    isCatapultSelected = false; // Catapult selection ended
-                    velocity.set(startPosition.x - endPosition.x, startPosition.y - endPosition.y); // Set velocity based on drag
-
-                    // Ensure sufficient speed for the bird (e.g., minimum speed threshold)
-                    if (velocity.len() < 50) { // If the velocity is too low, increase it
-                        velocity.set(velocity.nor().scl(50)); // Normalize and scale to minimum speed
-                    }
-
-                    if (currentBird != null) {
-                        launchBird();
-                        clearTrajectory(); // Clear the trajectory
-                        currentBird = null; // Remove reference to the bird after launch
-                    }
-                }
-            }
-        });
-        catapultImage.setSize(100, 100);
-        birdsAndCatapultTable.add(catapultImage).size(100, 100);
+//        Catapult catapult = new Catapult("catapult.png");
+//        catapultImage = new Image(new TextureRegionDrawable(new TextureRegion(catapult.getTexture())));
+//
+//        catapultImage.setSize(100, 100);
+//        birdsAndCatapultTable.add(catapultImage).size(100, 100);
     }
 
 

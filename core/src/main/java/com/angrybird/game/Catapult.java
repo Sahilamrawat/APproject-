@@ -3,6 +3,7 @@ package com.angrybird.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 public class Catapult {
     private Texture texture;
@@ -59,6 +60,10 @@ public class Catapult {
 
     public void launchBird() {
         System.out.println("Catapult launches a bird!");
+
+    }
+
+    public void addListener(InputListener inputListener) {
 
     }
 }
