@@ -3,45 +3,37 @@ package com.angrybird.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-public class redbird extends Actor implements Bird {
+public class redbird extends BaseBird {
     private Texture texture;
-    private float initialWidth, initialHeight; // Store initial dimensions
-
-    public redbird(String texturePath, float initialWidth, float initialHeight) {
-        // Load the texture
-        texture = new Texture(Gdx.files.internal(texturePath));
-        this.initialWidth = initialWidth;
-        this.initialHeight = initialHeight;
-        setSize(initialWidth, initialHeight);
-        setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.1f);
-        addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                performAction(); // Execute the bird's specific action
-                return true;
-            }
-        });
+    private boolean isLaunched; // Store initial dimensions
+    Vector2 positions;
+    public redbird(String texturePath, boolean isLaunched, Vector2 positions) {
+        super(texturePath, isLaunched,positions);
     }
+
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
-        // Draw the bird texture with its set size
-        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+    public void performAction() {
+        // Implement red bird's specific action
+        System.out.println("RedBird is launching!");
+        // Example: apply an impulse to the Box2D body (you can customize this)
+        getBody().applyLinearImpulse(new Vector2(10, 10), getBody().getWorldCenter(), true);
     }
+
+
 
     @Override
     public Texture getTexture() {
         return texture;
     }
 
-    @Override
-    public void performAction() {
-        System.out.println("RedBird is launching!"); 
-    }
+
 
     @Override
     public void dispose() {
@@ -50,10 +42,5 @@ public class redbird extends Actor implements Bird {
         }
     }
 
- 
-    public void resize(float screenWidth, float screenHeight) {
-        setPosition(screenWidth * 0.1f, screenHeight * 0.1f); 
-        float scale = Math.min(screenWidth / Gdx.graphics.getWidth(), screenHeight / Gdx.graphics.getHeight());
-        setSize(initialWidth * scale, initialHeight * scale);
-    }
+
 }

@@ -3,50 +3,32 @@ package com.angrybird.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-public class bluebird extends Actor implements Bird {
+public class bluebird extends BaseBird {
     private Texture texture;
     private float initialWidth, initialHeight; // Store initial dimensions
-
-    public bluebird(String texturePath, float initialWidth, float initialHeight) {
-        // Load the texture
-        texture = new Texture(Gdx.files.internal(texturePath));
-        this.initialWidth = initialWidth;
-        this.initialHeight = initialHeight;
-
-        // Set initial size and position for the bird actor
-        setSize(initialWidth, initialHeight); // Use initial dimensions
-        setPosition(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.1f);
-
-        // Add listener for touch or click interactions
-        addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                performAction(); // Execute the bird's specific action
-                return true;
-            }
-        });
+    public bluebird(String texturePath, boolean isLaunched, Vector2 positions) {
+        super(texturePath, isLaunched,positions);
     }
-
     @Override
-    public void draw(Batch batch, float parentAlpha) {
-        // Draw the bird texture with its set size
-        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+    public void performAction() {
+        // Implement blue bird's specific action (e.g., splitting into three)
+        System.out.println("BlueBird is splitting!");
+        // Example: logic for splitting into multiple projectiles
     }
+
 
     @Override
     public Texture getTexture() {
         return texture;
     }
 
-    @Override
-    public void performAction() {
-        System.out.println("BlueBird is launching!");
-        // Add specific action logic here
-    }
+
 
     @Override
     public void dispose() {

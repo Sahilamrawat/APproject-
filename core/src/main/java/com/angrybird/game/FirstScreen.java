@@ -41,7 +41,7 @@ public class FirstScreen implements Screen {
         Tween.to(splash, SpriteAccessor.ALPHA, 2).target(1).repeatYoyo(1, 2).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginSignupScreen());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Gameplay());
             }
         }).start(tweenManager);
     }
@@ -61,8 +61,8 @@ public class FirstScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        float desiredWidth = 1280f; 
-        float desiredHeight = 320f; 
+        float desiredWidth = 1280f;
+        float desiredHeight = 320f;
         splash.setSize(desiredWidth, desiredHeight);
 
         // Calculate the center position based on the new size of the splash image

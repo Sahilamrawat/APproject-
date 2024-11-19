@@ -57,8 +57,8 @@ public class Pause implements Screen {
         menuButton = createImageTextButton(menuTexture, 80, 80);
 
         overlayImage = new Image(new Texture(Gdx.files.internal("profilebackground.png")));
-//        
-        float reducedWidth = 100; 
+//
+        float reducedWidth = 100;
         float height = 600; // Keep height as desired
 
         overlayImage.setSize(reducedWidth, height); // Set the size with the new width
@@ -190,8 +190,8 @@ public class Pause implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 0); // Keep transparent
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-       
-        gameplayScreen.render(delta); 
+
+        gameplayScreen.render(delta);
 
         stage.act(delta);
         stage.draw();
