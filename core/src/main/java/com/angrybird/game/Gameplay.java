@@ -251,12 +251,12 @@ public class Gameplay implements Screen {
         world.createBody(bodyDef).createFixture(fixtureDef);
         groundShape.dispose();
 
-
+//box1
         bodyDef.type= BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(2.25f,10);
+        bodyDef.position.set(15.10f,10);
 
         PolygonShape shape1=new PolygonShape();
-        shape1.setAsBox(.5f,1);
+        shape1.setAsBox(.5f,3);
 
 
 
@@ -269,7 +269,43 @@ public class Gameplay implements Screen {
         BoxBody=world.createBody(bodyDef);
         BoxBody.createFixture(fixtureDef);
         shape1.dispose();
+//box2
+        bodyDef.type= BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(17.10f,13);
 
+        PolygonShape shape2=new PolygonShape();
+        shape2.setAsBox(3,0.5f);
+
+
+
+        //fixture
+        fixtureDef.shape=shape1;
+        fixtureDef.friction=.75f;
+        fixtureDef.restitution=.1f;
+        fixtureDef.density=5;
+
+        BoxBody=world.createBody(bodyDef);
+        BoxBody.createFixture(fixtureDef);
+        shape2.dispose();
+
+        //box3
+        bodyDef.type= BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(19.10f,10);
+
+        PolygonShape shape3=new PolygonShape();
+        shape3.setAsBox(.5f,3);
+
+
+
+        //fixture
+        fixtureDef.shape=shape1;
+        fixtureDef.friction=.75f;
+        fixtureDef.restitution=.1f;
+        fixtureDef.density=5;
+
+        BoxBody=world.createBody(bodyDef);
+        BoxBody.createFixture(fixtureDef);
+        shape3.dispose();
 
 
 //        loadNextBird();
@@ -636,6 +672,7 @@ public class Gameplay implements Screen {
         batch.begin();
         world.getBodies(tmpBodies);
         for(Body body:tmpBodies){
+
             if(body.getUserData()!=null&&body.getUserData() instanceof Sprite){
                 Sprite sprite=(Sprite)body.getUserData();
                 sprite.setPosition(body.getPosition().x-sprite.getWidth()/2,body.getPosition().y-sprite.getHeight()/2);
