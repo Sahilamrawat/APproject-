@@ -61,6 +61,7 @@ public class Gameplay implements Screen {
     private Texture backTexture;
     private Image catapultImage;
     private ArrayList<BaseBird> birds;
+    private ArrayList<Pig> pigs;
     private BigPig bigPig;
     private MediumPig mediumPig;
     private SmallPig smallPig1;
@@ -70,23 +71,18 @@ public class Gameplay implements Screen {
     private Body launchedBird;
     private Texture backgroundTexture;
     public ArrayList<Body> BirdBodies;
+    public ArrayList<Body> pigsBodies;
+
     private BaseBird redbird,bluebird,yellowbird,blackbird;
 //    private Texture groundTexture;
     private SpriteBatch spriteBatch;
     private Sprite boxSprite;
     private Sprite birdSprite;
     private Array<Body> tmpBodies=new Array<Body>();
-    private Body BoxBody,BirdBody;
+    private Body BoxBody,BirdBody,PigBody;
     private Sprite backgroundSprite;
     private static boolean birdsInitialized = false;
-    private ScreenState currentState;
-    public enum ScreenState {
-        PLAYING,
-        PAUSED,
-        GAME_OVER,
-        LEVEL_SELECT,
-        SETTINGS
-    }
+
 
 
     public Gameplay(Game game, Screen previousScreen) {
@@ -112,7 +108,7 @@ public class Gameplay implements Screen {
         // Create the ground body
 //        createGround();
 
-//        debugRenderer = new Box2DDebugRenderer();
+        debugRenderer = new Box2DDebugRenderer();
 
         // Create ground
 //        createGround();
@@ -213,12 +209,7 @@ public class Gameplay implements Screen {
         if(!birdsInitialized) {
             birds = new ArrayList<BaseBird>();
             BirdBodies=new ArrayList<Body>();
-            String[] texturePaths = {
-                "redbird.png",     // Texture for Bird 1
-                "bluebird.png",    // Texture for Bird 2
-                "yellowbird.png",  // Texture for Bird 3
-                "blackbird.png"    // Texture for Bird 4
-            };
+
             BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-25, 20));
             BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-24, 20));
             BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-23, 20));
@@ -260,6 +251,89 @@ public class Gameplay implements Screen {
             birdsInitialized = true;
         }
 
+        //pig
+
+        pigs = new ArrayList<Pig>();
+        pigsBodies=new ArrayList<Body>();
+
+        Pig smallPig1 = new Pig("small_pig.png", false, new Vector2(14.10f,15),10,"small");
+        Pig smallPig2 = new Pig("small_pig.png", false, new Vector2(20.30f,15),10,"small");
+        Pig mediumPig = new Pig("medium_pig.png", false, new Vector2(17.10f,15),20,"medium");
+        Pig bigPig = new Pig("big_pig.png", false, new Vector2(17.10f,13),30,"big");
+
+        pigs.add(smallPig1);
+        pigs.add(smallPig2);
+
+        pigs.add(mediumPig);
+        pigs.add(bigPig);
+
+
+        // Loop through the birds and create their bodies and sprites
+        for (Pig pig : pigs) {
+
+            bodyDef.type = BodyDef.BodyType.DynamicBody;
+            bodyDef.position.set(pig.positions);
+
+            CircleShape shape = new CircleShape();
+            if(pig.getPigType().equalsIgnoreCase("small")){
+                shape.setRadius(0.7f);
+                fixtureDef.shape = shape;
+                fixtureDef.density = 2.5f;
+                fixtureDef.friction = 1f;
+                fixtureDef.restitution = 0.1f;
+            }else if(pig.getPigType().equalsIgnoreCase("medium")){
+                shape.setRadius(1f);
+                fixtureDef.shape = shape;
+                fixtureDef.density = 2.5f;
+                fixtureDef.friction = 1f;
+                fixtureDef.restitution = 0.1f;
+            }else if(pig.getPigType().equalsIgnoreCase("big")){
+                shape.setRadius(1.1f);
+                fixtureDef.shape = shape;
+                fixtureDef.density = 2.5f;
+                fixtureDef.friction = 1f;
+                fixtureDef.restitution = 0.1f;
+            }
+
+
+
+
+
+            Body pigBody = world.createBody(bodyDef);
+            pigBody.createFixture(fixtureDef);
+
+            Sprite pigSprite = new Sprite(new Texture(pig.getTexturePath()));
+            if(pig.getPigType().equalsIgnoreCase("small")){
+                pigSprite.setSize(2, 1.5f);
+                pigSprite.setOrigin(pigSprite.getWidth() / 2, pigSprite.getHeight() / 2);
+                pigBody.setUserData(pigSprite);
+                pigBody.setAngularDamping(3f);
+                pigsBodies.add(pigBody);
+            }else if(pig.getPigType().equalsIgnoreCase("medium")){
+                pigSprite.setSize(2, 2);
+                pigSprite.setOrigin(pigSprite.getWidth() / 2, pigSprite.getHeight() / 2);
+                pigBody.setUserData(pigSprite);
+                pigBody.setAngularDamping(3f);
+                pigsBodies.add(pigBody);
+            }else if(pig.getPigType().equalsIgnoreCase("big")){
+                pigSprite.setSize(4, 3);
+                pigSprite.setOrigin(pigSprite.getWidth() / 2, pigSprite.getHeight() / 2);
+                pigBody.setUserData(pigSprite);
+                pigBody.setAngularDamping(3f);
+                pigsBodies.add(pigBody);
+            }
+
+
+
+
+
+            // Optionally dispose of the shape when done
+            shape.dispose();
+        }
+
+
+
+
 
 //        ground body
         bodyDef.type= BodyDef.BodyType.StaticBody;
@@ -277,7 +351,7 @@ public class Gameplay implements Screen {
 
 //box1
         bodyDef.type= BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(15.10f,10);
+        bodyDef.position.set(14.4f,10);
 
         PolygonShape shape1=new PolygonShape();
         shape1.setAsBox(.5f,3);
@@ -286,8 +360,8 @@ public class Gameplay implements Screen {
 
         //fixture
         fixtureDef.shape=shape1;
-        fixtureDef.friction=.75f;
-        fixtureDef.restitution=.1f;
+        fixtureDef.friction=1f;
+        fixtureDef.restitution=0f;
         fixtureDef.density=5;
 
         BoxBody=world.createBody(bodyDef);
@@ -308,29 +382,57 @@ public class Gameplay implements Screen {
         bodyDef.position.set(17.10f,13);
 
         PolygonShape shape2=new PolygonShape();
-        shape2.setAsBox(3,0.5f);
+        shape2.setAsBox(5,0.5f);
 
 
 
         //fixture
         fixtureDef.shape=shape1;
-        fixtureDef.friction=.75f;
-        fixtureDef.restitution=.1f;
+        fixtureDef.friction=1f;
+        fixtureDef.restitution=0f;
         fixtureDef.density=5;
 
         BoxBody=world.createBody(bodyDef);
         BoxBody.createFixture(fixtureDef);
         Sprite woodSprite3 = new Sprite(new Texture("stone_block.png"));
 
-        woodSprite3.setSize(6.2f, 1f);
+        woodSprite3.setSize(10f, 1f);
         woodSprite3.setOrigin(woodSprite3.getWidth() / 2, woodSprite3.getHeight() / 2);
         BoxBody.setUserData(woodSprite3);
         BoxBody.setAngularDamping(0.7f);
         shape2.dispose();
 
+
+        //Icebox
+        bodyDef.type= BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(17.10f,14);
+
+        PolygonShape Iceshape=new PolygonShape();
+        Iceshape.setAsBox(1.2f,1.2f);
+
+
+
+        //fixture
+        fixtureDef.shape=Iceshape;
+        fixtureDef.friction=1f;
+        fixtureDef.restitution=0f;
+        fixtureDef.density=5;
+
+        BoxBody=world.createBody(bodyDef);
+        BoxBody.createFixture(fixtureDef);
+        Sprite IceSprite = new Sprite(new Texture("ice_block.png"));
+
+        IceSprite.setSize(3f, 3f);
+        IceSprite.setOrigin(IceSprite.getWidth() / 2, IceSprite.getHeight() / 2);
+        BoxBody.setUserData(IceSprite);
+        BoxBody.setAngularDamping(0.7f);
+        Iceshape.dispose();
+
+
+
         //box3
         bodyDef.type= BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(19.10f,10);
+        bodyDef.position.set(19.6f,10);
 
         PolygonShape shape3=new PolygonShape();
         shape3.setAsBox(.5f,3);
@@ -339,9 +441,10 @@ public class Gameplay implements Screen {
 
         //fixture
         fixtureDef.shape=shape1;
-        fixtureDef.friction=.75f;
-        fixtureDef.restitution=.1f;
+        fixtureDef.friction=1f;
+        fixtureDef.restitution=0f;
         fixtureDef.density=5;
+
 
         BoxBody=world.createBody(bodyDef);
         BoxBody.createFixture(fixtureDef);
@@ -353,44 +456,6 @@ public class Gameplay implements Screen {
         BoxBody.setAngularDamping(0.7f);
         shape3.dispose();
 
-
-
-        //pig 1
-
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(17.10f,13);
-
-        CircleShape shape = new CircleShape();
-        shape.setRadius(1f);
-
-
-        fixtureDef.shape = shape;
-        fixtureDef.density = 2.5f;
-        fixtureDef.friction = 1f;
-        fixtureDef.restitution = 0.1f;
-
-        Body pigBody = world.createBody(bodyDef);
-        pigBody.createFixture(fixtureDef);
-
-        Sprite birdSprite = new Sprite(new Texture("big_pig.png"));
-        birdSprite.setSize(4, 3);
-        birdSprite.setOrigin(birdSprite.getWidth() / 2, birdSprite.getHeight() / 2);
-        pigBody.setUserData(birdSprite);
-        pigBody.setAngularDamping(0.7f);
-
-        // Optionally dispose of the shape when done
-        shape.dispose();
-
-
-
-
-
-//        loadNextBird();
-//
-//
-
-//        addBlocksToStage();
-//        createBirdsAndCatapultTable();
         TextButton winButton = new TextButton("Win", skin);
         TextButton loseButton = new TextButton("Lose", skin);
 
@@ -719,12 +784,13 @@ public class Gameplay implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-//        debugRenderer.render(world, camera.combined);
+        debugRenderer.render(world, camera.combined);
         // If the game is paused, do not update gameplay logic
         System.out.println("Status: "+isPaused);
 
         if (!isPaused) {
 
+            debugRenderer.render(world, camera.combined);
             camera.update();
             world.step(1 / 60f, 8, 3);
 //        camera.position.set(BirdBody.getPosition().x,BirdBody.getPosition().y,0);
@@ -779,6 +845,7 @@ public class Gameplay implements Screen {
         }
         else{
             camera.update();
+            debugRenderer.render(world, camera.combined);
             world.step(1 / 60f, 8, 3);
 //        camera.position.set(BirdBody.getPosition().x,BirdBody.getPosition().y,0);
 
