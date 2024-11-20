@@ -60,7 +60,7 @@ public class Gameplay implements Screen {
     private Texture settingTexture;
     private Texture backTexture;
     private Image catapultImage;
-    private ArrayList<BaseBird> birds = new ArrayList<BaseBird>();
+    private ArrayList<BaseBird> birds;
     private BigPig bigPig;
     private MediumPig mediumPig;
     private SmallPig smallPig1;
@@ -69,7 +69,7 @@ public class Gameplay implements Screen {
     private BirdLauncher birdLauncher;
     private Body launchedBird;
     private Texture backgroundTexture;
-    public ArrayList<Body> BirdBodies=new ArrayList<Body>();
+    public ArrayList<Body> BirdBodies;
     private BaseBird redbird,bluebird,yellowbird,blackbird;
 //    private Texture groundTexture;
     private SpriteBatch spriteBatch;
@@ -78,6 +78,16 @@ public class Gameplay implements Screen {
     private Array<Body> tmpBodies=new Array<Body>();
     private Body BoxBody,BirdBody;
     private Sprite backgroundSprite;
+    private static boolean birdsInitialized = false;
+    private ScreenState currentState;
+    public enum ScreenState {
+        PLAYING,
+        PAUSED,
+        GAME_OVER,
+        LEVEL_SELECT,
+        SETTINGS
+    }
+
 
     public Gameplay(Game game, Screen previousScreen) {
         this.game = game;
@@ -89,6 +99,7 @@ public class Gameplay implements Screen {
 
     @Override
     public void show() {
+
         world = new World(new Vector2(0, -9.8f), true); // Gravity vector (-9.8f for downward gravity)
         camera = new OrthographicCamera();
 //        viewport = new FitViewport(800, 480, camera); // Adjust dimensions as needed
@@ -160,10 +171,14 @@ public class Gameplay implements Screen {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                isPaused=true;
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new Pause(game, Gameplay.this));
+                birdsInitialized=false;
+                System.out.println("Game Status "+isPaused);
 
             }
         });
+        System.out.println("Game Status "+isPaused);
         addHoverEffect(buttonImage2, settingsButton);
         stage.addActor(settingsButton);
 
@@ -193,50 +208,56 @@ public class Gameplay implements Screen {
 
 
 // Create an array of texture paths for the birds
-        String[] texturePaths = {
-            "redbird.png",     // Texture for Bird 1
-            "bluebird.png",    // Texture for Bird 2
-            "yellowbird.png",  // Texture for Bird 3
-            "blackbird.png"    // Texture for Bird 4
-        };
-        BaseBird redbird=new BaseBird("redbird.png",false,new Vector2(-25, 20));
-        BaseBird bluebird=new BaseBird("bluebird.png",false,new Vector2(-24, 20));
-        BaseBird yellowbird=new BaseBird("yellowbird.png",false, new Vector2(-23, 20));
-        BaseBird blackbird=new BaseBird("blackbird.png",false, new Vector2(-22, 20));
-        birds.add(redbird);
-
-        birds.add(bluebird);
-        birds.add(yellowbird);
-        birds.add(blackbird);
         BodyDef bodyDef = new BodyDef();
         FixtureDef fixtureDef = new FixtureDef();
-// Loop through the birds and create their bodies and sprites
-        for (BaseBird bird:birds) {
+        if(!birdsInitialized) {
+            birds = new ArrayList<BaseBird>();
+            BirdBodies=new ArrayList<Body>();
+            String[] texturePaths = {
+                "redbird.png",     // Texture for Bird 1
+                "bluebird.png",    // Texture for Bird 2
+                "yellowbird.png",  // Texture for Bird 3
+                "blackbird.png"    // Texture for Bird 4
+            };
+            BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-25, 20));
+            BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-24, 20));
+            BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-23, 20));
+            BaseBird blackbird = new BaseBird("blackbird.png", false, new Vector2(-22, 20));
+            birds.add(redbird);
 
-            System.out.println("before launching"+bird.isLaunched());
-            bodyDef.type = BodyDef.BodyType.DynamicBody;
-            bodyDef.position.set(bird.positions);
+            birds.add(bluebird);
+            birds.add(yellowbird);
+            birds.add(blackbird);
 
-            CircleShape shape = new CircleShape();
-            shape.setRadius(1f);
+            // Loop through the birds and create their bodies and sprites
+            for (BaseBird bird : birds) {
+
+                System.out.println("before launching" + bird.isLaunched());
+                bodyDef.type = BodyDef.BodyType.DynamicBody;
+                bodyDef.position.set(bird.positions);
+
+                CircleShape shape = new CircleShape();
+                shape.setRadius(1f);
 
 
-            fixtureDef.shape = shape;
-            fixtureDef.density = 2.5f;
-            fixtureDef.friction = 1f;
-            fixtureDef.restitution = 0.1f;
+                fixtureDef.shape = shape;
+                fixtureDef.density = 2.5f;
+                fixtureDef.friction = 1f;
+                fixtureDef.restitution = 0.1f;
 
-            Body birdBody = world.createBody(bodyDef);
-            birdBody.createFixture(fixtureDef);
+                Body birdBody = world.createBody(bodyDef);
+                birdBody.createFixture(fixtureDef);
 
-            Sprite birdSprite = new Sprite(new Texture(bird.getTexturePath()));
-            birdSprite.setSize(2, 2);
-            birdSprite.setOrigin(birdSprite.getWidth() / 2, birdSprite.getHeight() / 2);
-            birdBody.setUserData(birdSprite);
-            birdBody.setAngularDamping(0.7f);
-            BirdBodies.add(birdBody);
-            // Optionally dispose of the shape when done
-            shape.dispose();
+                Sprite birdSprite = new Sprite(new Texture(bird.getTexturePath()));
+                birdSprite.setSize(2, 2);
+                birdSprite.setOrigin(birdSprite.getWidth() / 2, birdSprite.getHeight() / 2);
+                birdBody.setUserData(birdSprite);
+                birdBody.setAngularDamping(0.7f);
+                BirdBodies.add(birdBody);
+                // Optionally dispose of the shape when done
+                shape.dispose();
+            }
+            birdsInitialized = true;
         }
 
 
@@ -331,6 +352,37 @@ public class Gameplay implements Screen {
         BoxBody.setUserData(woodSprite2);
         BoxBody.setAngularDamping(0.7f);
         shape3.dispose();
+
+
+
+        //pig 1
+
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(17.10f,13);
+
+        CircleShape shape = new CircleShape();
+        shape.setRadius(1f);
+
+
+        fixtureDef.shape = shape;
+        fixtureDef.density = 2.5f;
+        fixtureDef.friction = 1f;
+        fixtureDef.restitution = 0.1f;
+
+        Body pigBody = world.createBody(bodyDef);
+        pigBody.createFixture(fixtureDef);
+
+        Sprite birdSprite = new Sprite(new Texture("big_pig.png"));
+        birdSprite.setSize(4, 3);
+        birdSprite.setOrigin(birdSprite.getWidth() / 2, birdSprite.getHeight() / 2);
+        pigBody.setUserData(birdSprite);
+        pigBody.setAngularDamping(0.7f);
+
+        // Optionally dispose of the shape when done
+        shape.dispose();
+
+
+
 
 
 //        loadNextBird();
@@ -666,62 +718,120 @@ public class Gameplay implements Screen {
         // Clear the screen
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.update();
-        world.step(1 / 60f, 8, 3);
-//        camera.position.set(BirdBody.getPosition().x,BirdBody.getPosition().y,0);
 
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        backgroundSprite.draw(batch);
-        world.getBodies(tmpBodies);
-        for(Body body:tmpBodies){
-
-            if(body.getUserData()!=null&&body.getUserData() instanceof Sprite){
-                Sprite sprite=(Sprite)body.getUserData();
-                sprite.setPosition(body.getPosition().x-sprite.getWidth()/2,body.getPosition().y-sprite.getHeight()/2);
-                sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
-
-                sprite.draw(batch);
-
-
-
-            }
-        }
-        for (Body birdBody : BirdBodies) {
-            Sprite birdSprite = (Sprite) birdBody.getUserData();
-            birdSprite.setPosition(
-                birdBody.getPosition().x - birdSprite.getWidth() / 2,
-                birdBody.getPosition().y - birdSprite.getHeight() / 2
-            );
-            birdSprite.setRotation(birdBody.getAngle() * MathUtils.radiansToDegrees);
-        }
-        for (int i = BirdBodies.size() - 1; i >= 0; i--) {
-            if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
-                System.out.println(i);
-                world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
-                BirdBodies.remove(i);
-                birds.remove(i);
-                System.out.println(i);
-
-
-                break; // Exit the loop after destroying
-            }
-        }
-
-
-        batch.end();
-        Vector2 bodyPosition = BoxBody.getPosition();
-        catapultImage.setPosition(
-            171.5f*3f,52.5f*3
-        );
-        catapultImage.setSize(85,100);
 //        debugRenderer.render(world, camera.combined);
         // If the game is paused, do not update gameplay logic
-        if (isPaused) {
-            stage.act();
-        } else {
-            stage.act(delta); // Update the stage
+        System.out.println("Status: "+isPaused);
+
+        if (!isPaused) {
+
+            camera.update();
+            world.step(1 / 60f, 8, 3);
+//        camera.position.set(BirdBody.getPosition().x,BirdBody.getPosition().y,0);
+
+            batch.setProjectionMatrix(camera.combined);
+            batch.begin();
+            backgroundSprite.draw(batch);
+            world.getBodies(tmpBodies);
+            for(Body body:tmpBodies){
+
+                if(body.getUserData()!=null&&body.getUserData() instanceof Sprite){
+                    Sprite sprite=(Sprite)body.getUserData();
+                    sprite.setPosition(body.getPosition().x-sprite.getWidth()/2,body.getPosition().y-sprite.getHeight()/2);
+                    sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
+
+                    sprite.draw(batch);
+
+
+
+                }
+            }
+            for (Body birdBody : BirdBodies) {
+                Sprite birdSprite = (Sprite) birdBody.getUserData();
+                birdSprite.setPosition(
+                    birdBody.getPosition().x - birdSprite.getWidth() / 2,
+                    birdBody.getPosition().y - birdSprite.getHeight() / 2
+                );
+                birdSprite.setRotation(birdBody.getAngle() * MathUtils.radiansToDegrees);
+            }
+            for (int i = BirdBodies.size() - 1; i >= 0; i--) {
+                System.out.println("iterations: "+i);
+                if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
+                    System.out.println(i);
+                    world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
+
+                    BirdBodies.remove(i);
+//                    birds.remove(i);
+                    System.out.println(i);
+
+
+                    break; // Exit the loop after destroying
+                }
+            }
+
+
+            batch.end();
+            Vector2 bodyPosition = BoxBody.getPosition();
+            catapultImage.setPosition(
+                171.5f*3f,52.5f*3
+            );
+            catapultImage.setSize(85,100);
         }
+        else{
+            camera.update();
+            world.step(1 / 60f, 8, 3);
+//        camera.position.set(BirdBody.getPosition().x,BirdBody.getPosition().y,0);
+
+            batch.setProjectionMatrix(camera.combined);
+            batch.begin();
+            backgroundSprite.draw(batch);
+            world.getBodies(tmpBodies);
+            for(Body body:tmpBodies){
+
+                if(body.getUserData()!=null&&body.getUserData() instanceof Sprite){
+                    Sprite sprite=(Sprite)body.getUserData();
+                    sprite.setPosition(body.getPosition().x-sprite.getWidth()/2,body.getPosition().y-sprite.getHeight()/2);
+                    sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
+
+                    sprite.draw(batch);
+
+
+
+                }
+            }
+            for (Body birdBody : BirdBodies) {
+                Sprite birdSprite = (Sprite) birdBody.getUserData();
+                birdSprite.setPosition(
+                    birdBody.getPosition().x - birdSprite.getWidth() / 2,
+                    birdBody.getPosition().y - birdSprite.getHeight() / 2
+                );
+                birdSprite.setRotation(birdBody.getAngle() * MathUtils.radiansToDegrees);
+            }
+            for (int i = BirdBodies.size() - 1; i >= 0; i--) {
+                System.out.println("iterations: "+i);
+                if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
+                    System.out.println(i);
+                    world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
+
+                    BirdBodies.remove(i);
+//                    birds.remove(i);
+                    System.out.println(i);
+
+
+                    break; // Exit the loop after destroying
+                }
+            }
+
+
+            batch.end();
+            Vector2 bodyPosition = BoxBody.getPosition();
+            catapultImage.setPosition(
+                171.5f*3f,52.5f*3
+            );
+            catapultImage.setSize(85,100);
+        }
+        stage.act(delta); // Update the stage
+
 
         // Draw the stage
         stage.draw();
