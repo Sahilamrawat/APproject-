@@ -19,7 +19,7 @@ public class Pause implements Screen {
     private Stage stage;
     private Skin skin;
     private Game game;
-    private Gameplay gameplayScreen; // Reference to Gameplay screen
+    public Gameplay gameplayScreen; // Reference to Gameplay screen
     private Image backgroundImage;
     private ImageTextButton resumeButton, exitButton, restartButton, saveButton,menuButton;
     private Texture resumeTexture, exitTexture, restartTexture, saveTexture,menuTexture;
@@ -109,7 +109,7 @@ public class Pause implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 gameplayScreen.restartGame(); // Call the restart method
                 gameplayScreen.setPaused(false); // Resume gameplay after restart
-                ((Game)Gdx.app.getApplicationListener()).setScreen(gameplayScreen); // Go back to gameplay
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new Gameplay()); // Go back to gameplay
             }
         });
 

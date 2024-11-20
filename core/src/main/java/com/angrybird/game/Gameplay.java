@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.Timer;
@@ -59,7 +60,7 @@ public class Gameplay implements Screen {
     private Texture settingTexture;
     private Texture backTexture;
     private Image catapultImage;
-    private static ArrayList<BaseBird> birds = new ArrayList<BaseBird>();
+    private ArrayList<BaseBird> birds = new ArrayList<BaseBird>();
     private BigPig bigPig;
     private MediumPig mediumPig;
     private SmallPig smallPig1;
@@ -67,8 +68,8 @@ public class Gameplay implements Screen {
     private Image buttonImage1, buttonImage2;
     private BirdLauncher birdLauncher;
     private Body launchedBird;
-
-    public static ArrayList<Body> BirdBodies=new ArrayList<Body>();
+    private Texture backgroundTexture;
+    public ArrayList<Body> BirdBodies=new ArrayList<Body>();
     private BaseBird redbird,bluebird,yellowbird,blackbird;
 //    private Texture groundTexture;
     private SpriteBatch spriteBatch;
@@ -76,7 +77,7 @@ public class Gameplay implements Screen {
     private Sprite birdSprite;
     private Array<Body> tmpBodies=new Array<Body>();
     private Body BoxBody,BirdBody;
-    private boolean launched1,launched2,launched3,launched4=false;
+    private Sprite backgroundSprite;
 
     public Gameplay(Game game, Screen previousScreen) {
         this.game = game;
@@ -100,7 +101,7 @@ public class Gameplay implements Screen {
         // Create the ground body
 //        createGround();
 
-        debugRenderer = new Box2DDebugRenderer();
+//        debugRenderer = new Box2DDebugRenderer();
 
         // Create ground
 //        createGround();
@@ -143,10 +144,11 @@ public class Gameplay implements Screen {
         backTexture = new Texture(Gdx.files.internal("back.png"));
         settingsButton=createImageTextButton(settingTexture,100,100);
         backButton=createImageTextButton(backTexture,50,50);
-//        Texture backgroundTexture = new Texture(Gdx.files.internal("gameplayBackground.jpg"));
-//        backgroundImage = new Image(backgroundTexture);
-//        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-//        stage.addActor(backgroundImage);
+        backgroundSprite = new Sprite(new Texture("gameplayBackground.jpg"));
+        backgroundSprite.setSize(1920f/50f*2f, 1080f/50f*2f);
+        backgroundSprite.setOrigin(backgroundSprite.getWidth()/2,backgroundSprite.getHeight()/2);
+        backgroundSprite.setPosition(-38,-20.5f);
+
 
         pointsLabel = new Label("Points: " + points, skin, "title");
         pointsLabel.setPosition(20, Gdx.graphics.getHeight() - 30);
@@ -159,6 +161,7 @@ public class Gameplay implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new Pause(game, Gameplay.this));
+
             }
         });
         addHoverEffect(buttonImage2, settingsButton);
@@ -239,7 +242,7 @@ public class Gameplay implements Screen {
 
 //        ground body
         bodyDef.type= BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(0,-10f);
+        bodyDef.position.set(0,-14.5f);
 
         ChainShape groundShape=new ChainShape();
         groundShape.createChain(new Vector2[]{new Vector2(-50,0),new Vector2(50,0)});
@@ -268,6 +271,16 @@ public class Gameplay implements Screen {
 
         BoxBody=world.createBody(bodyDef);
         BoxBody.createFixture(fixtureDef);
+
+
+        Sprite woodSprite = new Sprite(new Texture("wood_block.png"));
+
+        woodSprite.setSize(1, 6.2f);
+        woodSprite.setOrigin(woodSprite.getWidth() / 2, woodSprite.getHeight() / 2);
+        BoxBody.setUserData(woodSprite);
+        BoxBody.setAngularDamping(0.7f);
+
+//        catapultImage.setSize(-16,-8);
         shape1.dispose();
 //box2
         bodyDef.type= BodyDef.BodyType.DynamicBody;
@@ -286,6 +299,12 @@ public class Gameplay implements Screen {
 
         BoxBody=world.createBody(bodyDef);
         BoxBody.createFixture(fixtureDef);
+        Sprite woodSprite3 = new Sprite(new Texture("stone_block.png"));
+
+        woodSprite3.setSize(6.2f, 1f);
+        woodSprite3.setOrigin(woodSprite3.getWidth() / 2, woodSprite3.getHeight() / 2);
+        BoxBody.setUserData(woodSprite3);
+        BoxBody.setAngularDamping(0.7f);
         shape2.dispose();
 
         //box3
@@ -305,6 +324,12 @@ public class Gameplay implements Screen {
 
         BoxBody=world.createBody(bodyDef);
         BoxBody.createFixture(fixtureDef);
+        Sprite woodSprite2 = new Sprite(new Texture("wood_block.png"));
+
+        woodSprite2.setSize(1, 6.2f);
+        woodSprite2.setOrigin(woodSprite2.getWidth() / 2, woodSprite2.getHeight() / 2);
+        BoxBody.setUserData(woodSprite2);
+        BoxBody.setAngularDamping(0.7f);
         shape3.dispose();
 
 
@@ -319,18 +344,52 @@ public class Gameplay implements Screen {
 
 
 
-        dotTexture = new Texture(Gdx.files.internal("dot.jpg"));
+        dotTexture = new Texture(Gdx.files.internal("dot.png"));
 
         // Initialize the trajectory dots array
         trajectoryDots = new Array<>();
 
         // Add input listener for tracking mouse events
-        Texture catapultTexture = new Texture(Gdx.files.internal("catapult.png"));
-        catapultImage = new Image(catapultTexture);
-        catapultImage.setPosition(Gdx.graphics.getWidth() * 0.2f, Gdx.graphics.getHeight() * 0.26f);
-        catapultImage.setSize(100, 100); // Adjust as needed
+//        Texture catapultTexture = new Texture(Gdx.files.internal("catapult.png"));
+
+//        catapultImage.setPosition(Gdx.graphics.getWidth() * 0.2f, Gdx.graphics.getHeight() * 0.26f);
+//        catapultImage.setSize(100, 100); // Adjust as needed
+//        stage.addActor(catapultImage);
+
+
+        //catapult
+        bodyDef.type= BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(-16,-13.3f);
+
+        PolygonShape shape4=new PolygonShape();
+        shape1.setAsBox(1f,1.2f);
+
+
+
+        //fixture
+        fixtureDef.shape=shape4;
+        fixtureDef.friction=.75f;
+        fixtureDef.restitution=.1f;
+        fixtureDef.density=5;
+
+        BoxBody=world.createBody(bodyDef);
+        BoxBody.createFixture(fixtureDef);
+
+        Sprite catapultSprite = new Sprite(new Texture("catapult.png"));
+
+        catapultSprite.setSize(3, 4);
+        catapultSprite.setOrigin(catapultSprite.getWidth() / 2, catapultSprite.getHeight() / 2);
+//        BoxBody.setUserData(catapultSprite);
+        BoxBody.setAngularDamping(0.7f);
+        catapultImage = new Image(catapultSprite);
+//        catapultImage.setSize(-16,-8);
+
         stage.addActor(catapultImage);
 
+
+        shape4.dispose();
+
+        positionClosestBird();
         // Add input listener for the catapult
         catapultImage.addListener(new InputListener() {
             @Override
@@ -375,6 +434,7 @@ public class Gameplay implements Screen {
                         birds.get(i).setLaunched(true);
                         BirdBodies.get(i).applyForceToCenter(forceX, forceY, true);
                         //                    BirdBodies.remove(i);
+                        positionClosestBird();
                         break;
                     }
                 }
@@ -433,7 +493,33 @@ public class Gameplay implements Screen {
 
 
 
+    private void positionClosestBird() {
+        if (!birds.isEmpty() && !BirdBodies.isEmpty()) {
+            // Find the first bird that is not launched
+            for (int i =birds.size()-1; i >=0; i--) {
+                if (!birds.get(i).isLaunched()) {
+                    // Get the top position of the catapult
+                    Vector2 catapultTop = new Vector2(
+                        BoxBody.getPosition().x,
+                        BoxBody.getPosition().y + 2 // Half the height of the catapult (Box2D units)
+                    );
 
+                    // Set the bird's body position to the top of the catapult
+                    BirdBodies.get(i).setTransform(catapultTop, 0);
+
+                    // Optionally, adjust the sprite position as well for rendering
+                    Sprite birdSprite = (Sprite) BirdBodies.get(i).getUserData();
+                    birdSprite.setPosition(
+                        catapultTop.x - birdSprite.getWidth() / 2,
+                        catapultTop.y - birdSprite.getHeight() / 2
+                    );
+
+                    // Break after positioning one bird
+                    break;
+                }
+            }
+        }
+    }
 
     private void updateTrajectory(Vector2 startPosition, Vector2 endPosition) {
         clearTrajectory(); // Remove old trajectory dots
@@ -535,92 +621,7 @@ public class Gameplay implements Screen {
 
 
 
-//    private void addBlocksToStage() {
-//        Material woodMaterial = new WoodMaterial();
-//        Material stoneMaterial = new StoneMaterial();
-//        Material iceMaterial = new IceMaterial();
-//
-//        // Create a main table for blocks
-//        Table blockTable = new Table();
-//
-//
-//        blockTable.setName("blockTable");
-//        blockTable.setSize(200, 200);
-//        blockTable.setPosition(Gdx.graphics.getWidth() - blockTable.getWidth() - 90, Gdx.graphics.getHeight() * 0.15f - blockTable.getHeight() * 0.15f);
-//
-//
-//        Table zeroFloor=new Table();
-//
-//        zeroFloor.setSize(200,50);
-//        Pig mediumPig = new MediumPig();
-//        zeroFloor.add(mediumPig).size(50,50);
-//        blockTable.add(zeroFloor);
-//        blockTable.row();
-//        // Create a dedicated table for the ice block
-//        Table pigTable1=new Table();
-//        pigTable1.setSize(50,50);
-//        Pig smallPig1 = new SmallPig();
-//        pigTable1.add(smallPig1);
-//
-//
-//        Table firstFloor=new Table();
-//        firstFloor.setSize(200,50);
-//
-//        Table iceTable = new Table();
-//        iceTable.setSize(50, 50);
-//        Block iceBlock = new Block(iceMaterial, 50, 50);
-//
-//
-//        iceTable.add(iceBlock).center();
-//        Table pigTable2=new Table();
-//        Pig smallPig2 = new SmallPig();
-//        pigTable2.add(smallPig2);
-////
-//        firstFloor.add(pigTable1).size(50,50).bottom();
-//        firstFloor.add(iceTable).size(70, 70).bottom(); // Add ice table to blockTable
-//        firstFloor.add(pigTable2).size(50,50).bottom();
-//
-//        blockTable.add(firstFloor);
-//        blockTable.row(); // Move to a new row for the stone block
-//
-//        // Create a dedicated table for the stone block
-//        Table stoneTable = new Table();
-//        stoneTable.setSize(100, 40);
-//        Block stoneBlock = new Block(stoneMaterial, 60, 40);
-//        stoneTable.add(stoneBlock).center().size(60, 40);
-//        blockTable.add(stoneTable).expandX().bottom();
-//        blockTable.row();
-//
-//        // Create two wood tables for two columns of wood blocks
-//        Table Wood = new Table();
-//        Wood.setSize(200, 100);
-//        Table woodTable1 = new Table();
-//        Table woodTable2 = new Table();
-//        woodTable1.setSize(50, 100);
-//        woodTable2.setSize(50, 100);
-//
-//
-//        for (int i = 0; i < 3; i++) {
-//            Block woodBlock1 = new Block(woodMaterial, 30, 30);
-//            woodTable1.add(woodBlock1).size(30, 30);
-//            woodTable1.row(); // Move to the next row after each block
-//
-//
-//            Block woodBlock2 = new Block(woodMaterial, 30, 30);
-//            woodTable2.add(woodBlock2).size(30, 30);
-//            woodTable2.row();
-//
-//        }
-//
-//        // Add both woodTables to the main blockTable as separate columns
-//        Wood.add(woodTable1).uniform().bottom().size(50, 100).padRight(30);
-//        bigPig = new BigPig();
-//        bigPig.setPosition(1100, 90);
-//        Wood.add(bigPig);
-//        Wood.add(woodTable2).uniform().bottom().size(50, 100).padLeft(30);
-//        blockTable.add(Wood).bottom();
-//        stage.addActor(blockTable);
-//    }
+
 
 
 
@@ -646,6 +647,7 @@ public class Gameplay implements Screen {
                 Block block = (Block) actor;
                 block.setSize(50, 50);
             }
+
         }
 
     }
@@ -664,12 +666,13 @@ public class Gameplay implements Screen {
         // Clear the screen
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//        camera.update();
+        camera.update();
         world.step(1 / 60f, 8, 3);
 //        camera.position.set(BirdBody.getPosition().x,BirdBody.getPosition().y,0);
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        backgroundSprite.draw(batch);
         world.getBodies(tmpBodies);
         for(Body body:tmpBodies){
 
@@ -677,17 +680,27 @@ public class Gameplay implements Screen {
                 Sprite sprite=(Sprite)body.getUserData();
                 sprite.setPosition(body.getPosition().x-sprite.getWidth()/2,body.getPosition().y-sprite.getHeight()/2);
                 sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
+
                 sprite.draw(batch);
 
 
 
             }
         }
+        for (Body birdBody : BirdBodies) {
+            Sprite birdSprite = (Sprite) birdBody.getUserData();
+            birdSprite.setPosition(
+                birdBody.getPosition().x - birdSprite.getWidth() / 2,
+                birdBody.getPosition().y - birdSprite.getHeight() / 2
+            );
+            birdSprite.setRotation(birdBody.getAngle() * MathUtils.radiansToDegrees);
+        }
         for (int i = BirdBodies.size() - 1; i >= 0; i--) {
             if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
                 System.out.println(i);
                 world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
                 BirdBodies.remove(i);
+                birds.remove(i);
                 System.out.println(i);
 
 
@@ -697,8 +710,12 @@ public class Gameplay implements Screen {
 
 
         batch.end();
-
-        debugRenderer.render(world, camera.combined);
+        Vector2 bodyPosition = BoxBody.getPosition();
+        catapultImage.setPosition(
+            171.5f*3f,52.5f*3
+        );
+        catapultImage.setSize(85,100);
+//        debugRenderer.render(world, camera.combined);
         // If the game is paused, do not update gameplay logic
         if (isPaused) {
             stage.act();
