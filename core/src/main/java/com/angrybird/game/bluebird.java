@@ -12,9 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 public class bluebird extends BaseBird {
     private Texture texture;
     private float initialWidth, initialHeight; // Store initial dimensions
-    public bluebird(String texturePath, boolean isLaunched, Vector2 positions) {
-        super(texturePath, isLaunched,positions);
+
+    public bluebird(String texturePath, boolean isLaunched, Vector2 positions, float damage, String birdType) {
+        super(texturePath, isLaunched, positions, damage, birdType);
     }
+
+
     @Override
     public void performAction() {
         // Implement blue bird's specific action (e.g., splitting into three)

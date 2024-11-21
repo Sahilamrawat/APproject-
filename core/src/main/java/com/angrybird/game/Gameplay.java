@@ -210,10 +210,10 @@ public class Gameplay implements Screen {
             birds = new ArrayList<BaseBird>();
             BirdBodies=new ArrayList<Body>();
 
-            BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-25, 20));
-            BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-24, 20));
-            BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-23, 20));
-            BaseBird blackbird = new BaseBird("blackbird.png", false, new Vector2(-22, 20));
+            BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-25, 20),27,"redBird");
+            BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-24, 20),20,"blueBird");
+            BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-23, 20),25,"blackBird");
+            BaseBird blackbird = new BaseBird("blackbird.png", false, new Vector2(-22, 20),30,"yellowBird");
             birds.add(redbird);
 
             birds.add(bluebird);
@@ -238,7 +238,7 @@ public class Gameplay implements Screen {
 
                 Body birdBody = world.createBody(bodyDef);
                 birdBody.createFixture(fixtureDef);
-
+                bird.setBody(birdBody);
                 Sprite birdSprite = new Sprite(new Texture(bird.getTexturePath()));
                 birdSprite.setSize(2, 2);
                 birdSprite.setOrigin(birdSprite.getWidth() / 2, birdSprite.getHeight() / 2);
@@ -334,6 +334,46 @@ public class Gameplay implements Screen {
 
 
 
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+
+                // Retrieve the bodies associated with the fixtures
+                Body bodyA = fixtureA.getBody();
+                Body bodyB = fixtureB.getBody();
+                if (isBirdBody(bodyA) && isPigBody(bodyB)) {
+                    BaseBird bird = getBirdFromBody(bodyA);
+                    Pig pig = getPigFromBody(bodyB);
+                    if (bird != null && pig != null) {
+                        handleCollision(pig,bird);
+                    }
+                } else if (isBirdBody(bodyB) && isPigBody(bodyA)) {
+                    BaseBird bird = getBirdFromBody(bodyB);
+                    Pig pig = getPigFromBody(bodyA);
+                    if (bird != null && pig != null) {
+                        handleCollision(pig,bird);
+                    }
+                }
+
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        });
 
 //        ground body
         bodyDef.type= BodyDef.BodyType.StaticBody;
@@ -607,7 +647,43 @@ public class Gameplay implements Screen {
 
 
     }
+    private boolean isBirdBody(Body body) {
+        return BirdBodies.contains(body);
+    }
 
+    private boolean isPigBody(Body body) {
+        return pigsBodies.contains(body);
+    }
+    private BaseBird getBirdFromBody(Body body) {
+        int index = BirdBodies.indexOf(body);
+        return index != -1 ? birds.get(index) : null;
+    }
+
+    private Pig getPigFromBody(Body body) {
+        int index = pigsBodies.indexOf(body);
+        return index != -1 ? pigs.get(index) : null;
+    }
+    private void handleCollision(Pig pig, BaseBird bird) {
+        float damage = calculateDamage(bird);
+        System.out.println(bird.birdType+": is my bird type");
+
+        pig.damage(damage);
+        System.out.println(pig.getPigType()+" recieved this much damage "+ bird.getDamage()+" current health "+pig.getHealth());
+        pig.setCollided(true);
+//        if (pig.isDead()) {
+//            for (int i = 0; i < pigsBodies.size(); i++) {
+//                if (pigsBodies.get(i).getUserData() == pig) {
+//                    world.destroyBody(pigsBodies.get(i));
+//                    pigsBodies.remove(i);
+//                    break;
+//                }
+//            }
+//        }
+    }
+
+    private float calculateDamage(BaseBird bird) {
+        return bird.getDamage();
+    }
 
 
     private void positionClosestBird() {
@@ -786,7 +862,7 @@ public class Gameplay implements Screen {
 
         debugRenderer.render(world, camera.combined);
         // If the game is paused, do not update gameplay logic
-        System.out.println("Status: "+isPaused);
+
 
         if (!isPaused) {
 
@@ -812,27 +888,38 @@ public class Gameplay implements Screen {
 
                 }
             }
-            for (Body birdBody : BirdBodies) {
-                Sprite birdSprite = (Sprite) birdBody.getUserData();
-                birdSprite.setPosition(
-                    birdBody.getPosition().x - birdSprite.getWidth() / 2,
-                    birdBody.getPosition().y - birdSprite.getHeight() / 2
-                );
-                birdSprite.setRotation(birdBody.getAngle() * MathUtils.radiansToDegrees);
-            }
+//            for (Body birdBody : BirdBodies) {
+//                Sprite birdSprite = (Sprite) birdBody.getUserData();
+//                birdSprite.setPosition(
+//                    birdBody.getPosition().x - birdSprite.getWidth() / 2,
+//                    birdBody.getPosition().y - birdSprite.getHeight() / 2
+//                );
+//                birdSprite.setRotation(birdBody.getAngle() * MathUtils.radiansToDegrees);
+//            }
             for (int i = BirdBodies.size() - 1; i >= 0; i--) {
-                System.out.println("iterations: "+i);
+
                 if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
-                    System.out.println(i);
+
                     world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
 
                     BirdBodies.remove(i);
 //                    birds.remove(i);
-                    System.out.println(i);
+
 
 
                     break; // Exit the loop after destroying
                 }
+            }
+            for (int i=0; i<pigsBodies.size(); i++) {
+                if (pigs.get(i).isDestroyed) {
+
+                    world.destroyBody(pigsBodies.get(i));
+                    pigsBodies.remove(i);
+                    pigs.remove(i);
+                    break;
+
+                }
+
             }
 
 
@@ -866,27 +953,34 @@ public class Gameplay implements Screen {
 
                 }
             }
-            for (Body birdBody : BirdBodies) {
-                Sprite birdSprite = (Sprite) birdBody.getUserData();
-                birdSprite.setPosition(
-                    birdBody.getPosition().x - birdSprite.getWidth() / 2,
-                    birdBody.getPosition().y - birdSprite.getHeight() / 2
-                );
-                birdSprite.setRotation(birdBody.getAngle() * MathUtils.radiansToDegrees);
-            }
+//            for (Body birdBody : BirdBodies) {
+//                for(Body pigBody:pigsBodies){
+//                    if(birdBody.)
+//                }
+//            }
+
             for (int i = BirdBodies.size() - 1; i >= 0; i--) {
-                System.out.println("iterations: "+i);
+
                 if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
-                    System.out.println(i);
+
                     world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
 
                     BirdBodies.remove(i);
 //                    birds.remove(i);
-                    System.out.println(i);
-
 
                     break; // Exit the loop after destroying
                 }
+            }
+
+            for (int i=0; i<pigsBodies.size(); i++) {
+                if (pigs.get(i).isDead()) {
+
+                    world.destroyBody(pigsBodies.get(i));
+                    pigsBodies.remove(i);
+                    break;
+
+                }
+
             }
 
 

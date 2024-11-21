@@ -13,9 +13,11 @@ public class blackbird extends BaseBird {
     private Texture texture;
     private boolean isLaunched; // Store initial dimensions
     Vector2 positions;
-    public blackbird(String texturePath, boolean isLaunched, Vector2 positions) {
-        super(texturePath, isLaunched,positions);
+
+    public blackbird(String texturePath, boolean isLaunched, Vector2 positions, float damage, String birdType) {
+        super(texturePath, isLaunched, positions, damage, birdType);
     }
+
 
     @Override
     public void performAction() {

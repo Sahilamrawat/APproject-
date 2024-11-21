@@ -13,8 +13,9 @@ public class redbird extends BaseBird {
     private Texture texture;
     private boolean isLaunched; // Store initial dimensions
     Vector2 positions;
-    public redbird(String texturePath, boolean isLaunched, Vector2 positions) {
-        super(texturePath, isLaunched,positions);
+
+    public redbird(String texturePath, boolean isLaunched, Vector2 positions, float damage, String birdType) {
+        super(texturePath, isLaunched, positions, damage, birdType);
     }
 
 

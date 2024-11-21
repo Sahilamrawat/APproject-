@@ -22,14 +22,23 @@ public class BaseBird extends Actor implements Bird {
     private String texturePath;
     private Sprite birdSprite;
     public boolean isLaunched;
+    public float damage;
     Vector2 positions;
+    public String birdType;
+
+    public float getDamage() {
+        return damage;
+    }
 
     // Constructor to initialize the bird texture and physics body
-    public BaseBird(String texturePath, boolean isLaunched, Vector2 positions) {
+    public BaseBird(String texturePath, boolean isLaunched, Vector2 positions,float damage,String birdType) {
         this.texture = new Texture(Gdx.files.internal(texturePath));
+        this.birdType=birdType;
+
         this.texturePath = texturePath;
         this.isLaunched = isLaunched;
         this.positions = positions; // Store the initial position
+        this.damage=damage;
     }
 
 

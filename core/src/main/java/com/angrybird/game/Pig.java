@@ -16,8 +16,27 @@ public class Pig extends Actor {
     private String pigType;
     private float health;
     private String texturePath;
+    private boolean collided;
+
+    public boolean isCollided() {
+        return collided;
+    }
+
+    public void setCollided(boolean collided) {
+        this.collided = collided;
+    }
 
     public boolean isDestroyed;
+    private Sprite sprite;
+
+    public Sprite getSprite() {
+        return sprite;
+    }
+
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+    }
+
     Vector2 positions;
 
     public String getPigType() {
@@ -41,13 +60,26 @@ public class Pig extends Actor {
         this.health = health;
     }
 
-    public boolean isDestroyed() {
-        return isDestroyed;
+
+
+    public void damage(float damageAmount) {
+        this.health -= damageAmount; // Reduce health by the damage amount
+        if (this.health <= 0) {
+            this.health = 0;       // Ensure health does not go below zero
+            this.isDestroyed = true; // Mark the pig as destroyed
+        }
     }
-
-
     public String getTexturePath() {
         return texturePath;
     }
 
+    public boolean isDead() {
+        if (this.health <= 0) {
+            this.health = 0;       // Ensure health does not go below zero
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
