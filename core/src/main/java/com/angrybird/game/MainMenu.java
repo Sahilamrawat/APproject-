@@ -6,7 +6,6 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -32,7 +31,7 @@ public class MainMenu implements Screen {
     private BitmapFont white, black;
     private TextureAtlas atlas;
     private ImageTextButton playButton, exitButton, loadButton, profileButton;
-    private Gameplay gameplayScreen;
+    private Level_1 level1Screen;
     private Texture playTexture, exitTexture, loadTexture, profileTexture;
     private Image buttonImage1, buttonImage2, buttonImage3, buttonImage4;
 
@@ -42,9 +41,9 @@ public class MainMenu implements Screen {
     public MainMenu() {
     }
 
-    public MainMenu(Game game, Gameplay gameplayScreen) {
+    public MainMenu(Game game, Level_1 level1Screen) {
         this.game = game;
-        this.gameplayScreen = gameplayScreen;
+        this.level1Screen = level1Screen;
     }
 
     @Override
@@ -87,7 +86,7 @@ public class MainMenu implements Screen {
         loadButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGame(game,gameplayScreen));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGame(game, level1Screen));
             }
         });
 
@@ -209,7 +208,7 @@ public class MainMenu implements Screen {
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                
+
                 image.setScale(1f);
             }
         });

@@ -23,7 +23,7 @@ public class LoseScreen implements Screen {
     private Label scoreLabel;
     private Label bonusLabel;
     private Table table;
-    private Gameplay gameplayScreen;
+    private Screen level1Screen;
     private Stage stage;
     private Image backgroundImage;
     private ImageTextButton restartButton, mainMenuButton;
@@ -32,12 +32,15 @@ public class LoseScreen implements Screen {
     private Texture loseTexture;
     private Image overlayImage;
     private Image buttonImage1, buttonImage2;
+    private int points;
 
-    public LoseScreen(Game game, Screen nextLevelScreen, Screen mainMenuScreen,Gameplay gameplayScreen) {
+
+
+    public LoseScreen(Game game, Screen level1Screen,int points) {
         this.game = game;
-        this.nextLevelScreen = nextLevelScreen;
-        this.mainMenuScreen = mainMenuScreen;
-        this.gameplayScreen = gameplayScreen;
+        this.level1Screen = level1Screen;
+
+        this.points=points;
     }
 
     public void show() {
@@ -57,12 +60,12 @@ public class LoseScreen implements Screen {
         backgroundImage = new Image(new Texture(Gdx.files.internal("gameplayBackground.jpg")));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundImage.setPosition(0, 0);
-        stage.addActor(backgroundImage); 
+        stage.addActor(backgroundImage);
 
         overlayImage = new Image(new Texture(Gdx.files.internal("loseBackground.png")));
 
-        float reducedWidth = Gdx.graphics.getWidth() / 2-70; 
-        float height = Gdx.graphics.getHeight() / 2 + 100; 
+        float reducedWidth = Gdx.graphics.getWidth() / 2-70;
+        float height = Gdx.graphics.getHeight() / 2 + 100;
 
         overlayImage.setSize(reducedWidth, height); // Set the size with the new width
         overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2,
@@ -93,16 +96,15 @@ public class LoseScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Transition to main menu screen
-                ((Game) Gdx.app.getApplicationListener()).setScreen(mainMenuScreen);
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
 
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameplayScreen.restartGame(); // Call the restart method
-                gameplayScreen.setPaused(false); // Resume gameplay after restart
-                ((Game)Gdx.app.getApplicationListener()).setScreen(gameplayScreen); // Go back to gameplay
+//                level1Screen.restartGame(); // Call the restart method// Resume gameplay after restart
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new Level_1()); // Go back to gameplay
             }
         });
 

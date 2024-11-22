@@ -19,7 +19,9 @@ public class Pause implements Screen {
     private Stage stage;
     private Skin skin;
     private Game game;
-    public Gameplay gameplayScreen; // Reference to Gameplay screen
+    public Level_1 level1Screen; // Reference to Gameplay screen
+    public Level_2 level2Screen;
+    public Level_3 level3Screen;
     private Image backgroundImage;
     private ImageTextButton resumeButton, exitButton, restartButton, saveButton,menuButton;
     private Texture resumeTexture, exitTexture, restartTexture, saveTexture,menuTexture;
@@ -27,9 +29,17 @@ public class Pause implements Screen {
 
     private Table table; // Table to arrange buttons and background
 
-    public Pause(Game game, Gameplay gameplayScreen) {
+    public Pause(Game game, Level_1 level1Screen) {
         this.game = game;
-        this.gameplayScreen = gameplayScreen; // Store reference to the Gameplay screen
+        this.level1Screen = level1Screen; // Store reference to the Gameplay screen
+    }
+    public Pause(Game game, Level_2 level2Screen) {
+        this.game = game;
+        this.level2Screen = level2Screen; // Store reference to the Gameplay screen
+    }
+    public Pause(Game game, Level_3 level3Screen) {
+        this.game = game;
+        this.level3Screen = level3Screen; // Store reference to the Gameplay screen
     }
 
     @Override
@@ -99,17 +109,17 @@ public class Pause implements Screen {
         resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameplayScreen.setPaused(false); // Resume gameplay
-                ((Game)Gdx.app.getApplicationListener()).setScreen(gameplayScreen); // Go back to gameplay
+                level1Screen.setPaused(false); // Resume gameplay
+                ((Game)Gdx.app.getApplicationListener()).setScreen(level1Screen); // Go back to gameplay
             }
         });
 
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameplayScreen.restartGame(); // Call the restart method
-                gameplayScreen.setPaused(false); // Resume gameplay after restart
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new Gameplay()); // Go back to gameplay
+                level1Screen.restartGame(); // Call the restart method
+                level1Screen.setPaused(false); // Resume gameplay after restart
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new Level_1()); // Go back to gameplay
             }
         });
 
@@ -131,7 +141,7 @@ public class Pause implements Screen {
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameplayScreen.setPaused(false); // Resume gameplay before going back
+                level1Screen.setPaused(false); // Resume gameplay before going back
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu()); // Go back to gameplay
             }
         });
@@ -191,7 +201,7 @@ public class Pause implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-        gameplayScreen.render(delta);
+        level1Screen.render(delta);
 
         stage.act(delta);
         stage.draw();

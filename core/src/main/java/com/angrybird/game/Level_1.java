@@ -18,44 +18,39 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.compression.lzma.Base;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class Gameplay implements Screen {
+public class Level_1 extends Levels implements Screen {
     private Vector2 startPosition = new Vector2(); // Starting position of the catapult (on touchDown)
     private Vector2 endPosition = new Vector2();   // End position of the catapult (on touchDragged)
-    private Vector2 velocity = new Vector2();      // Initial velocity of the bird when released
+
     private OrthographicCamera camera;
-    private Viewport viewport;
+
     private SpriteBatch batch;
     private World world;
     private Box2DDebugRenderer debugRenderer;
     private Array<Image> trajectoryDots;
     private Texture dotTexture;
-    private static Bird currentBird; // To track the bird on the catapult
-    private Vector2 birdPosition;
-    private float dotSpacing = 20; // Space between dots
+    public int LevelNo=1;
+
     private Stage stage;
 
     private boolean isBirdLaunched = false;
 
+//    public Levels level=new Levels();
+    Levels levels=new Levels();
 
     private Skin skin;
     private Game game;
-    private Image backgroundImage;
+
     private Label pointsLabel;
-    private float catapultX = 100;  // X position of the catapult
-    private float catapultY = 100;
-    private int points = 1200;
+
+    private int points;
     private Screen previousScreen;
     private ImageTextButton settingsButton;
     private ImageTextButton backButton;
@@ -67,23 +62,14 @@ public class Gameplay implements Screen {
     private ArrayList<BaseBird> birds;
     private ArrayList<Pig> pigs;
     private ArrayList<Material> Materials;
-    private BigPig bigPig;
-    private MediumPig mediumPig;
-    private SmallPig smallPig1;
-    private SmallPig smallPig2;
+
     private Image buttonImage1, buttonImage2;
-    private BirdLauncher birdLauncher;
-    private Body launchedBird;
-    private Texture backgroundTexture;
+
     public ArrayList<Body> BirdBodies;
     public ArrayList<Body> pigsBodies;
     public ArrayList<Body> materialBodies;
 
-    private BaseBird redbird,bluebird,yellowbird,blackbird;
-//    private Texture groundTexture;
-    private SpriteBatch spriteBatch;
-    private Sprite boxSprite;
-    private Sprite birdSprite;
+
     private Array<Body> tmpBodies=new Array<Body>();
     private Body BoxBody,BirdBody,PigBody;
     private Sprite backgroundSprite;
@@ -91,12 +77,14 @@ public class Gameplay implements Screen {
 
 
 
-    public Gameplay(Game game, Screen previousScreen) {
+    public Level_1(Game game, Screen previousScreen) {
+        super(game);
         this.game = game;
         this.previousScreen = previousScreen;
     }
 
-    public Gameplay() {
+    public Level_1() {
+
     }
 
     @Override
@@ -143,7 +131,7 @@ public class Gameplay implements Screen {
                 return true; // Return true to indicate the event was handled
             }
         };
-
+        points = 0;
         // Combine InputController and Stage using InputMultiplexer
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
@@ -154,9 +142,9 @@ public class Gameplay implements Screen {
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
         settingTexture = new Texture(Gdx.files.internal("pause.png"));
-        backTexture = new Texture(Gdx.files.internal("back.png"));
+
         settingsButton=createImageTextButton(settingTexture,100,100);
-        backButton=createImageTextButton(backTexture,50,50);
+
         backgroundSprite = new Sprite(new Texture("gameplayBackground.jpg"));
         backgroundSprite.setSize(1920f/50f*2f, 1080f/50f*2f);
         backgroundSprite.setOrigin(backgroundSprite.getWidth()/2,backgroundSprite.getHeight()/2);
@@ -174,7 +162,7 @@ public class Gameplay implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused=true;
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new Pause(game, Gameplay.this));
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new Pause(game, Level_1.this));
                 birdsInitialized=false;
                 System.out.println("Game Status "+isPaused);
 
@@ -185,21 +173,6 @@ public class Gameplay implements Screen {
         stage.addActor(settingsButton);
 
 
-        updateBackButtonPosition();
-        backButton.setSize(70, 70);
-
-// Position the button
-        backButton.setPosition(50, 50);
-        stage.addActor(backButton);
-
-// Add ClickListener for the back button
-        backButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(previousScreen); // Action to go back
-            }
-        });
-        addHoverEffect(buttonImage1, backButton);
 
 
 
@@ -491,7 +464,7 @@ public class Gameplay implements Screen {
         bodyDef.position.set(0,-14.5f);
 
         ChainShape groundShape=new ChainShape();
-        groundShape.createChain(new Vector2[]{new Vector2(-50,0),new Vector2(50,0)});
+        groundShape.createChain(new Vector2[]{new Vector2(-300,0),new Vector2(300,0)});
 
         //fixture definition
         fixtureDef.shape=groundShape;
@@ -623,13 +596,7 @@ public class Gameplay implements Screen {
         float buttonSpacing = 20;
 
 // Position win button
-        winButton.setPosition(screenWidth / 2f - buttonWidth - buttonSpacing / 2, buttonHeight + 10);
-        winButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen(game, null,new MainMenu(),Gameplay.this));
-            }
-        });
+
 
 
 
@@ -637,16 +604,9 @@ public class Gameplay implements Screen {
         stage.addActor(settingsButton);
 
 // Position lose button
-        loseButton.setPosition(screenWidth / 2f + buttonSpacing / 2, buttonHeight + 10);
-        loseButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoseScreen(game, null,new MainMenu(),Gameplay.this));
-            }
-        });
+
 // Add buttons to the stage
-        stage.addActor(winButton);
-        stage.addActor(loseButton);
+
 
 
 
@@ -906,14 +866,9 @@ public class Gameplay implements Screen {
 
                 }
             }
-//            for (Body birdBody : BirdBodies) {
-//                Sprite birdSprite = (Sprite) birdBody.getUserData();
-//                birdSprite.setPosition(
-//                    birdBody.getPosition().x - birdSprite.getWidth() / 2,
-//                    birdBody.getPosition().y - birdSprite.getHeight() / 2
-//                );
-//                birdSprite.setRotation(birdBody.getAngle() * MathUtils.radiansToDegrees);
-//            }
+            pointsLabel.setText("Points: " + points);
+//            pointsLabel = new Label("Points: " + points, skin, "title");
+//            pointsLabel.setPosition(20, Gdx.graphics.getHeight() - 30);
             for (int i = BirdBodies.size() - 1; i >= 0; i--) {
 
                 if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
@@ -930,7 +885,7 @@ public class Gameplay implements Screen {
             }
             for (int i=0; i<pigsBodies.size(); i++) {
                 if (pigs.get(i).isDestroyed) {
-
+                    points+=pigs.get(i).gamePoints;
                     world.destroyBody(pigsBodies.get(i));
                     pigsBodies.remove(i);
                     pigs.remove(i);
@@ -940,6 +895,25 @@ public class Gameplay implements Screen {
 
             }
 
+
+
+            if (pigsBodies.isEmpty()) {
+                for (int i = 0; i < Levels.levels.size(); i++) {
+                    if (Levels.levels.get(i).LevelNo == LevelNo) {
+                        Levels.levels.get(i).isCompleted = true;
+
+                        // Ensure we don't access out of bounds
+                        if (i + 1 < Levels.levels.size()) {
+                            Levels.levels.get(i + 1).isUnlocked = true;
+                            System.out.println("Level::"+Levels.levels.get(i+1).isUnlocked);
+                        }
+                    }
+                }
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen(game,new Level_1(),new Level_2(),points));
+            }
+            if(BirdBodies.isEmpty()&&!(pigsBodies.isEmpty())){
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new LoseScreen(game,Level_1.this,points));
+            }
 
             batch.end();
             Vector2 bodyPosition = BoxBody.getPosition();
@@ -993,6 +967,7 @@ public class Gameplay implements Screen {
             for (int i=0; i<pigsBodies.size(); i++) {
                 if (pigs.get(i).isDead()) {
 
+                    points+=pigs.get(i).gamePoints;
                     world.destroyBody(pigsBodies.get(i));
                     pigsBodies.remove(i);
                     break;
@@ -1043,8 +1018,7 @@ public class Gameplay implements Screen {
         world.dispose();
         BirdBodies.clear();
 
-        boxSprite.getTexture().dispose();
-        birdSprite.getTexture().dispose();
+
         debugRenderer.dispose();
         stage.dispose();
         skin.dispose();

@@ -27,19 +27,19 @@ public class LoadGame implements Screen {
     private Game game;
     private SpriteBatch batch;
     private Array<String> savedGames;
-    private Gameplay gameplayScreen;
+    private Level_1 level1Screen;
     private Image buttonImage1,buttonImage2;
 
     private Image backgroundImage;
 
-    public LoadGame(Game game,Gameplay gameplayScreen) {
+    public LoadGame(Game game, Level_1 level1Screen) {
         this.game = game;
         savedGames = new Array<>();
 
         // Example saved games
         savedGames.add("LOAD Game 1");
 
-        this.gameplayScreen = gameplayScreen;
+        this.level1Screen = level1Screen;
     }
 
     @Override
@@ -152,7 +152,7 @@ public class LoadGame implements Screen {
     private void loadGame(String gameName) {
         // Logic to load the game, for example:
         System.out.println("Loading " + gameName + "...");
-        ((Game) Gdx.app.getApplicationListener()).setScreen(new Gameplay(game, LoadGame.this)); 
+        ((Game) Gdx.app.getApplicationListener()).setScreen(new Level_1(game, LoadGame.this));
     }
 
     @Override
@@ -169,7 +169,7 @@ public class LoadGame implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        
+
         backgroundImage.setSize(width, height);
     }
 
