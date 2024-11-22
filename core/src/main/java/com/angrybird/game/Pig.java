@@ -38,16 +38,18 @@ public class Pig extends Actor {
     }
 
     Vector2 positions;
+    int gamePoints;
 
     public String getPigType() {
         return pigType;
     }
 
-    public Pig(String texturePath, boolean isDestroyed, Vector2 positions, float health, String pigType) {
+    public Pig(String texturePath, boolean isDestroyed, Vector2 positions, float health, String pigType,int gamePoints) {
         this.texture = new Texture(Gdx.files.internal(texturePath));
         this.pigType=pigType;
         this.texturePath = texturePath;
         this.isDestroyed =isDestroyed;
+        this.gamePoints=gamePoints;
         this.health=health;
         this.positions = positions; // Store the initial position
     }

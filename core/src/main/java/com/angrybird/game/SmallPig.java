@@ -8,7 +8,8 @@ public class SmallPig extends Pig {
     private static final float HEIGHT = 40;
     private static final String TEXTURE_PATH = "small_pig.png";
 
-    public SmallPig(String texturePath, boolean isDestroyed, Vector2 positions, float health, String pigType) {
-        super(texturePath, isDestroyed, positions, health, pigType);
+
+    public SmallPig(String texturePath, boolean isDestroyed, Vector2 positions, float health, String pigType, int gamePoints) {
+        super(texturePath, isDestroyed, positions, health, pigType, gamePoints);
     }
 }

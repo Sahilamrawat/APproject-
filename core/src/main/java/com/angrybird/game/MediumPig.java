@@ -9,7 +9,7 @@ public class MediumPig extends Pig {
     private static final String TEXTURE_PATH = "medium_pig.png";
 
 
-    public MediumPig(String texturePath, boolean isDestroyed, Vector2 positions, float health, String pigType) {
-        super(texturePath, isDestroyed, positions, health, pigType);
+    public MediumPig(String texturePath, boolean isDestroyed, Vector2 positions, float health, String pigType, int gamePoints) {
+        super(texturePath, isDestroyed, positions, health, pigType, gamePoints);
     }
 }

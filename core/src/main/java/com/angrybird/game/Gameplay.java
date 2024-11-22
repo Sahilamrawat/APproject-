@@ -62,6 +62,7 @@ public class Gameplay implements Screen {
     private Image catapultImage;
     private ArrayList<BaseBird> birds;
     private ArrayList<Pig> pigs;
+    private ArrayList<Material> Materials;
     private BigPig bigPig;
     private MediumPig mediumPig;
     private SmallPig smallPig1;
@@ -72,6 +73,7 @@ public class Gameplay implements Screen {
     private Texture backgroundTexture;
     public ArrayList<Body> BirdBodies;
     public ArrayList<Body> pigsBodies;
+    public ArrayList<Body> materialBodies;
 
     private BaseBird redbird,bluebird,yellowbird,blackbird;
 //    private Texture groundTexture;
@@ -256,10 +258,10 @@ public class Gameplay implements Screen {
         pigs = new ArrayList<Pig>();
         pigsBodies=new ArrayList<Body>();
 
-        Pig smallPig1 = new Pig("small_pig.png", false, new Vector2(14.10f,15),10,"small");
-        Pig smallPig2 = new Pig("small_pig.png", false, new Vector2(20.30f,15),10,"small");
-        Pig mediumPig = new Pig("medium_pig.png", false, new Vector2(17.10f,15),20,"medium");
-        Pig bigPig = new Pig("big_pig.png", false, new Vector2(17.10f,13),30,"big");
+        Pig smallPig1 = new Pig("small_pig.png", false, new Vector2(14.10f,15),10,"small",500);
+        Pig smallPig2 = new Pig("small_pig.png", false, new Vector2(20.30f,15),10,"small",500);
+        Pig mediumPig = new Pig("medium_pig.png", false, new Vector2(17.10f,15),20,"medium",1000);
+        Pig bigPig = new Pig("big_pig.png", false, new Vector2(17.10f,13),30,"big",2000);
 
         pigs.add(smallPig1);
         pigs.add(smallPig2);
@@ -332,6 +334,96 @@ public class Gameplay implements Screen {
         }
 
 
+        //material
+
+        Materials = new ArrayList<Material>();
+        materialBodies=new ArrayList<Body>();
+
+        Material woodBlock = new Material("wood_block.png", false, new Vector2(14.4f,10),5,"wood");
+        Material StoneBlock = new Material("stone_block.png", false, new Vector2(17.10f,13),10,"stone");
+        Material IceBlock = new Material("ice_block.png", false, new Vector2(17.10f,14),10,"ice");
+        Material woodBlock1 = new Material("wood_block.png", false, new Vector2(19.6f,10),10,"wood");
+
+        Materials.add(woodBlock);
+        Materials.add(StoneBlock);
+
+        Materials.add(IceBlock);
+        Materials.add(woodBlock1);
+
+
+        // Loop through the birds and create their bodies and sprites
+        for (Material material : Materials) {
+
+            bodyDef.type = BodyDef.BodyType.DynamicBody;
+            bodyDef.position.set(material.positions);
+
+            PolygonShape shape=new PolygonShape();
+            if(material.getMaterialType().equalsIgnoreCase("wood")){
+
+                shape.setAsBox(.5f,3);
+                //fixture
+                fixtureDef.shape=shape;
+                fixtureDef.friction=1f;
+                fixtureDef.restitution=0f;
+                fixtureDef.density=5;
+            }else if(material.getMaterialType().equalsIgnoreCase("stone")){
+                shape.setAsBox(5,0.5f);
+                //fixture
+                fixtureDef.shape=shape;
+                fixtureDef.friction=1f;
+                fixtureDef.restitution=0f;
+                fixtureDef.density=5;
+            }else if(material.getMaterialType().equalsIgnoreCase("ice")){
+                shape.setAsBox(1.2f,1.2f);
+                //fixture
+                fixtureDef.shape=shape;
+                fixtureDef.friction=1f;
+                fixtureDef.restitution=0f;
+                fixtureDef.density=5;
+            }
+
+
+
+
+
+            Body MaterialBody = world.createBody(bodyDef);
+            MaterialBody.createFixture(fixtureDef);
+
+            Sprite materialSprite = new Sprite(new Texture(material.getTexturePath()));
+            if(material.getMaterialType().equalsIgnoreCase("wood")){
+                materialSprite.setSize(1, 6.2f);
+                materialSprite.setOrigin(materialSprite.getWidth() / 2, materialSprite.getHeight() / 2);
+                MaterialBody.setUserData(materialSprite);
+                MaterialBody.setAngularDamping(0.7f);
+                materialBodies.add(MaterialBody);
+            }else if(material.getMaterialType().equalsIgnoreCase("stone")){
+                materialSprite.setSize(10f, 1f);
+                materialSprite.setOrigin(materialSprite.getWidth() / 2, materialSprite.getHeight() / 2);
+                MaterialBody.setUserData(materialSprite);
+                MaterialBody.setAngularDamping(0.7f);
+                materialBodies.add(MaterialBody);
+            }else if(material.getMaterialType().equalsIgnoreCase("ice")){
+                materialSprite.setSize(3, 3f);
+                materialSprite.setOrigin(materialSprite.getWidth() / 2, materialSprite.getHeight() / 2);
+                MaterialBody.setUserData(materialSprite);
+                MaterialBody.setAngularDamping(0.7f);
+                materialBodies.add(MaterialBody);
+            }
+
+
+
+
+
+            // Optionally dispose of the shape when done
+            shape.dispose();
+        }
+
+
+
+
+
+
+
 
 
         world.setContactListener(new ContactListener() {
@@ -389,112 +481,6 @@ public class Gameplay implements Screen {
         world.createBody(bodyDef).createFixture(fixtureDef);
         groundShape.dispose();
 
-//box1
-        bodyDef.type= BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(14.4f,10);
-
-        PolygonShape shape1=new PolygonShape();
-        shape1.setAsBox(.5f,3);
-
-
-
-        //fixture
-        fixtureDef.shape=shape1;
-        fixtureDef.friction=1f;
-        fixtureDef.restitution=0f;
-        fixtureDef.density=5;
-
-        BoxBody=world.createBody(bodyDef);
-        BoxBody.createFixture(fixtureDef);
-
-
-        Sprite woodSprite = new Sprite(new Texture("wood_block.png"));
-
-        woodSprite.setSize(1, 6.2f);
-        woodSprite.setOrigin(woodSprite.getWidth() / 2, woodSprite.getHeight() / 2);
-        BoxBody.setUserData(woodSprite);
-        BoxBody.setAngularDamping(0.7f);
-
-//        catapultImage.setSize(-16,-8);
-        shape1.dispose();
-//box2
-        bodyDef.type= BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(17.10f,13);
-
-        PolygonShape shape2=new PolygonShape();
-        shape2.setAsBox(5,0.5f);
-
-
-
-        //fixture
-        fixtureDef.shape=shape1;
-        fixtureDef.friction=1f;
-        fixtureDef.restitution=0f;
-        fixtureDef.density=5;
-
-        BoxBody=world.createBody(bodyDef);
-        BoxBody.createFixture(fixtureDef);
-        Sprite woodSprite3 = new Sprite(new Texture("stone_block.png"));
-
-        woodSprite3.setSize(10f, 1f);
-        woodSprite3.setOrigin(woodSprite3.getWidth() / 2, woodSprite3.getHeight() / 2);
-        BoxBody.setUserData(woodSprite3);
-        BoxBody.setAngularDamping(0.7f);
-        shape2.dispose();
-
-
-        //Icebox
-        bodyDef.type= BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(17.10f,14);
-
-        PolygonShape Iceshape=new PolygonShape();
-        Iceshape.setAsBox(1.2f,1.2f);
-
-
-
-        //fixture
-        fixtureDef.shape=Iceshape;
-        fixtureDef.friction=1f;
-        fixtureDef.restitution=0f;
-        fixtureDef.density=5;
-
-        BoxBody=world.createBody(bodyDef);
-        BoxBody.createFixture(fixtureDef);
-        Sprite IceSprite = new Sprite(new Texture("ice_block.png"));
-
-        IceSprite.setSize(3f, 3f);
-        IceSprite.setOrigin(IceSprite.getWidth() / 2, IceSprite.getHeight() / 2);
-        BoxBody.setUserData(IceSprite);
-        BoxBody.setAngularDamping(0.7f);
-        Iceshape.dispose();
-
-
-
-        //box3
-        bodyDef.type= BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(19.6f,10);
-
-        PolygonShape shape3=new PolygonShape();
-        shape3.setAsBox(.5f,3);
-
-
-
-        //fixture
-        fixtureDef.shape=shape1;
-        fixtureDef.friction=1f;
-        fixtureDef.restitution=0f;
-        fixtureDef.density=5;
-
-
-        BoxBody=world.createBody(bodyDef);
-        BoxBody.createFixture(fixtureDef);
-        Sprite woodSprite2 = new Sprite(new Texture("wood_block.png"));
-
-        woodSprite2.setSize(1, 6.2f);
-        woodSprite2.setOrigin(woodSprite2.getWidth() / 2, woodSprite2.getHeight() / 2);
-        BoxBody.setUserData(woodSprite2);
-        BoxBody.setAngularDamping(0.7f);
-        shape3.dispose();
 
         TextButton winButton = new TextButton("Win", skin);
         TextButton loseButton = new TextButton("Lose", skin);
@@ -519,7 +505,7 @@ public class Gameplay implements Screen {
         bodyDef.position.set(-16,-13.3f);
 
         PolygonShape shape4=new PolygonShape();
-        shape1.setAsBox(1f,1.2f);
+        shape4.setAsBox(1f,1.2f);
 
 
 
@@ -670,15 +656,7 @@ public class Gameplay implements Screen {
         pig.damage(damage);
         System.out.println(pig.getPigType()+" recieved this much damage "+ bird.getDamage()+" current health "+pig.getHealth());
         pig.setCollided(true);
-//        if (pig.isDead()) {
-//            for (int i = 0; i < pigsBodies.size(); i++) {
-//                if (pigsBodies.get(i).getUserData() == pig) {
-//                    world.destroyBody(pigsBodies.get(i));
-//                    pigsBodies.remove(i);
-//                    break;
-//                }
-//            }
-//        }
+
     }
 
     private float calculateDamage(BaseBird bird) {

@@ -9,7 +9,7 @@ public class BigPig extends Pig {
     private static final String TEXTURE_PATH = "big_pig.png";
 
 
-    public BigPig(String texturePath, boolean isDestroyed, Vector2 positions, float health, String pigType) {
-        super(texturePath, isDestroyed, positions, health, pigType);
+    public BigPig(String texturePath, boolean isDestroyed, Vector2 positions, float health, String pigType, int gamePoints) {
+        super(texturePath, isDestroyed, positions, health, pigType, gamePoints);
     }
 }

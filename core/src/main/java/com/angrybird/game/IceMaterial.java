@@ -1,7 +1,10 @@
 package com.angrybird.game;
 
+import com.badlogic.gdx.math.Vector2;
+
 public class IceMaterial extends Material {
-    public IceMaterial() {
-        super("ice_block.png", 30); // Example texture path and strength value for ice
+
+    public IceMaterial(String texturePath, boolean isDestroyed, Vector2 positions, float health, String materialType) {
+        super(texturePath, isDestroyed, positions, health, materialType);
     }
 }
