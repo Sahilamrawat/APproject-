@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 
 public class Material {
     private String texturePath;
@@ -13,6 +14,8 @@ public class Material {
     private Sprite sprite;
     private Texture texture;
     private String materialType;
+    private Body body;
+
 
     private boolean collided;
     public Sprite getSprite() {
@@ -37,11 +40,23 @@ public class Material {
         return texturePath;
     }
 
+    public void setBody(Body body) {
+        this.body = body;
+    }
+
+    public Body getBody() {
+        return body;
+    }
+
     public String getMaterialType() {
         return materialType;
     }
 
     public int getStrength() {
         return strength;
+    }
+
+    public float getDamage() {
+        return this.damage;
     }
 }

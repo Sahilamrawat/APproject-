@@ -45,6 +45,10 @@ public class Gameplay implements Screen {
     private Vector2 birdPosition;
     private float dotSpacing = 20; // Space between dots
     private Stage stage;
+
+    private boolean isBirdLaunched = false;
+
+
     private Skin skin;
     private Game game;
     private Image backgroundImage;
@@ -258,8 +262,8 @@ public class Gameplay implements Screen {
         pigs = new ArrayList<Pig>();
         pigsBodies=new ArrayList<Body>();
 
-        Pig smallPig1 = new Pig("small_pig.png", false, new Vector2(14.10f,15),10,"small",500);
-        Pig smallPig2 = new Pig("small_pig.png", false, new Vector2(20.30f,15),10,"small",500);
+        Pig smallPig1 = new Pig("small_pig.png", false, new Vector2(14.10f,14),10,"small",500);
+        Pig smallPig2 = new Pig("small_pig.png", false, new Vector2(20.30f,14),10,"small",500);
         Pig mediumPig = new Pig("medium_pig.png", false, new Vector2(17.10f,15),20,"medium",1000);
         Pig bigPig = new Pig("big_pig.png", false, new Vector2(17.10f,13),30,"big",2000);
 
@@ -446,6 +450,21 @@ public class Gameplay implements Screen {
                     Pig pig = getPigFromBody(bodyA);
                     if (bird != null && pig != null) {
                         handleCollision(pig,bird);
+                    }
+                }
+                if (isBirdLaunched) {
+                    if (isMaterialBody(bodyA) && isPigBody(bodyB)) {
+                        Material material = getMaterialFromBody(bodyA);
+                        Pig pig = getPigFromBody(bodyB);
+                        if (material != null && pig != null) {
+                            handleMaterialCollision(pig, material);
+                        }
+                    } else if (isMaterialBody(bodyB) && isPigBody(bodyA)) {
+                        Material material = getMaterialFromBody(bodyB);
+                        Pig pig = getPigFromBody(bodyA);
+                        if (material != null && pig != null) {
+                            handleMaterialCollision(pig, material);
+                        }
                     }
                 }
 
@@ -640,6 +659,10 @@ public class Gameplay implements Screen {
     private boolean isPigBody(Body body) {
         return pigsBodies.contains(body);
     }
+
+    private boolean isMaterialBody(Body body) {
+        return materialBodies.contains(body);
+    }
     private BaseBird getBirdFromBody(Body body) {
         int index = BirdBodies.indexOf(body);
         return index != -1 ? birds.get(index) : null;
@@ -648,6 +671,11 @@ public class Gameplay implements Screen {
     private Pig getPigFromBody(Body body) {
         int index = pigsBodies.indexOf(body);
         return index != -1 ? pigs.get(index) : null;
+    }
+
+    private Material getMaterialFromBody(Body body) {
+        int index = materialBodies.indexOf(body);
+        return index != -1 ? Materials.get(index) : null;
     }
     private void handleCollision(Pig pig, BaseBird bird) {
         float damage = calculateDamage(bird);
@@ -658,9 +686,21 @@ public class Gameplay implements Screen {
         pig.setCollided(true);
 
     }
+    private void handleMaterialCollision(Pig pig, Material material) {
+        float damage = calculateMaterialDamage(material);
+//        System.out.println(bird.birdType+": is my bird type");
+
+        pig.damage(damage);
+        System.out.println(pig.getPigType()+" recieved this much damage "+ material.getDamage()+" current health "+pig.getHealth());
+        pig.setMaterialCollided(true);
+
+    }
 
     private float calculateDamage(BaseBird bird) {
         return bird.getDamage();
+    }
+    private float calculateMaterialDamage(Material material) {
+        return material.getDamage();
     }
 
 
@@ -877,7 +917,7 @@ public class Gameplay implements Screen {
             for (int i = BirdBodies.size() - 1; i >= 0; i--) {
 
                 if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
-
+                    isBirdLaunched=true;
                     world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
 
                     BirdBodies.remove(i);
@@ -940,7 +980,7 @@ public class Gameplay implements Screen {
             for (int i = BirdBodies.size() - 1; i >= 0; i--) {
 
                 if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
-
+                    isBirdLaunched=true;
                     world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
 
                     BirdBodies.remove(i);

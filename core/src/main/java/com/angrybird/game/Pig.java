@@ -17,6 +17,7 @@ public class Pig extends Actor {
     private float health;
     private String texturePath;
     private boolean collided;
+    private boolean materialCollided;
 
     public boolean isCollided() {
         return collided;
@@ -24,6 +25,10 @@ public class Pig extends Actor {
 
     public void setCollided(boolean collided) {
         this.collided = collided;
+    }
+
+    public void setMaterialCollided(boolean materialCollided) {
+        this.materialCollided = materialCollided;
     }
 
     public boolean isDestroyed;
