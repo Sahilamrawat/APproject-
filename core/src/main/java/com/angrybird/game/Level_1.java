@@ -161,7 +161,9 @@ public class Level_1 extends Levels implements Screen {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
                 isPaused=true;
+                isBirdLaunched=false;
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new Pause(game, Level_1.this));
                 birdsInitialized=false;
                 System.out.println("Game Status "+isPaused);

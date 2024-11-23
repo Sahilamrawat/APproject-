@@ -137,9 +137,9 @@ public class Level_3 implements Screen {
         skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
 
         settingTexture = new Texture(Gdx.files.internal("pause.png"));
-        backTexture = new Texture(Gdx.files.internal("back.png"));
+
         settingsButton=createImageTextButton(settingTexture,100,100);
-        backButton=createImageTextButton(backTexture,50,50);
+
         backgroundSprite = new Sprite(new Texture("gameplayBackground.jpg"));
         backgroundSprite.setSize(1920f/50f*2f, 1080f/50f*2f);
         backgroundSprite.setOrigin(backgroundSprite.getWidth()/2,backgroundSprite.getHeight()/2);
@@ -169,21 +169,6 @@ public class Level_3 implements Screen {
         stage.addActor(settingsButton);
 
 
-        updateBackButtonPosition();
-        backButton.setSize(70, 70);
-
-// Position the button
-        backButton.setPosition(50, 50);
-        stage.addActor(backButton);
-
-// Add ClickListener for the back button
-        backButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(previousScreen); // Action to go back
-            }
-        });
-        addHoverEffect(buttonImage1, backButton);
 
 
 
