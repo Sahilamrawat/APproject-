@@ -189,10 +189,10 @@ public class Level_1 extends Levels implements Screen {
             birds = new ArrayList<BaseBird>();
             BirdBodies=new ArrayList<Body>();
 
-            BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-25, 20),27,"redBird");
-            BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-24, 20),20,"blueBird");
-            BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-23, 20),25,"blackBird");
-            BaseBird blackbird = new BaseBird("blackbird.png", false, new Vector2(-22, 20),30,"yellowBird");
+            BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-25, -14.5f),27,"redBird");
+            BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-24, -14.5f),20,"blueBird");
+            BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-23, -14.5f),25,"blackBird");
+            BaseBird blackbird = new BaseBird("blackbird.png", false, new Vector2(-22, -14.5f),30,"yellowBird");
             birds.add(redbird);
 
             birds.add(bluebird);
@@ -235,10 +235,10 @@ public class Level_1 extends Levels implements Screen {
         pigs = new ArrayList<Pig>();
         pigsBodies=new ArrayList<Body>();
 
-        Pig smallPig1 = new Pig("small_pig.png", false, new Vector2(14.10f,14),10,"small",500);
-        Pig smallPig2 = new Pig("small_pig.png", false, new Vector2(20.30f,14),10,"small",500);
-        Pig mediumPig = new Pig("medium_pig.png", false, new Vector2(17.10f,15),20,"medium",1000);
-        Pig bigPig = new Pig("big_pig.png", false, new Vector2(17.10f,13),30,"big",2000);
+        Pig smallPig1 = new Pig("small_pig.png", false, new Vector2(14.10f,-6.5f),10,"small",500);
+        Pig smallPig2 = new Pig("small_pig.png", false, new Vector2(20.30f,-6.5f),10,"small",500);
+        Pig mediumPig = new Pig("medium_pig.png", false, new Vector2(17.10f,-3f),20,"medium",1000);
+        Pig bigPig = new Pig("big_pig.png", false, new Vector2(17.10f,-14.5f),30,"big",2000);
 
         pigs.add(smallPig1);
         pigs.add(smallPig2);
@@ -316,10 +316,10 @@ public class Level_1 extends Levels implements Screen {
         Materials = new ArrayList<Material>();
         materialBodies=new ArrayList<Body>();
 
-        Material woodBlock = new Material("wood_block.png", false, new Vector2(14.4f,10),5,"wood");
-        Material StoneBlock = new Material("stone_block.png", false, new Vector2(17.10f,13),10,"stone");
-        Material IceBlock = new Material("ice_block.png", false, new Vector2(17.10f,14),10,"ice");
-        Material woodBlock1 = new Material("wood_block.png", false, new Vector2(19.6f,10),10,"wood");
+        Material woodBlock = new Material("wood_block.png", false, new Vector2(14.4f,-10),5,"wood",100);
+        Material StoneBlock = new Material("stone_block.png", false, new Vector2(17.10f,-7),10,"stone",200);
+        Material IceBlock = new Material("ice_block.png", false, new Vector2(17.10f,-6),10,"ice",150);
+        Material woodBlock1 = new Material("wood_block.png", false, new Vector2(19.6f,-10),10,"wood",100);
 
         Materials.add(woodBlock);
         Materials.add(StoneBlock);
@@ -426,6 +426,21 @@ public class Level_1 extends Levels implements Screen {
                     }
                 }
                 if (isBirdLaunched) {
+                    if (isMaterialBody(bodyA) && isBirdBody(bodyB)) {
+                        Material material = getMaterialFromBody(bodyA);
+                        BaseBird bird = getBirdFromBody(bodyB);
+                        if (material != null && bird != null) {
+                            handleBirdMaterialCollision(bird, material);
+                        }
+                    } else if (isMaterialBody(bodyB) && isBirdBody(bodyA)) {
+                        Material material = getMaterialFromBody(bodyB);
+                        BaseBird bird = getBirdFromBody(bodyA);
+                        if (material != null && bird != null) {
+                            handleBirdMaterialCollision(bird, material);
+                        }
+                    }
+                }
+                if (isBirdLaunched) {
                     if (isMaterialBody(bodyA) && isPigBody(bodyB)) {
                         Material material = getMaterialFromBody(bodyA);
                         Pig pig = getPigFromBody(bodyB);
@@ -440,6 +455,7 @@ public class Level_1 extends Levels implements Screen {
                         }
                     }
                 }
+
 
             }
 
@@ -472,6 +488,21 @@ public class Level_1 extends Levels implements Screen {
         fixtureDef.restitution=0;
         world.createBody(bodyDef).createFixture(fixtureDef);
         groundShape.dispose();
+
+
+
+        bodyDef.type= BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(40,-14.5f);
+
+        ChainShape groundShape1=new ChainShape();
+        groundShape1.createChain(new Vector2[]{new Vector2(0,-300),new Vector2(0,300)});
+
+        //fixture definition
+        fixtureDef.shape=groundShape1;
+        fixtureDef.friction=.5f;
+        fixtureDef.restitution=0;
+        world.createBody(bodyDef).createFixture(fixtureDef);
+        groundShape1.dispose();
 
 
         TextButton winButton = new TextButton("Win", skin);
@@ -637,6 +668,10 @@ public class Level_1 extends Levels implements Screen {
         int index = materialBodies.indexOf(body);
         return index != -1 ? Materials.get(index) : null;
     }
+    public void handleBirdMaterialCollision(BaseBird bird, Material material) {
+        float damage = calculateDamage(bird);
+        material.damage(damage);
+    }
     private void handleCollision(Pig pig, BaseBird bird) {
         float damage = calculateDamage(bird);
         System.out.println(bird.birdType+": is my bird type");
@@ -649,13 +684,12 @@ public class Level_1 extends Levels implements Screen {
     private void handleMaterialCollision(Pig pig, Material material) {
         float damage = calculateMaterialDamage(material);
 //        System.out.println(bird.birdType+": is my bird type");
-
+        material.damage(damage);
         pig.damage(damage);
         System.out.println(pig.getPigType()+" recieved this much damage "+ material.getDamage()+" current health "+pig.getHealth());
         pig.setMaterialCollided(true);
 
     }
-
     private float calculateDamage(BaseBird bird) {
         return bird.getDamage();
     }
@@ -898,6 +932,8 @@ public class Level_1 extends Levels implements Screen {
 
 
             if (pigsBodies.isEmpty()) {
+                isBirdLaunched=false;
+                birdsInitialized=false;
                 for (int i = 0; i < Levels.levels.size(); i++) {
                     if (Levels.levels.get(i).LevelNo == LevelNo) {
                         Levels.levels.get(i).isCompleted = true;
@@ -909,12 +945,21 @@ public class Level_1 extends Levels implements Screen {
                         }
                     }
                 }
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen(game,new Level_1(),new Level_2(),points));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen(game,new Level_1(),new Level_2(),points,1));
             }
             if(BirdBodies.isEmpty()&&!(pigsBodies.isEmpty())){
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new LoseScreen(game,Level_1.this,points));
+                isBirdLaunched=false;
+                birdsInitialized=false;
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new LoseScreen(game,new Level_1(),points,1));
             }
-
+            for (int i = materialBodies.size() - 1; i >= 0; i--) {
+                if (Materials.get(i).isDestroyed) {
+                    points+=Materials.get(i).points;
+                    world.destroyBody(materialBodies.get(i));  // Destroy the body in the world
+                    materialBodies.remove(i);  // Remove the body from the list
+                    Materials.remove(i);  // Remove the material from the list
+                }
+            }
             batch.end();
             Vector2 bodyPosition = BoxBody.getPosition();
             catapultImage.setPosition(
@@ -976,7 +1021,14 @@ public class Level_1 extends Levels implements Screen {
 
             }
 
-
+            for (int i = materialBodies.size() - 1; i >= 0; i--) {
+                if (Materials.get(i).isDestroyed) {
+                    points+=Materials.get(i).points;
+                    world.destroyBody(materialBodies.get(i));  // Destroy the body in the world
+                    materialBodies.remove(i);  // Remove the body from the list
+                    Materials.remove(i);  // Remove the material from the list
+                }
+            }
             batch.end();
             Vector2 bodyPosition = BoxBody.getPosition();
             catapultImage.setPosition(

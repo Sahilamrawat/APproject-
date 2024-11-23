@@ -36,13 +36,15 @@ public class WinScreen implements Screen {
     private Image buttonImage1, buttonImage2,buttonImage3;
     private Image overlayImage,birdImage;
     private int points;
+    public int level;
 
 
-    public WinScreen(Game game, Screen level1Screen, Screen nextLevelScreen,int points) {
+    public WinScreen(Game game, Screen level1Screen, Screen nextLevelScreen,int points,int level) {
         this.game = game;
         this.level1Screen = level1Screen;
         this.nextLevelScreen=nextLevelScreen;
         this.points=points;
+        this.level=level;
     }
 
 
@@ -81,8 +83,20 @@ public class WinScreen implements Screen {
         table = new Table();
         table.setFillParent(true);
 
-        nextButton = createImageTextButton(nextTexture, 80, 80);
-        nextButton.setDisabled(true);
+        if(level!=3){
+            nextButton = createImageTextButton(nextTexture, 80, 80);
+            nextButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    // Transition to next level screen
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(nextLevelScreen);
+                }
+            });
+            table.add(nextButton).padTop(5).row();
+            addHoverEffect(buttonImage1, nextButton);
+        }
+
+
         mainMenuButton = createImageTextButton(mainMenuTexture, 80, 80);
         restartButton = createImageTextButton(restartTexture, 80, 80);
 
@@ -95,13 +109,7 @@ public class WinScreen implements Screen {
         table.add(scoreLabel).padBottom(10).row();
         table.add(bonusLabel).padBottom(5).row();
 
-        nextButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Transition to next level screen
-                ((Game) Gdx.app.getApplicationListener()).setScreen(nextLevelScreen);
-            }
-        });
+
 
         mainMenuButton.addListener(new ClickListener() {
             @Override
@@ -119,12 +127,12 @@ public class WinScreen implements Screen {
             }
         });
 
-        table.add(nextButton).padTop(5).row();
+
         table.add(mainMenuButton).padTop(10).row();
         table.add(restartButton).padTop(5).row();
         stage.addActor(table);
 
-        addHoverEffect(buttonImage1, nextButton);
+
         addHoverEffect(buttonImage2, mainMenuButton);
         addHoverEffect(buttonImage3, restartButton);
     }

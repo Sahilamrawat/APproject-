@@ -15,6 +15,7 @@ public class Material {
     private Texture texture;
     private String materialType;
     private Body body;
+    public int points;
 
 
     private boolean collided;
@@ -27,13 +28,18 @@ public class Material {
     }
 
     Vector2 positions;
-    public Material(String texturePath, boolean isDestroyed, Vector2 positions, float damage, String materialType) {
+    public Material(String texturePath, boolean isDestroyed, Vector2 positions, float damage, String materialType,int points) {
         this.texture = new Texture(Gdx.files.internal(texturePath));
         this.materialType=materialType;
         this.texturePath = texturePath;
         this.isDestroyed =isDestroyed;
         this.damage=damage;
+        this.points=points;
         this.positions = positions; // Store the initial position
+    }
+
+    public void setDamage(float damage) {
+        this.damage = damage;
     }
 
     public String getTexturePath() {
@@ -58,5 +64,13 @@ public class Material {
 
     public float getDamage() {
         return this.damage;
+
+    }
+
+    public void damage(float damage) {
+        if(this.damage<=damage){
+            this.damage-=damage*0.025f;
+            this.isDestroyed=true;
+        }
     }
 }

@@ -33,13 +33,13 @@ public class LoseScreen implements Screen {
     private Image overlayImage;
     private Image buttonImage1, buttonImage2;
     private int points;
+    private int level;
 
 
 
-    public LoseScreen(Game game, Screen level1Screen,int points) {
+    public LoseScreen(Game game, Screen level1Screen,int points,int level) {
         this.game = game;
         this.level1Screen = level1Screen;
-
         this.points=points;
     }
 
@@ -104,7 +104,7 @@ public class LoseScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 //                level1Screen.restartGame(); // Call the restart method// Resume gameplay after restart
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new Level_1()); // Go back to gameplay
+                ((Game)Gdx.app.getApplicationListener()).setScreen(level1Screen); // Go back to gameplay
             }
         });
 
