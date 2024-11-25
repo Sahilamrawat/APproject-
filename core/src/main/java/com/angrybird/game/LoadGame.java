@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class LoadGame implements Screen {
+public class LoadGame extends Levels implements Screen {
     private Stage stage;
     private Skin skin;
     private Table table;

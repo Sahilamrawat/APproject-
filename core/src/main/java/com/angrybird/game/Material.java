@@ -16,8 +16,33 @@ public class Material {
     private String materialType;
     private Body body;
     public int points;
+    private float width;         // Width of the material
+    private float height;        // Height of the material
+    private float friction;
+    private float restitution;
+    private float density;
 
-
+    public void setMaterialProperties() {
+        switch (materialType.toLowerCase()) {
+            case "wood":
+                this.width = 0.5f;
+                this.height = 3f;
+                break;
+            case "stone":
+                this.width = 5f;
+                this.height = 0.5f;
+                break;
+            case "ice":
+                this.width = 1.2f;
+                this.height = 1.2f;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown material type: " + materialType);
+        }
+        this.friction = 1f;
+        this.restitution = 0f;
+        this.density = 5f;
+    }
     private boolean collided;
     public Sprite getSprite() {
         return sprite;
@@ -37,6 +62,25 @@ public class Material {
         this.points=points;
         this.positions = positions; // Store the initial position
     }
+
+    @Override
+    public String toString() {
+        return String.format("{\n" +
+                "  \"image\": \"%s\",\n" +
+                "  \"isActive\": %b,\n" +
+                "  \"position\": {\"x\": %.2f, \"y\": %.2f},\n" +
+                "  \"damage\": %.2f,\n" +
+                "  \"type\": \"%s\",\n" +
+                "  \"score\": %d,\n" +
+                "  \"width\": %.2f,\n" +
+                "  \"height\": %.2f,\n" +
+                "  \"density\": %.2f,\n" +
+                "  \"friction\": %.2f,\n" +
+                "  \"restitution\": %.2f\n" +
+                "}",
+            texturePath, isDestroyed, positions.x, positions.y, damage, materialType, points, width, height, density, friction, restitution);
+    }
+
 
     public void setDamage(float damage) {
         this.damage = damage;

@@ -23,7 +23,7 @@ public class Pause implements Screen {
     public Level_2 level2Screen;
     public Level_3 level3Screen;
     private Image backgroundImage;
-    public Screen CurrentScreen;
+    public final Screen CurrentScreen;
     private ImageTextButton resumeButton, exitButton, restartButton, saveButton,menuButton;
     private Texture resumeTexture, exitTexture, restartTexture, saveTexture,menuTexture;
     private Image buttonImage1, buttonImage2, buttonImage3, buttonImage4,buttonImage5,overlayImage;
@@ -34,6 +34,7 @@ public class Pause implements Screen {
         this.game = game;
         this.CurrentScreen=CurrentScreen; // Store reference to the Gameplay screen
     }
+
 
 
     @Override
@@ -98,19 +99,19 @@ public class Pause implements Screen {
         table.add(exitButton).padBottom(5);
 
         stage.addActor(table); // Add the table with buttons to the stage
-
+//        CurrentScreen.pause();
         // Add listeners for each button
         resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                CurrentScreen.setPaused(false); // Resume gameplay
-                ((Game)Gdx.app.getApplicationListener()).setScreen(CurrentScreen); // Go back to gameplay
+
+
             }
         });
-
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {// Resume gameplay after restart
+
                 ((Game)Gdx.app.getApplicationListener()).setScreen(CurrentScreen); // Go back to gameplay
             }
         });

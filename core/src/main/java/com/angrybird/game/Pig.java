@@ -18,7 +18,44 @@ public class Pig extends Actor {
     private String texturePath;
     private boolean collided;
     private boolean materialCollided;
-
+    private float radius;
+    private float density;
+    private float friction;
+    private float restitution;
+    private float angularDamping;
+    private float spriteWidth;
+    private float spriteHeight;
+    public void setPigProperties() {
+        switch (pigType.toLowerCase()) {
+            case "small":
+                this.radius = 0.7f;
+                this.density = 2.5f;
+                this.friction = 1f;
+                this.restitution = 0.1f;
+                this.angularDamping = 3f;
+                this.spriteWidth = 2f;
+                this.spriteHeight = 1.5f;
+                break;
+            case "medium":
+                this.radius = 1f;
+                this.density = 2.5f;
+                this.friction = 1f;
+                this.restitution = 0.1f;
+                this.angularDamping = 3f;
+                this.spriteWidth = 2f;
+                this.spriteHeight = 2f;
+                break;
+            case "big":
+                this.radius = 1.1f;
+                this.density = 2.5f;
+                this.friction = 1f;
+                this.restitution = 0.1f;
+                this.angularDamping = 3f;
+                this.spriteWidth = 4f;
+                this.spriteHeight = 3f;
+                break;
+        }
+    }
     public boolean isCollided() {
         return collided;
     }
@@ -41,6 +78,26 @@ public class Pig extends Actor {
     public void setSprite(Sprite sprite) {
         this.sprite = sprite;
     }
+
+    @Override
+    public String toString() {
+        return String.format("{\n" +
+                "  \"image\": \"%s\",\n" +
+                "  \"isActive\": %b,\n" +
+                "  \"position\": {\"x\": %.2f, \"y\": %.2f},\n" +
+                "  \"health\": %.2f,\n" +
+                "  \"type\": \"%s\",\n" +
+                "  \"score\": %d,\n" +
+                "  \"radius\": %.2f,\n" +
+                "  \"density\": %.2f,\n" +
+                "  \"friction\": %.2f,\n" +
+                "  \"restitution\": %.2f,\n" +
+                "  \"SpriteWidth\": %.2f,\n" +
+                "  \"SpriteHeight\": %.2f\n"+
+                "}",
+            texture, collided, positions.x, positions.y, health, pigType, gamePoints, radius, density, friction, restitution,spriteWidth,spriteHeight);
+    }
+
 
     Vector2 positions;
     int gamePoints;

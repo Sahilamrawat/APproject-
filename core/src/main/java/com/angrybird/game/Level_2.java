@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -30,7 +31,7 @@ public class Level_2 implements Screen {
     private Vector2 endPosition = new Vector2();   // End position of the catapult (on touchDragged)
 
     private OrthographicCamera camera;
-
+    private Stage pauseStage;
     private SpriteBatch batch;
     private World world;
     public int LevelNo=2;
@@ -72,6 +73,9 @@ public class Level_2 implements Screen {
     private Body BoxBody,BirdBody,PigBody;
     private Sprite backgroundSprite;
     private static boolean birdsInitialized = false;
+    private ImageTextButton resumeButton, exitButton, restartButton, saveButton,menuButton;
+    private Texture resumeTexture, exitTexture, restartTexture, saveTexture,menuTexture;
+    private Image button_image_1, button_image_2, buttonImage3, buttonImage4,buttonImage5,overlayImage;
 
 
 
@@ -157,9 +161,14 @@ public class Level_2 implements Screen {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                createPauseMenu();
                 isPaused=true;
                 isBirdLaunched=false;
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new Pause(game, Level_2.this));
+//                LevelStates.get(LevelNo-1).render(deltatime);
+
+                Gdx.input.setInputProcessor(pauseStage); // Switch input to pauseStage
+                pauseStage.addAction(Actions.fadeIn(0.5f));
+
                 birdsInitialized=false;
                 System.out.println("Game Status "+isPaused);
 
@@ -684,6 +693,91 @@ public class Level_2 implements Screen {
 
 
     }
+    private void createPauseMenu() {
+        pauseStage = new Stage(new ScreenViewport());
+
+        // Overlay background
+        overlayImage = new Image(new Texture(Gdx.files.internal("profilebackground.png")));
+        overlayImage.setSize(Gdx.graphics.getWidth() / 2f - 390, Gdx.graphics.getHeight() / 2f + 140);
+        overlayImage.setPosition((Gdx.graphics.getWidth() - overlayImage.getWidth()) / 2,
+            (Gdx.graphics.getHeight() - overlayImage.getHeight()) / 2);
+        pauseStage.addActor(overlayImage);
+
+        // Pause menu buttons
+        resumeTexture = new Texture(Gdx.files.internal("resume.png"));
+        exitTexture = new Texture(Gdx.files.internal("exit3.png"));
+        restartTexture = new Texture(Gdx.files.internal("restart.png"));
+        saveTexture = new Texture(Gdx.files.internal("save.png"));
+        menuTexture = new Texture(Gdx.files.internal("menu1.png"));
+
+        resumeButton = createImageTextButton(resumeTexture, 80, 80);
+        exitButton = createImageTextButton(exitTexture, 80, 80);
+        restartButton = createImageTextButton(restartTexture, 80, 80);
+        saveButton = createImageTextButton(saveTexture, 90, 90);
+        menuButton = createImageTextButton(menuTexture, 80, 80);
+
+
+
+        addHoverEffect(button_image_2,restartButton);
+        addHoverEffect(button_image_1,resumeButton);
+        addHoverEffect(buttonImage3,saveButton);
+        addHoverEffect(buttonImage4,menuButton);
+        addHoverEffect(buttonImage5,exitButton);
+        // Table to organize buttons
+        Table table = new Table();
+        table.setSize(200, 650);
+        table.setPosition(
+            Gdx.graphics.getWidth() / 2 - table.getWidth() / 2,
+            Gdx.graphics.getHeight() / 2 - table.getHeight() / 2
+        );
+
+        table.add(new Label("ANGRY BIRD", skin, "title")).padBottom(20).row();
+        table.add(resumeButton).padBottom(5).row();
+        table.add(restartButton).padBottom(5).row();
+        table.add(saveButton).padBottom(5).row();
+        table.add(menuButton).padBottom(5).row();
+        table.add(exitButton).padBottom(5);
+
+        pauseStage.addActor(table);
+
+        // Button listeners
+        resumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.input.setInputProcessor(stage); // Switch back to main stage
+                pauseStage.addAction(Actions.fadeOut(0.5f)); // Fade out pause menu
+                isPaused=false;
+            }
+        });
+
+        restartButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new Level_2(game,null)); // Restart level
+            }
+        });
+
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit(); // Exit game
+            }
+        });
+
+        saveButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("Game Saved"); // Implement save logic
+            }
+        });
+
+        menuButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu()); // Go to main menu
+            }
+        });
+    }
     private boolean isBirdBody(Body body) {
         return BirdBodies.contains(body);
     }
@@ -853,6 +947,20 @@ public class Level_2 implements Screen {
         } else if (texture == settingTexture) {
             buttonImage2 = buttonImage;
 
+        }else if (texture == resumeTexture) {
+            button_image_1 = buttonImage;
+        }
+        else if (texture == restartTexture) {
+            button_image_2 = buttonImage;
+        }
+        else if (texture == saveTexture) {
+            buttonImage3 = buttonImage;
+        }
+        else if (texture == menuTexture) {
+            buttonImage4 = buttonImage;
+        }
+        else if (texture == exitTexture) {
+            buttonImage5 = buttonImage;
         }
 
         return button;
@@ -910,173 +1018,110 @@ public class Level_2 implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        debugRenderer.render(world, camera.combined);
-        // If the game is paused, do not update gameplay logic
-
-
         if (!isPaused) {
-
+            // Gameplay rendering logic
             debugRenderer.render(world, camera.combined);
             camera.update();
             world.step(1 / 60f, 8, 3);
-//        camera.position.set(BirdBody.getPosition().x,BirdBody.getPosition().y,0);
 
             batch.setProjectionMatrix(camera.combined);
             batch.begin();
+
+            // Draw the background
             backgroundSprite.draw(batch);
+
+            // Update and draw all sprites in the world
             world.getBodies(tmpBodies);
-            for(Body body:tmpBodies){
-
-                if(body.getUserData()!=null&&body.getUserData() instanceof Sprite){
-                    Sprite sprite=(Sprite)body.getUserData();
-                    sprite.setPosition(body.getPosition().x-sprite.getWidth()/2,body.getPosition().y-sprite.getHeight()/2);
-                    sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
-
+            for (Body body : tmpBodies) {
+                if (body.getUserData() != null && body.getUserData() instanceof Sprite) {
+                    Sprite sprite = (Sprite) body.getUserData();
+                    sprite.setPosition(
+                        body.getPosition().x - sprite.getWidth() / 2,
+                        body.getPosition().y - sprite.getHeight() / 2
+                    );
+                    sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
                     sprite.draw(batch);
-
-
-
                 }
             }
+
+            // Update points
             pointsLabel.setText("Points: " + points);
-//            pointsLabel = new Label("Points: " + points, skin, "title");
-//            pointsLabel.setPosition(20, Gdx.graphics.getHeight() - 30);
+
+            // Handle birds logic
             for (int i = BirdBodies.size() - 1; i >= 0; i--) {
-
-                if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
-                    isBirdLaunched=true;
-                    world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
-
+                if (isBodyStopped(BirdBodies.get(i)) && birds.get(i).isLaunched()) {
+                    isBirdLaunched = true;
+                    world.destroyBody(BirdBodies.get(i));
                     BirdBodies.remove(i);
-//                    birds.remove(i);
-
-
-
-                    break; // Exit the loop after destroying
+                    break;
                 }
             }
-            for (int i=0; i<pigsBodies.size(); i++) {
+
+            // Handle pigs logic
+            for (int i = pigsBodies.size() - 1; i >= 0; i--) {
                 if (pigs.get(i).isDestroyed) {
-                    points+=pigs.get(i).gamePoints;
+                    points += pigs.get(i).gamePoints;
                     world.destroyBody(pigsBodies.get(i));
                     pigsBodies.remove(i);
                     pigs.remove(i);
                     break;
-
                 }
-
             }
 
-            if(pigsBodies.isEmpty()){
-                isBirdLaunched=false;
-                birdsInitialized=false;
+            // Handle materials logic
+            for (int i = materialBodies.size() - 1; i >= 0; i--) {
+                if (Materials.get(i).isDestroyed) {
+                    points += Materials.get(i).points;
+                    world.destroyBody(materialBodies.get(i));
+                    materialBodies.remove(i);
+                    Materials.remove(i);
+                }
+            }
+
+            // Check win condition
+            if (pigsBodies.isEmpty()) {
+                isBirdLaunched = false;
+                birdsInitialized = false;
                 for (int i = 0; i < Levels.levels.size(); i++) {
                     if (Levels.levels.get(i).LevelNo == LevelNo) {
                         Levels.levels.get(i).isCompleted = true;
-
-                        // Ensure we don't access out of bounds
                         if (i + 1 < Levels.levels.size()) {
                             Levels.levels.get(i + 1).isUnlocked = true;
-                            System.out.println("Level::"+Levels.levels.get(i+1).isUnlocked);
                         }
                     }
                 }
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new WinScreen(game,Level_2.this,new Level_3(),points,2));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen(game, new Level_2(), new Level_3(), points, 2));
             }
-            if(BirdBodies.isEmpty()&&!(pigsBodies.isEmpty())){
-                isBirdLaunched=false;
-                birdsInitialized=false;
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new LoseScreen(game,new Level_2(),points,2));
+
+            // Check lose condition
+            if (BirdBodies.isEmpty() && !pigsBodies.isEmpty()) {
+                isBirdLaunched = false;
+                birdsInitialized = false;
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoseScreen(game, new Level_2(), points, 2));
             }
-            for (int i = materialBodies.size() - 1; i >= 0; i--) {
-                if (Materials.get(i).isDestroyed) {
-                    points+=Materials.get(i).points;
-                    world.destroyBody(materialBodies.get(i));  // Destroy the body in the world
-                    materialBodies.remove(i);  // Remove the body from the list
-                    Materials.remove(i);  // Remove the material from the list
-                }
-            }
+
             batch.end();
             Vector2 bodyPosition = BoxBody.getPosition();
             catapultImage.setPosition(
                 171.5f*3f,52.5f*3
             );
             catapultImage.setSize(85,100);
-        }
-        else{
+            stage.act(delta);
+            stage.draw();
+        } else {
+            // Pause menu rendering logic
             camera.update();
-            debugRenderer.render(world, camera.combined);
-            world.step(1 / 60f, 8, 3);
-//        camera.position.set(BirdBody.getPosition().x,BirdBody.getPosition().y,0);
-
             batch.setProjectionMatrix(camera.combined);
             batch.begin();
+
+            // Draw only the background
             backgroundSprite.draw(batch);
-            world.getBodies(tmpBodies);
-            for(Body body:tmpBodies){
-
-                if(body.getUserData()!=null&&body.getUserData() instanceof Sprite){
-                    Sprite sprite=(Sprite)body.getUserData();
-                    sprite.setPosition(body.getPosition().x-sprite.getWidth()/2,body.getPosition().y-sprite.getHeight()/2);
-                    sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
-
-                    sprite.draw(batch);
-
-
-
-                }
-            }
-//            for (Body birdBody : BirdBodies) {
-//                for(Body pigBody:pigsBodies){
-//                    if(birdBody.)
-//                }
-//            }
-
-            for (int i = BirdBodies.size() - 1; i >= 0; i--) {
-
-                if (isBodyStopped(BirdBodies.get(i)) &&birds.get(i).isLaunched()) {
-                    isBirdLaunched=true;
-                    world.destroyBody(BirdBodies.get(i)); // Destroy the bird body
-
-                    BirdBodies.remove(i);
-//                    birds.remove(i);
-
-                    break; // Exit the loop after destroying
-                }
-            }
-
-            for (int i=0; i<pigsBodies.size(); i++) {
-                if (pigs.get(i).isDead()) {
-
-                    points+=pigs.get(i).gamePoints;
-                    world.destroyBody(pigsBodies.get(i));
-                    pigsBodies.remove(i);
-                    break;
-
-                }
-
-            }
-            for (int i = materialBodies.size() - 1; i >= 0; i--) {
-                if (Materials.get(i).isDestroyed) {
-                    points+=Materials.get(i).points;
-                    world.destroyBody(materialBodies.get(i));  // Destroy the body in the world
-                    materialBodies.remove(i);  // Remove the body from the list
-                    Materials.remove(i);  // Remove the material from the list
-                }
-            }
-
             batch.end();
-            Vector2 bodyPosition = BoxBody.getPosition();
-            catapultImage.setPosition(
-                171.5f*3f,52.5f*3
-            );
-            catapultImage.setSize(85,100);
+
+            // Draw the pause menu
+            pauseStage.act(delta);
+            pauseStage.draw();
         }
-        stage.act(delta); // Update the stage
-
-
-        // Draw the stage
-        stage.draw();
     }
     public void restartGame() {
         points = 0; // Reset points

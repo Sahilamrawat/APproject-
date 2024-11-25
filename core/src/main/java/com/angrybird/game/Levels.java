@@ -23,6 +23,12 @@ public class Levels implements Screen {
     private Table table;
     private Image backgroundImage;
     private static Game game;
+    public static ArrayList<BaseBird>savedBrids=new ArrayList<>();
+    public static ArrayList<Pig>savedPigs=new ArrayList<>();
+    public static ArrayList<Material>savedMaterials=new ArrayList<>();
+
+    public static ArrayList<Screen> LevelStates=new ArrayList<>();
+
     public static ArrayList<LevelData> levels = new ArrayList<>() {{
         add(new LevelData("Level 1", "l1_image.png", true, 1, false, new Level_1(game, null)));
         add(new LevelData("Level 2", "lock.png", false, 2, false, new Level_2(game, null)));
@@ -109,6 +115,7 @@ public class Levels implements Screen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         ((Game) Gdx.app.getApplicationListener()).setScreen(levelData.screen);
+                        LevelStates.add(levelData.screen);
                     }
                 });
             } else {
@@ -181,6 +188,7 @@ public class Levels implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         updateLevels();
         stage.act(delta);
         stage.draw();
@@ -216,6 +224,7 @@ public class Levels implements Screen {
         boolean isCompleted;
         Screen screen;
         int LevelNo;
+
 
         public LevelData(String name, String texturePath, boolean isUnlocked,int LevelNo,boolean isCompleted, Screen screen) {
             this.name = name;

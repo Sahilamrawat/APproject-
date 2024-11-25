@@ -25,11 +25,26 @@ public class BaseBird extends Actor implements Bird {
     public float damage;
     Vector2 positions;
     public String birdType;
+    private float radius;
+    private float density;
+    private float friction;
+    private float restitution;
+    private float angularDamping;
+    private float spriteWidth;
+    private float spriteHeight;
 
     public float getDamage() {
         return damage;
     }
-
+    public void setBirdProperties() {
+        this.radius = 1f;
+        this.density = 2.5f;
+        this.friction = 1f;
+        this.restitution = 0.1f;
+        this.angularDamping = 0.7f;
+        this.spriteWidth = 2f;
+        this.spriteHeight = 2f;
+    }
     // Constructor to initialize the bird texture and physics body
     public BaseBird(String texturePath, boolean isLaunched, Vector2 positions,float damage,String birdType) {
         this.texture = new Texture(Gdx.files.internal(texturePath));
@@ -46,6 +61,27 @@ public class BaseBird extends Actor implements Bird {
         return texturePath;
     }
 
+    public BaseBird() {
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{\n" +
+                "  \"image\": \"%s\",\n" +
+                "  \"isActive\": %b,\n" +
+                "  \"position\": {\"x\": %.2f, \"y\": %.2f},\n" +
+                "  \"power\": %.2f,\n" +
+                "  \"type\": \"%s\",\n" +
+                "  \"radius\": %.2f,\n" +
+                "  \"density\": %.2f,\n" +
+                "  \"friction\": %.2f,\n" +
+                "  \"restitution\": %.2f,\n" +
+                "  \"angularDamping\": %.2f,\n" +
+                "  \"SpriteWidth\": %.2f,\n" +
+                "  \"SpriteHeight\": %.2f\n"+
+                "}",
+            texture, isLaunched, positions.x, positions.y, damage, birdType, radius, density, friction, restitution, angularDamping,spriteWidth,spriteHeight);
+    }
     public void setLaunched(boolean launched) {
         isLaunched = launched;
     }
