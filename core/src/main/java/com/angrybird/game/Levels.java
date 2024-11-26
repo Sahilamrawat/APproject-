@@ -23,10 +23,9 @@ public class Levels implements Screen {
     private Table table;
     private Image backgroundImage;
     private static Game game;
-    public static ArrayList<BaseBird>savedBrids=new ArrayList<>();
-    public static ArrayList<Pig>savedPigs=new ArrayList<>();
-    public static ArrayList<Material>savedMaterials=new ArrayList<>();
-
+    public static int counter=1;
+    public static int savedGamesCount=0;
+    public static ArrayList<String> savedGames=new ArrayList<>();
     public static ArrayList<Screen> LevelStates=new ArrayList<>();
 
     public static ArrayList<LevelData> levels = new ArrayList<>() {{
@@ -63,7 +62,7 @@ public class Levels implements Screen {
 
     @Override
     public void show() {
-
+        System.out.println(savedGames.isEmpty());
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 

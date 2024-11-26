@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -555,7 +555,7 @@ public class Level_1 extends Levels implements Screen {
 
 
 
-        dotTexture = new Texture(Gdx.files.internal("dot.png"));
+        dotTexture = new Texture(Gdx.files.internal("d1.png"));
 
         // Initialize the trajectory dots array
         trajectoryDots = new Array<>();
@@ -696,33 +696,70 @@ public class Level_1 extends Levels implements Screen {
 
 
 
-    public static void saveGame(String levelName,ArrayList<BaseBird> birds, ArrayList<Pig> pigs, ArrayList<Material> materials) {
-        try (FileWriter writer = new FileWriter("data.json")) {
-            writer.write("{\n");
-            writer.write("  \"level\": \"" + levelName + "\",\n");
-            writer.write("  \"birds\": " + arrayToJson(birds) + ",\n");
-            writer.write("  \"pigs\": " + arrayToJson(pigs) + ",\n");
-            writer.write("  \"materials\": " + arrayToJson(materials) + "\n");
+    public static void saveGame(String levelName, ArrayList<BaseBird> birds, ArrayList<Pig> pigs, ArrayList<Material> materials, int points) {
+        try {
+            // Read existing data from the file (if exists)
+            StringBuilder jsonContent = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader("data.json"))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonContent.append(line);
+                }
+            } catch (FileNotFoundException e) {
+                // File doesn't exist, we will create a new one
+            }
 
-            writer.write("}");
-            System.out.println("Game saved successfully in data.json");
+            // Initialize JSON Object
+            JSONObject jsonObject;
+
+            if (jsonContent.length() > 0) {
+                // If content exists, parse it
+                jsonObject = new JSONObject(jsonContent.toString());
+            } else {
+                // If file is empty, initialize a new JSON object
+                jsonObject = new JSONObject();
+                jsonObject.put("savedGamesCount", 0);
+                jsonObject.put("games", new JSONArray());
+            }
+
+            // Get the saved games count and increment it
+            int savedGamesCount = jsonObject.getInt("savedGamesCount");
+            jsonObject.put("savedGamesCount", savedGamesCount + 1);
+            // Create the new game data
+            JSONObject savedGame = new JSONObject();
+            savedGame.put("level", levelName);
+            savedGame.put("points", points);
+            savedGame.put("birds", listToJsonArray(birds));  // Use updated helper method
+            savedGame.put("pigs", listToJsonArray(pigs));    // Use updated helper method
+            savedGame.put("materials", listToJsonArray(materials));  // Use updated helper method
+
+            // Add the saved game to the games array
+            JSONArray gamesArray = jsonObject.getJSONArray("games");
+            gamesArray.put(savedGame);
+            jsonObject.put("games", gamesArray);
+
+            // Write the updated content to the file
+            try (FileWriter writer = new FileWriter("data.json")) {
+                writer.write(jsonObject.toString(4));  // Pretty print with indentation of 4 spaces
+                System.out.println("Game saved successfully in data.json");
+            }
+
         } catch (IOException e) {
             System.err.println("Error saving game: " + e.getMessage());
         }
     }
 
-    // Helper method to convert ArrayList to JSON-like string
-    private static String arrayToJson(ArrayList<?> list) {
-        StringBuilder json = new StringBuilder("[\n");
-        for (int i = 0; i < list.size(); i++) {
-            json.append("    ").append(list.get(i).toString());
-            if (i < list.size() - 1) {
-                json.append(",");
+    // Updated helper method to convert ArrayList to JSONArray
+    private static JSONArray listToJsonArray(ArrayList<?> list) {
+        JSONArray jsonArray = new JSONArray();
+        for (Object obj : list) {
+            if (obj instanceof JsonSerializable) {
+                jsonArray.put(((JsonSerializable) obj).toJson());
+            } else {
+                throw new IllegalArgumentException("Object does not implement JsonSerializable: " + obj);
             }
-            json.append("\n");
         }
-        json.append("  ]");
-        return json.toString();
+        return jsonArray;
     }
 
     public static Level_1 loadGame() {
@@ -819,7 +856,8 @@ public class Level_1 extends Levels implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Game Saved"); // Implement save logic
-                saveGame(String.valueOf(LevelNo),birds,pigs,Materials);
+                saveGame(String.valueOf(LevelNo),birds,pigs,Materials,points);
+                savedGames.add("Load Game "+counter++);
             }
         });
 
@@ -946,7 +984,7 @@ public class Level_1 extends Levels implements Screen {
             // Add a dot to the stage if within bounds
             if (position.y > 0 && position.x > 0 && position.x < Gdx.graphics.getWidth()) {
                 Image dot = new Image(new TextureRegionDrawable(new TextureRegion(dotTexture)));
-                dot.setSize(5, 5); // Adjust dot size
+                dot.setSize(10, 10); // Adjust dot size
                 dot.setPosition(position.x, position.y);
                 trajectoryDots.add(dot);
                 stage.addActor(dot);

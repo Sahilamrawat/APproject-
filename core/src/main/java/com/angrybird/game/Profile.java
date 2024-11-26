@@ -1,6 +1,5 @@
 package com.angrybird.game;
 
-import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -11,13 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class Profile implements Screen {
+public class Profile extends MainMenu implements Screen {
     private Stage stage;
     private Skin skin;
     private Image backgroundImage;
@@ -86,32 +84,91 @@ public class Profile implements Screen {
 
 
 
-        playerNameLabel = new Label("Player Name: Mavrick", skin,"button");
-        playerLevelLabel = new Label("Player Level: 1", skin,"button");
-        playerAgeLabel = new Label("Player Age: 21", skin,"button");
 
-        // Add heading label and player information to the table
-        table.add(new Label("PROFILE", skin,"title1")).padBottom(30).row();
+
+// Create TextFields for updating the profile
+        TextField nameField = new TextField("", skin);
+        TextField levelField = new TextField("", skin);
+        TextField ageField = new TextField("", skin);
+
+// Create a dialog for updating profile information
+        Dialog updateDialog = new Dialog("Update Profile", skin) {
+            @Override
+            protected void result(Object object) {
+                if ((boolean) object) {
+                    // Update stored profile information from input values
+                    String newName = nameField.getText();
+                    String newLevel = levelField.getText();
+                    String newAge = ageField.getText();
+
+                    // Validate inputs and update profile variables
+                    if (!newName.isEmpty()) {
+                        playerName = newName;
+                    }
+                    if (!newLevel.isEmpty()) {
+                        try {
+                            playerLevel = Integer.parseInt(newLevel);
+                        } catch (NumberFormatException e) {
+                            playerLevel = 1; // Default to level 1 if invalid input
+                        }
+                    }
+                    if (!newAge.isEmpty()) {
+                        try {
+                            playerAge = Integer.parseInt(newAge);
+                        } catch (NumberFormatException e) {
+                            playerAge = 21; // Default to age 21 if invalid input
+                        }
+                    }
+
+                    // Update labels with new information
+                    playerNameLabel.setText("Player Name: " + playerName);
+                    playerLevelLabel.setText("Player Level: " + playerLevel);
+                    playerAgeLabel.setText("Player Age: " + playerAge);
+
+                    System.out.println("Profile updated: Name=" + playerName + ", Level=" + playerLevel + ", Age=" + playerAge);
+                }
+            }
+        };
+
+// Add TextFields and buttons to the dialog
+        updateDialog.getContentTable().add(new Label("Enter Name:", skin)).pad(10);
+        updateDialog.getContentTable().add(nameField).width(200).pad(10).row();
+        updateDialog.getContentTable().add(new Label("Enter Level:", skin)).pad(10);
+        updateDialog.getContentTable().add(levelField).width(200).pad(10).row();
+        updateDialog.getContentTable().add(new Label("Enter Age:", skin)).pad(10);
+        updateDialog.getContentTable().add(ageField).width(200).pad(10).row();
+        updateDialog.button("Update", true); // Pass true on confirmation
+        updateDialog.button("Cancel", false); // Pass false to cancel
+        playerNameLabel = new Label("Player Name: " + playerName, skin, "button");
+        playerLevelLabel = new Label("Player Level: " + playerLevel, skin, "button");
+        playerAgeLabel = new Label("Player Age: " + playerAge, skin, "button");
+
+// Add labels to the table
+        table.add(new Label("PROFILE", skin, "title1")).padBottom(30).row();
         table.add(playerNameLabel).padBottom(10).row();
         table.add(playerLevelLabel).padBottom(10).row();
         table.add(playerAgeLabel).padBottom(10).row();
 
-        backButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Transition back to main menu
-                ((Game) Gdx.app.getApplicationListener()).setScreen(mainMenuScreen);
-            }
-        });
-
+// Add button listeners
         updateButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Logic to update player profile fields
-                playerNameLabel.setText("Player Name: Updated Name");
-                playerLevelLabel.setText("Player Level: Updated Level");
-                playerAgeLabel.setText("Player Age: Updated Age");
-                System.out.println("Profile updated");
+                // Pre-fill the TextFields with current profile information
+                nameField.setText(playerName);
+                levelField.setText(String.valueOf(playerLevel));
+                ageField.setText(String.valueOf(playerAge));
+
+                // Show the update dialog
+                updateDialog.show(stage);
+            }
+        });
+
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Transition back to the main menu
+                ((Game) Gdx.app.getApplicationListener()).setScreen(mainMenuScreen);
             }
         });
         table.add(updateButton).padTop(20).row();

@@ -13,9 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class LoadGame extends Levels implements Screen {
     private Stage stage;
@@ -26,20 +30,41 @@ public class LoadGame extends Levels implements Screen {
     private Texture backTexture,LoadTexture;
     private Game game;
     private SpriteBatch batch;
-    private Array<String> savedGames;
-    private Level_1 level1Screen;
+
+    private Screen levelScreen;
     private Image buttonImage1,buttonImage2;
 
     private Image backgroundImage;
 
-    public LoadGame(Game game, Level_1 level1Screen) {
+    public LoadGame(Game game, Screen levelScreen) {
         this.game = game;
-        savedGames = new Array<>();
+        this.levelScreen = levelScreen;
+    }
 
-        // Example saved games
-        savedGames.add("LOAD Game 1");
+    public static int getSavedGamesCount(String filePath) {
+        StringBuilder jsonData = new StringBuilder();
 
-        this.level1Screen = level1Screen;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line = reader.readLine();
+
+            // Check if the file is empty (i.e., no content in the first line)
+            if (line == null || line.trim().isEmpty()) {
+                System.out.println("The data file is empty. Returning 0 saved games.");
+                return 0;  // Return 0 if the file is empty
+            }
+
+            // If not empty, append the content to the StringBuilder
+            jsonData.append(line);
+            while ((line = reader.readLine()) != null) {
+                jsonData.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Parse JSON and get "savedGamesCount"
+        JSONObject jsonObject = new JSONObject(jsonData.toString());
+        return jsonObject.getInt("savedGamesCount");
     }
 
     @Override
@@ -73,14 +98,19 @@ public class LoadGame extends Levels implements Screen {
 
         // Create a vertical list of buttons for saved games
         Table gamesTable = new Table();
-        for (int i = 0; i < savedGames.size; i++) {
-            final String savedGame = savedGames.get(i);
+
+        int count=getSavedGamesCount("data.json");
+        System.out.println(count);
+        for (int i = 0; i < count; i++) {
+//            final String savedGame = savedGames.get(i);
             LoadGame =createImageTextButton(LoadTexture,70,70);
             addHoverEffect(buttonImage2, LoadGame);
+
+            int index=i;
             LoadGame.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    loadGame(savedGame); // Load the selected game
+                    loadGame("Load GAME", index); // Load the selected game
 
                 }
             });
@@ -88,6 +118,7 @@ public class LoadGame extends Levels implements Screen {
             gamesTable.add(LoadGame).width(300).padBottom(10);
             gamesTable.row();
         }
+
 
         // Make the games table scrollable
         scrollPane = new ScrollPane(gamesTable, skin);
@@ -149,10 +180,10 @@ public class LoadGame extends Levels implements Screen {
         });
     }
 
-    private void loadGame(String gameName) {
+    private void loadGame(String gameName,int index) {
         // Logic to load the game, for example:
         System.out.println("Loading " + gameName + "...");
-        ((Game) Gdx.app.getApplicationListener()).setScreen(new Level_1(game, LoadGame.this));
+        ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGamePlay(game, LoadGame.this,index));
     }
 
     @Override

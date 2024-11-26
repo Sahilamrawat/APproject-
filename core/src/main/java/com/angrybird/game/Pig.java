@@ -4,13 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Scaling;
+import org.json.JSONObject;
 
-public class Pig extends Actor {
+public class Pig extends Actor implements JsonSerializable {
 
     private Texture texture;
     private String pigType;
@@ -25,6 +22,56 @@ public class Pig extends Actor {
     private float angularDamping;
     private float spriteWidth;
     private float spriteHeight;
+
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public boolean isMaterialCollided() {
+        return materialCollided;
+    }
+
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    public Vector2 getPositions() {
+        return positions;
+    }
+
+    public int getGamePoints() {
+        return gamePoints;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("image", texture);
+        json.put("isActive", collided);
+
+        // Assuming `positions` is an object with fields `x` and `y`:
+        JSONObject positionJson = new JSONObject();
+        positionJson.put("x", positions.x);
+        positionJson.put("y", positions.y);
+        json.put("position", positionJson);
+
+        json.put("health", health);
+        json.put("type", pigType);
+        json.put("score", gamePoints);
+        json.put("radius", radius);
+        json.put("density", density);
+        json.put("friction", friction);
+        json.put("restitution", restitution);
+        json.put("SpriteWidth", spriteWidth);
+        json.put("SpriteHeight", spriteHeight);
+
+        return json;
+    }
+
+
+
+
     public void setPigProperties() {
         switch (pigType.toLowerCase()) {
             case "small":
@@ -79,24 +126,52 @@ public class Pig extends Actor {
         this.sprite = sprite;
     }
 
-    @Override
-    public String toString() {
-        return String.format("{\n" +
-                "  \"image\": \"%s\",\n" +
-                "  \"isActive\": %b,\n" +
-                "  \"position\": {\"x\": %.2f, \"y\": %.2f},\n" +
-                "  \"health\": %.2f,\n" +
-                "  \"type\": \"%s\",\n" +
-                "  \"score\": %d,\n" +
-                "  \"radius\": %.2f,\n" +
-                "  \"density\": %.2f,\n" +
-                "  \"friction\": %.2f,\n" +
-                "  \"restitution\": %.2f,\n" +
-                "  \"SpriteWidth\": %.2f,\n" +
-                "  \"SpriteHeight\": %.2f\n"+
-                "}",
-            texture, collided, positions.x, positions.y, health, pigType, gamePoints, radius, density, friction, restitution,spriteWidth,spriteHeight);
+    public float getRadius() {
+        return radius;
     }
+
+    public float getDensity() {
+        return density;
+    }
+
+    public float getFriction() {
+        return friction;
+    }
+
+    public float getRestitution() {
+        return restitution;
+    }
+
+    public float getAngularDamping() {
+        return angularDamping;
+    }
+
+    public float getSpriteWidth() {
+        return spriteWidth;
+    }
+
+    public float getSpriteHeight() {
+        return spriteHeight;
+    }
+
+//    @Override
+//    public String toString() {
+//        return String.format("{\n" +
+//                "  \"image\": \"%s\",\n" +
+//                "  \"isActive\": %b,\n" +
+//                "  \"position\": {\"x\": %.2f, \"y\": %.2f},\n" +
+//                "  \"health\": %.2f,\n" +
+//                "  \"type\": \"%s\",\n" +
+//                "  \"score\": %d,\n" +
+//                "  \"radius\": %.2f,\n" +
+//                "  \"density\": %.2f,\n" +
+//                "  \"friction\": %.2f,\n" +
+//                "  \"restitution\": %.2f,\n" +
+//                "  \"SpriteWidth\": %.2f,\n" +
+//                "  \"SpriteHeight\": %.2f\n"+
+//                "}",
+//            texture, collided, positions.x, positions.y, health, pigType, gamePoints, radius, density, friction, restitution,spriteWidth,spriteHeight);
+//    }
 
 
     Vector2 positions;

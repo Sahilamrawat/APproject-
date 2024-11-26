@@ -5,14 +5,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import org.json.JSONObject;
 
-public class BaseBird extends Actor implements Bird {
+public class BaseBird extends Actor implements Bird,JsonSerializable {
     private Body body;
     private Texture texture;
     private Image image;
@@ -61,27 +61,77 @@ public class BaseBird extends Actor implements Bird {
         return texturePath;
     }
 
-    public BaseBird() {
+    public Image getImage() {
+        return image;
     }
 
-    @Override
-    public String toString() {
-        return String.format("{\n" +
-                "  \"image\": \"%s\",\n" +
-                "  \"isActive\": %b,\n" +
-                "  \"position\": {\"x\": %.2f, \"y\": %.2f},\n" +
-                "  \"power\": %.2f,\n" +
-                "  \"type\": \"%s\",\n" +
-                "  \"radius\": %.2f,\n" +
-                "  \"density\": %.2f,\n" +
-                "  \"friction\": %.2f,\n" +
-                "  \"restitution\": %.2f,\n" +
-                "  \"angularDamping\": %.2f,\n" +
-                "  \"SpriteWidth\": %.2f,\n" +
-                "  \"SpriteHeight\": %.2f\n"+
-                "}",
-            texture, isLaunched, positions.x, positions.y, damage, birdType, radius, density, friction, restitution, angularDamping,spriteWidth,spriteHeight);
+    public float getRadius() {
+        return radius;
     }
+
+    public float getDensity() {
+        return density;
+    }
+
+    public float getFriction() {
+        return friction;
+    }
+
+    public float getRestitution() {
+        return restitution;
+    }
+
+    public float getAngularDamping() {
+        return angularDamping;
+    }
+
+    public float getSpriteWidth() {
+        return spriteWidth;
+    }
+
+    public float getSpriteHeight() {
+        return spriteHeight;
+    }
+
+    public BaseBird() {
+    }
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("image", texture);
+        json.put("isActive", isLaunched);
+        JSONObject positionJson = new JSONObject();
+        positionJson.put("x", positions.x);
+        positionJson.put("y", positions.y);
+        json.put("position", positionJson);
+        json.put("power", damage);
+        json.put("type", birdType);
+        json.put("radius", radius);
+        json.put("density", density);
+        json.put("friction", friction);
+        json.put("restitution", restitution);
+        json.put("angularDamping", angularDamping);
+        json.put("SpriteWidth", spriteWidth);
+        json.put("SpriteHeight", spriteHeight);
+        return json;
+    }
+//    @Override
+//    public String toString() {
+//        return String.format("{\n" +
+//                "  \"image\": \"%s\",\n" +
+//                "  \"isActive\": %b,\n" +
+//                "  \"position\": {\"x\": %.2f, \"y\": %.2f},\n" +
+//                "  \"power\": %.2f,\n" +
+//                "  \"type\": \"%s\",\n" +
+//                "  \"radius\": %.2f,\n" +
+//                "  \"density\": %.2f,\n" +
+//                "  \"friction\": %.2f,\n" +
+//                "  \"restitution\": %.2f,\n" +
+//                "  \"angularDamping\": %.2f,\n" +
+//                "  \"SpriteWidth\": %.2f,\n" +
+//                "  \"SpriteHeight\": %.2f\n"+
+//                "}",
+//            texture, isLaunched, positions.x, positions.y, damage, birdType, radius, density, friction, restitution, angularDamping,spriteWidth,spriteHeight);
+//    }
     public void setLaunched(boolean launched) {
         isLaunched = launched;
     }
