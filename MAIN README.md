@@ -89,42 +89,42 @@ Before running the Angry Bird project, ensure you have the following installed:
 Basic Gameplay Features
 
 Bird Launching:
+->Players drag and launch birds from a catapult to hit pigs and structures. The trajectory of the bird is based on the angle and speed of the drag.
 
-Players drag and launch birds from a catapult to hit pigs and structures. The trajectory of the bird is based on the angle and speed of the drag.
 Physics:
+->The game uses LibGDX’s physics engine to simulate realistic collisions and object behavior. Birds, pigs, and structures are affected by gravity and other forces, leading to dynamic interactions.
 
-The game uses LibGDX’s physics engine to simulate realistic collisions and object behavior. Birds, pigs, and structures are affected by gravity and other forces, leading to dynamic interactions.
 Levels:
+->The game consists of multiple levels, each with different sets of birds, structures, and pigs. The objective is to eliminate all pigs on the screen.
 
-The game consists of multiple levels, each with different sets of birds, structures, and pigs. The objective is to eliminate all pigs on the screen.
 Structure Destruction:
+->The structures are made of materials like wood, glass, and steel. These materials break on impact based on their properties, and when blocks collapse, it may cause a chain reaction, causing more destruction.
 
-The structures are made of materials like wood, glass, and steel. These materials break on impact based on their properties, and when blocks collapse, it may cause a chain reaction, causing more destruction.
 Pig Types and Health:
+->There are different pig types with varying health. Some pigs can be destroyed with one hit, while others require multiple hits to defeat.
 
-There are different pig types with varying health. Some pigs can be destroyed with one hit, while others require multiple hits to defeat.
 Birds with Unique Abilities:
+->The game features multiple types of birds, each with its own unique abilities, such as speed, impact force, or special powers (e.g., the bluebird splitting into multiple smaller birds).
 
-The game features multiple types of birds, each with its own unique abilities, such as speed, impact force, or special powers (e.g., the bluebird splitting into multiple smaller birds).
 Winning and Losing Conditions:
+->Win: The player wins the level if all pigs are destroyed.
+->Lose: The player loses if they run out of birds without destroying all the pigs.
 
-Win: The player wins the level if all pigs are destroyed.
-Lose: The player loses if they run out of birds without destroying all the pigs.
 Birds Resupply:
+->Once a bird is launched, the next bird is placed on the catapult.
 
-Once a bird is launched, the next bird is placed on the catapult.
 Levels and Progression:
-
-The game features at least three levels, each with unique structures and pigs to keep the gameplay exciting.
+->The game features at least three levels, each with unique structures and pigs to keep the gameplay exciting.
 Serialisation and Game Saves
-The game includes a save and restore feature that allows players to save their progress and continue from where they left off. This is accomplished using serialization.
+->The game includes a save and restore feature that allows players to save their progress and continue from where they left off. This is accomplished using serialization.
 
-Save Game: Saves the current state of the level, including:
+Save Game: 
+->Saves the current state of the level, including:
+->Birds remaining
+->Pigs' health and destruction status
+->Structures and their destruction status
+->Player's score
 
-Birds remaining
-Pigs' health and destruction status
-Structures and their destruction status
-Player's score
 Restore Game: A restore menu allows players to load a previously saved game state.
 *********************************************************************************************************************************************************************************************************************
 
