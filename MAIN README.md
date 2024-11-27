@@ -87,6 +87,7 @@ Before running the Angry Bird project, ensure you have the following installed:
 *********************************************************************************************************************************************************************************************************************
 
 Basic Gameplay Features
+
 Bird Launching:
 
 Players drag and launch birds from a catapult to hit pigs and structures. The trajectory of the bird is based on the angle and speed of the drag.
