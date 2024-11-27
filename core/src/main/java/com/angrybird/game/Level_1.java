@@ -63,6 +63,7 @@ public class Level_1 extends Levels implements Screen {
     private Texture backTexture;
     private Image catapultImage;
     private ArrayList<BaseBird> birds;
+    private ArrayList<BaseBird> birds2;
     private ArrayList<Pig> pigs;
     private ArrayList<Material> Materials;
 
@@ -72,6 +73,11 @@ public class Level_1 extends Levels implements Screen {
     public ArrayList<Body> pigsBodies;
     public ArrayList<Body> materialBodies;
 
+
+
+    private boolean isDragging = false; // Tracks if a drag is occurring
+    private float tapThreshold = 10f; // Threshold for detecting a tap
+    private long touchDownTime;
 
     private ArrayList<Vector2> birdBodyPositions;
     private ArrayList<Vector2> pigBodyPositions;
@@ -225,7 +231,7 @@ public class Level_1 extends Levels implements Screen {
         if(!birdsInitialized) {
             birds = new ArrayList<BaseBird>();
             BirdBodies=new ArrayList<Body>();
-
+            birds2 = new ArrayList<BaseBird>();
             BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-25, -14.5f),27,"redBird");
             BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-24, -14.5f),20,"blueBird");
             BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-23, -14.5f),25,"blackBird");
@@ -235,6 +241,13 @@ public class Level_1 extends Levels implements Screen {
             birds.add(bluebird);
             birds.add(yellowbird);
             birds.add(blackbird);
+
+
+            birds2.add(redbird);
+
+            birds2.add(bluebird);
+            birds2.add(yellowbird);
+            birds2.add(blackbird);
 
             // Loop through the birds and create their bodies and sprites
             for (BaseBird bird : birds) {
@@ -359,8 +372,8 @@ public class Level_1 extends Levels implements Screen {
 
         Material woodBlock = new Material("wood_block.png", false, new Vector2(14.4f,-10),5,"wood",100);
         Material StoneBlock = new Material("stone_block.png", false, new Vector2(17.10f,-7),10,"stone",200);
-        Material IceBlock = new Material("ice_block.png", false, new Vector2(17.10f,-6),10,"ice",150);
-        Material woodBlock1 = new Material("wood_block.png", false, new Vector2(19.6f,-10),10,"wood",100);
+        Material IceBlock = new Material("ice_block.png", false, new Vector2(17.10f,-6),12,"ice",150);
+        Material woodBlock1 = new Material("wood_block.png", false, new Vector2(19.6f,-10),5,"wood",100);
 
         Materials.add(woodBlock);
         Materials.add(StoneBlock);
@@ -555,7 +568,7 @@ public class Level_1 extends Levels implements Screen {
 
 
 
-        dotTexture = new Texture(Gdx.files.internal("d1.png"));
+        dotTexture = new Texture(Gdx.files.internal("d3.png"));
 
         // Initialize the trajectory dots array
         trajectoryDots = new Array<>();
@@ -602,6 +615,7 @@ public class Level_1 extends Levels implements Screen {
 
         positionClosestBird();
         // Add input listener for the catapult
+
         catapultImage.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -635,9 +649,9 @@ public class Level_1 extends Levels implements Screen {
                 float dragY = startPosition.y - endPosition.y;
 
                 // Scale the drag to calculate force (adjust scale factor as needed)
-                float scaleFactor = 80f; // Change this to control sensitivity
-                float forceX = dragX * scaleFactor;
-                float forceY = dragY * scaleFactor;
+                float scaleFactor = 100f; // Change this to control sensitivity
+                float forceX = dragX * scaleFactor-15f;
+                float forceY = dragY * scaleFactor-15f;
 
                 // Apply the calculated force to the bird's body in the physics world
                 for(int i=BirdBodies.size()-1;i>=0;i--) {
@@ -687,7 +701,37 @@ public class Level_1 extends Levels implements Screen {
 
 
 
+
+//        Gdx.input.setInputProcessor(new InputAdapter() {
+//            @Override
+//            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+//                if (!isDragging) { // Only trigger abilities if not dragging
+//                    for (BaseBird bird : birds) {
+//                        if (bird.isLaunched()) {
+//                            activateSpecialAbility(bird);
+//                            break;
+//                        }
+//                    }
+//                }
+//                return true;
+//            }
+//        });
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -856,6 +900,7 @@ public class Level_1 extends Levels implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Game Saved"); // Implement save logic
+                isBirdLaunched=false;
                 saveGame(String.valueOf(LevelNo),birds,pigs,Materials,points);
                 savedGames.add("Load Game "+counter++);
             }
