@@ -621,7 +621,7 @@ public class LoadGamePlay extends Levels implements Screen {
 
 
 
-        dotTexture = new Texture(Gdx.files.internal("dot.png"));
+        dotTexture = new Texture(Gdx.files.internal("d3.png"));
 
         // Initialize the trajectory dots array
         trajectoryDots = new Array<>();
@@ -701,9 +701,9 @@ public class LoadGamePlay extends Levels implements Screen {
                 float dragY = startPosition.y - endPosition.y;
 
                 // Scale the drag to calculate force (adjust scale factor as needed)
-                float scaleFactor = 80f; // Change this to control sensitivity
-                float forceX = dragX * scaleFactor;
-                float forceY = dragY * scaleFactor;
+                float scaleFactor = 100f; // Change this to control sensitivity
+                float forceX = dragX * scaleFactor-15f;
+                float forceY = dragY * scaleFactor-15f;
 
                 // Apply the calculated force to the bird's body in the physics world
                 for(int i=BirdBodies.size()-1;i>=0;i--) {
@@ -895,7 +895,16 @@ public class LoadGamePlay extends Levels implements Screen {
         restartButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new Level_1(game,null)); // Restart level
+                if (LevelNo == 1) {
+                    isBirdLaunched=false;
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new Level_1(game, null)); // Restart level
+                }else if(LevelNo==2){
+                    isBirdLaunched=false;
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new Level_2(game, null));
+                } else if (LevelNo==3) {
+                    isBirdLaunched=false;
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new Level_3(game, null));
+                }
             }
         });
 
@@ -1038,7 +1047,7 @@ public class LoadGamePlay extends Levels implements Screen {
             // Add a dot to the stage if within bounds
             if (position.y > 0 && position.x > 0 && position.x < Gdx.graphics.getWidth()) {
                 Image dot = new Image(new TextureRegionDrawable(new TextureRegion(dotTexture)));
-                dot.setSize(5, 5); // Adjust dot size
+                dot.setSize(10, 10); // Adjust dot size
                 dot.setPosition(position.x, position.y);
                 trajectoryDots.add(dot);
                 stage.addActor(dot);

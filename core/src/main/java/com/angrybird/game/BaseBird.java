@@ -95,6 +95,15 @@ public class BaseBird extends Actor implements Bird,JsonSerializable {
 
     public BaseBird() {
     }
+
+    public float getInitialWidth() {
+        return initialWidth;
+    }
+
+    public String getBirdType() {
+        return birdType;
+    }
+
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("image", texture);

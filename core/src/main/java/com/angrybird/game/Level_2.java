@@ -22,11 +22,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.*;
 import java.util.ArrayList;
 
-public class Level_2 implements Screen {
+public class Level_2 extends Levels implements Screen {
     private Vector2 startPosition = new Vector2(); // Starting position of the catapult (on touchDown)
     private Vector2 endPosition = new Vector2();   // End position of the catapult (on touchDragged)
 
@@ -194,16 +196,17 @@ public class Level_2 implements Screen {
             birds = new ArrayList<BaseBird>();
             BirdBodies=new ArrayList<Body>();
 
-            BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-25, -14.5f),27,"redBird");
-            BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-24, -14.5f),20,"blueBird");
-            BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-23, -14.5f),25,"blackBird");
-            BaseBird blackbird = new BaseBird("blackbird.png", false, new Vector2(-22, -14.5f),30,"yellowBird");
+            BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-27, -14.5f),27,"redBird");
+            BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-26, -14.5f),20,"blueBird");
+            BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-25, -14.5f),25,"blackBird");
+            BaseBird blackbird = new BaseBird("blackbird.png", false, new Vector2(-23, -14.5f),30,"yellowBird");
+            BaseBird bluebird1 = new BaseBird("bluebird.png", false, new Vector2(-22, -14.5f),20,"blueBird");
             birds.add(redbird);
 
             birds.add(bluebird);
             birds.add(yellowbird);
             birds.add(blackbird);
-
+            birds.add(bluebird1);
             // Loop through the birds and create their bodies and sprites
             for (BaseBird bird : birds) {
 
@@ -339,22 +342,22 @@ public class Level_2 implements Screen {
         Material woodBlock = new Material("wood_block.png", false, new Vector2(14.4f,-11.5f),5,"wood",100);
         Material StoneBlock = new Material("stone_block.png", false, new Vector2(17.10f,-8),10,"stone",200);
 //        Material StoneBlock1 = new Material("stone_block.png", false, new Vector2(14.8f,18),10,"stone1");
-        Material IceBlock = new Material("ice_block.png", false, new Vector2(17.10f,-6),10,"ice",150);
-        Material woodBlock1 = new Material("wood_block.png", false, new Vector2(19.6f,-11f),10,"wood",100);
-        Material woodBlock2 = new Material("wood_block.png", false, new Vector2(11.4f,-11.5f),10,"wood",100);
-        Material woodBlock3 = new Material("wood_block.png", false, new Vector2(22.6f,-11.5f),10,"wood",100);
+        Material IceBlock = new Material("ice_block.png", false, new Vector2(17.10f,-6),12,"ice",150);
+        Material woodBlock1 = new Material("wood_block.png", false, new Vector2(19.6f,-11f),5,"wood",100);
+        Material woodBlock2 = new Material("wood_block.png", false, new Vector2(11.4f,-11.5f),5,"wood",100);
+        Material woodBlock3 = new Material("wood_block.png", false, new Vector2(22.6f,-11.5f),5,"wood",100);
         Material StoneBlock1 = new Material("stone_block.png", false, new Vector2(17.10f,-2),10,"stone",200);
-        Material IceBlock1 = new Material("ice_block.png", false, new Vector2(17.10f,-1),10,"ice",150);
-        Material StoneBlock2 = new Material("stone_block.png", false, new Vector2(17.10f,1f),10,"stone",200);
+        Material IceBlock1 = new Material("ice_block.png", false, new Vector2(17.10f,-1),12,"ice",150);
+//        Material StoneBlock2 = new Material("stone_block.png", false, new Vector2(17.10f,1f),10,"stone",200);
         Material woodBlock4 = new Material("wood_block.png", false, new Vector2(11.4f,-6),5,"wood",100);
         Material woodBlock5 = new Material("wood_block.png", false, new Vector2(22.6f,-6),5,"wood",100);
 
 
-        Material woodBlock6 = new Material("wood_block.png", false, new Vector2(14.4f,-6f),10,"wood",100);
-        Material woodBlock7 = new Material("wood_block.png", false, new Vector2(19.8f,-7f),10,"wood",100);
+        Material woodBlock6 = new Material("wood_block.png", false, new Vector2(14.4f,-6f),5,"wood",100);
+        Material woodBlock7 = new Material("wood_block.png", false, new Vector2(19.8f,-7f),5,"wood",100);
 
-        Material IceBlock2 = new Material("ice_block.png", false, new Vector2(12.10f,-1),10,"ice",150);
-        Material IceBlock3 = new Material("ice_block.png", false, new Vector2(22.10f,-1),10,"ice",150);
+        Material IceBlock2 = new Material("ice_block.png", false, new Vector2(12.10f,-1),12,"ice",150);
+        Material IceBlock3 = new Material("ice_block.png", false, new Vector2(22.10f,-1),12,"ice",150);
         Materials.add(woodBlock);
         Materials.add(woodBlock4);
         Materials.add(woodBlock5);
@@ -365,7 +368,7 @@ public class Level_2 implements Screen {
 
         Materials.add(StoneBlock);
         Materials.add(StoneBlock1);
-        Materials.add(StoneBlock2);
+//        Materials.add(StoneBlock2);
         Materials.add(woodBlock2);
         Materials.add(woodBlock3);
         Materials.add(IceBlock);
@@ -563,7 +566,7 @@ public class Level_2 implements Screen {
 
 
 
-        dotTexture = new Texture(Gdx.files.internal("dot.png"));
+        dotTexture = new Texture(Gdx.files.internal("d3.png"));
 
         // Initialize the trajectory dots array
         trajectoryDots = new Array<>();
@@ -644,8 +647,8 @@ public class Level_2 implements Screen {
 
                 // Scale the drag to calculate force (adjust scale factor as needed)
                 float scaleFactor = 100f; // Change this to control sensitivity
-                float forceX = dragX * scaleFactor;
-                float forceY = dragY * scaleFactor;
+                float forceX = dragX * scaleFactor-15f;
+                float forceY = dragY * scaleFactor-15f;
 
                 // Apply the calculated force to the bird's body in the physics world
                 for(int i=BirdBodies.size()-1;i>=0;i--) {
@@ -693,6 +696,75 @@ public class Level_2 implements Screen {
 
 
     }
+
+
+    public static void saveGame(String levelName, ArrayList<BaseBird> birds, ArrayList<Pig> pigs, ArrayList<Material> materials, int points) {
+        try {
+            // Read existing data from the file (if exists)
+            StringBuilder jsonContent = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new FileReader("data.json"))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonContent.append(line);
+                }
+            } catch (FileNotFoundException e) {
+                // File doesn't exist, we will create a new one
+            }
+
+            // Initialize JSON Object
+            JSONObject jsonObject;
+
+            if (jsonContent.length() > 0) {
+                // If content exists, parse it
+                jsonObject = new JSONObject(jsonContent.toString());
+            } else {
+                // If file is empty, initialize a new JSON object
+                jsonObject = new JSONObject();
+                jsonObject.put("savedGamesCount", 0);
+                jsonObject.put("games", new JSONArray());
+            }
+
+            // Get the saved games count and increment it
+            int savedGamesCount = jsonObject.getInt("savedGamesCount");
+            jsonObject.put("savedGamesCount", savedGamesCount + 1);
+            // Create the new game data
+            JSONObject savedGame = new JSONObject();
+            savedGame.put("level", levelName);
+            savedGame.put("points", points);
+            savedGame.put("birds", listToJsonArray(birds));  // Use updated helper method
+            savedGame.put("pigs", listToJsonArray(pigs));    // Use updated helper method
+            savedGame.put("materials", listToJsonArray(materials));  // Use updated helper method
+
+            // Add the saved game to the games array
+            JSONArray gamesArray = jsonObject.getJSONArray("games");
+            gamesArray.put(savedGame);
+            jsonObject.put("games", gamesArray);
+
+            // Write the updated content to the file
+            try (FileWriter writer = new FileWriter("data.json")) {
+                writer.write(jsonObject.toString(4));  // Pretty print with indentation of 4 spaces
+                System.out.println("Game saved successfully in data.json");
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error saving game: " + e.getMessage());
+        }
+    }
+
+    // Updated helper method to convert ArrayList to JSONArray
+    private static JSONArray listToJsonArray(ArrayList<?> list) {
+        JSONArray jsonArray = new JSONArray();
+        for (Object obj : list) {
+            if (obj instanceof JsonSerializable) {
+                jsonArray.put(((JsonSerializable) obj).toJson());
+            } else {
+                throw new IllegalArgumentException("Object does not implement JsonSerializable: " + obj);
+            }
+        }
+        return jsonArray;
+    }
+
+
     private void createPauseMenu() {
         pauseStage = new Stage(new ScreenViewport());
 
@@ -768,6 +840,9 @@ public class Level_2 implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Game Saved"); // Implement save logic
+                isBirdLaunched=false;
+                saveGame(String.valueOf(LevelNo),birds,pigs,Materials,points);
+                savedGames.add("Load Game "+counter++);
             }
         });
 
@@ -895,7 +970,7 @@ public class Level_2 implements Screen {
             // Add a dot to the stage if within bounds
             if (position.y > 0 && position.x > 0 && position.x < Gdx.graphics.getWidth()) {
                 Image dot = new Image(new TextureRegionDrawable(new TextureRegion(dotTexture)));
-                dot.setSize(5, 5); // Adjust dot size
+                dot.setSize(10, 10); // Adjust dot size
                 dot.setPosition(position.x, position.y);
                 trajectoryDots.add(dot);
                 stage.addActor(dot);
