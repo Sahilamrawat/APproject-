@@ -196,12 +196,13 @@ public class Level_3 extends Levels implements Screen {
             birds = new ArrayList<BaseBird>();
             BirdBodies=new ArrayList<Body>();
 
-            BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-29, -14.5f),27,"redBird");
-            BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-28, -14.5f),20,"blueBird");
-            BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-26, -14.5f),25,"blackBird");
-            BaseBird blackbird = new BaseBird("blackbird.png", false, new Vector2(-25, -14.5f),30,"yellowBird");
-            BaseBird bluebird1 = new BaseBird("bluebird.png", false, new Vector2(-23, -14.5f),20,"blueBird");
-            BaseBird yellowbird1 = new BaseBird("yellowbird.png", false, new Vector2(-22, -14.5f),25,"blackBird");
+            BaseBird redbird = new BaseBird("redbird.png", false, new Vector2(-27, -14.5f),27,"redBird");
+            BaseBird bluebird = new BaseBird("bluebird.png", false, new Vector2(-26, -14.5f),20,"blueBird");
+            BaseBird yellowbird = new BaseBird("yellowbird.png", false, new Vector2(-25, -14.5f),25,"blackBird");
+            BaseBird blackbird = new BaseBird("blackbird.png", false, new Vector2(-23, -14.5f),30,"yellowBird");
+            BaseBird bluebird1 = new BaseBird("bluebird.png", false, new Vector2(-21, -14.5f),20,"blueBird");
+            BaseBird yellowbird1 = new BaseBird("yellowbird.png", false, new Vector2(-20, -14.5f),25,"blackBird");
+
             birds.add(redbird);
 
             birds.add(bluebird);
@@ -686,7 +687,7 @@ public class Level_3 extends Levels implements Screen {
                 float dragY = startPosition.y - endPosition.y;
 
                 // Scale the drag to calculate force (adjust scale factor as needed)
-                float scaleFactor = 100f; // Change this to control sensitivity
+                float scaleFactor = 200f; // Change this to control sensitivity
                 float forceX = dragX * scaleFactor-15f;
                 float forceY = dragY * scaleFactor-15f;
 
