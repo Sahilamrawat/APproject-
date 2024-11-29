@@ -44,7 +44,7 @@ public class LoadGamePlay extends Levels implements Screen {
 
     private Stage stage;
 
-    private boolean isBirdLaunched = false;
+    private static boolean isBirdLaunched = false;
 
     //    public Levels level=new Levels();
     Levels levels=new Levels();
@@ -115,6 +115,7 @@ public class LoadGamePlay extends Levels implements Screen {
         this.index=index;
         this.previousScreen = previousScreen;
         loadData(index);
+
     }
 
     public LoadGamePlay() {
@@ -230,7 +231,7 @@ public class LoadGamePlay extends Levels implements Screen {
 
     @Override
     public void show() {
-
+        isBirdLaunched=false;
         world = new World(new Vector2(0, -9.8f), true); // Gravity vector (-9.8f for downward gravity)
         camera = new OrthographicCamera();
 //        viewport = new FitViewport(800, 480, camera); // Adjust dimensions as needed

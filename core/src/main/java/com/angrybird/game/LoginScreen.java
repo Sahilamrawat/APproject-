@@ -3,6 +3,7 @@ package com.angrybird.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,8 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class LoginScreen extends MainMenu implements Screen {
     private Stage stage;
@@ -27,9 +31,10 @@ public class LoginScreen extends MainMenu implements Screen {
     private TextField usernameField;
     private TextField passwordField;
     ImageTextButton loginButton;
-
+    ImageTextButton signUpButton;
+    private Texture signupTexture;
     private Texture loginTexture;
-    private Image buttonImage1;
+    private Image buttonImage1,buttonImage2;
 
     public LoginScreen(Game game, Screen firstScreen) {
         this.game = game;
@@ -80,13 +85,13 @@ public class LoginScreen extends MainMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 String enteredUsername = usernameField.getText();
                 String enteredPassword = passwordField.getText();
-
+                loadUserData(usernameField.getText());
                 // Replace these with the actual credentials for validation
-                String correctUsername = playerName;
-                String correctPassword = playerPassword;
-
+//                String correctUsername = playerName;
+//                String correctPassword = playerPassword;
+                System.out.println(playerName);
                 // Check if the system has no registered user
-                if (correctUsername == null || correctPassword == null || correctUsername.isEmpty() || correctPassword.isEmpty()) {
+                if (playerName == null || playerPassword== null || playerName.isEmpty() || playerPassword.isEmpty()) {
                     Dialog signUpPrompt = new Dialog("No User Found", skin) {
                         @Override
                         protected void result(Object object) {
@@ -104,13 +109,14 @@ public class LoginScreen extends MainMenu implements Screen {
                 }
 
                 // Validate username and password
-                if (enteredUsername.equals(correctUsername) && enteredPassword.equals(correctPassword)) {
+                if (enteredUsername.equals(playerName) && enteredPassword.equals(playerPassword)) {
                     // Valid login: proceed to Main Menu
                     System.out.println("Logging in as: " + enteredUsername);
-                    playerName = enteredUsername;
-                    playerPassword = enteredPassword;
+//                    playerName = enteredUsername;
+//                    playerPassword = enteredPassword;
+
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
-                } else {
+                }else {
                     // Invalid login: show error message
                     Dialog invalidDialog = new Dialog("Invalid Login", skin) {
                         @Override
@@ -124,6 +130,19 @@ public class LoginScreen extends MainMenu implements Screen {
                 }
             }
         });
+        signupTexture = new Texture(Gdx.files.internal("signup.png"));
+
+        signUpButton = createImageTextButton(signupTexture, 80, 80);
+//        signUpButton.setPosition(loginButton.getX(), loginButton.getY() - loginButton.getHeight() - 10); // Adjust position below loginButton
+        signUpButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Redirect to Sign-Up screen when Sign Up button is clicked
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new SignupScreen(game, firstScreen));
+            }
+        });
+
+// Add the signUpButton to the stage
 
 
         // Add components to table
@@ -131,12 +150,51 @@ public class LoginScreen extends MainMenu implements Screen {
         table.add(usernameField).width(200).padBottom(10).row();
         table.add(new Label("Password:", skin)).padBottom(10);
         table.add(passwordField).width(200).padBottom(20).row();
-        table.add(loginButton).colspan(2).center();
+        table.add(loginButton).colspan(2).center().row();
+        table.add(signUpButton).colspan(2).center();
+
 
         // Add table to the stage
         stage.addActor(table);
         addHoverEffect(buttonImage1, loginButton);
+        addHoverEffect(buttonImage2, signUpButton);
     }
+
+    private void loadUserData(String username) {
+        FileHandle file = Gdx.files.local("user.json");
+        if (file.exists()) {
+            Json json = new Json();
+            try {
+                // Read the JSON file into a JSONArray
+                String fileContents = file.readString();
+                if (!fileContents.isEmpty()) {
+                    JSONArray usersArray = new JSONArray(fileContents);
+
+                    // Loop through the users array and find the user by username
+                    for (int i = 0; i < usersArray.length(); i++) {
+                        JSONObject userObj = usersArray.getJSONObject(i);
+                        String storedUsername = userObj.getString("playerName");
+
+                        // If the username matches, load the user data
+                        if (storedUsername.equals(username)) {
+                            playerName = storedUsername;
+                            playerPassword = userObj.getString("playerPassword");
+                            playerAge = userObj.getInt("playerAge");
+
+                            System.out.println("Loaded user: " + playerName + ", Age: " + playerAge);
+                            return; // Exit after finding and loading the user
+                        }
+                    }
+                    System.out.println("User not found: " + username);
+                }
+            } catch (Exception e) {
+                System.out.println("Error loading user data: " + e.getMessage());
+            }
+        } else {
+            System.out.println("No saved user data found.");
+        }
+    }
+
     private ImageTextButton createImageTextButton(Texture texture, float width, float height) {
         ImageTextButton button = new ImageTextButton("", skin);
         Image buttonImage = new Image(texture);
@@ -144,6 +202,8 @@ public class LoginScreen extends MainMenu implements Screen {
         button.add(buttonImage).size(width, height).expand().fill();
         if (texture == loginTexture) {
             buttonImage1 = buttonImage;
+        }else if (texture == signupTexture) {
+            buttonImage2 = buttonImage;
         }
 
         return button;

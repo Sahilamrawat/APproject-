@@ -1,1 +1,12 @@
-{"playerPassword":{"class":"java.lang.String","value":"sahil12"},"playerAge":{"class":"java.lang.String","value":"19"},"playerName":{"class":"java.lang.String","value":"sahil"}}
+[
+  {
+    "playerPassword": "sahil12",
+    "playerAge": 19,
+    "playerName": "sahil"
+  },
+  {
+    "playerPassword": "ronak12",
+    "playerAge": 19,
+    "playerName": "ronak"
+  }
+]

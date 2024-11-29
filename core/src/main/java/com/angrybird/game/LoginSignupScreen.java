@@ -3,7 +3,6 @@ package com.angrybird.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -16,12 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class LoginSignupScreen extends MainMenu implements Screen {
@@ -40,24 +35,7 @@ public class LoginSignupScreen extends MainMenu implements Screen {
 
     public LoginSignupScreen() {
     }
-    private void loadUserData() {
-        FileHandle file = Gdx.files.local("user.json");
-        if (file.exists()) {
-            Json json = new Json();
-            try {
-                Map<String, String> userData = json.fromJson(HashMap.class, file.readString());
-                playerName = userData.get("playerName");
-                playerPassword = userData.get("playerPassword");
-                playerAge = Integer.parseInt(userData.get("playerAge"));
 
-                System.out.println("Loaded user: " + playerName + ", Age: " + playerAge);
-            } catch (Exception e) {
-                System.out.println("Error loading user data: " + e.getMessage());
-            }
-        } else {
-            System.out.println("No saved user found.");
-        }
-    }
 
     @Override
     public void show() {
@@ -71,7 +49,7 @@ public class LoginSignupScreen extends MainMenu implements Screen {
 
         loginTexture = new Texture(Gdx.files.internal("login.png"));
         signupTexture = new Texture(Gdx.files.internal("signup.png"));
-        loadUserData();
+
         // Background image
         Image backgroundImage = new Image(new Texture(Gdx.files.internal("background2.jpg")));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

@@ -13,13 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class SignupScreen extends MainMenu implements Screen {
     private Stage stage;
@@ -36,7 +33,9 @@ public class SignupScreen extends MainMenu implements Screen {
     TextField ageField;
     ImageTextButton signupButton;
     private Texture signupTexture;
-    private Image buttonImage1;
+    ImageTextButton loginButton;
+    private Texture loginTexture;
+    private Image buttonImage1,buttonImage2;
 
     public SignupScreen(Game game, Screen firstScreen) {
         this.game = game;
@@ -116,25 +115,32 @@ public class SignupScreen extends MainMenu implements Screen {
                     return;
                 }
 
-                // Save player details
-                playerName = username;
-                playerPassword = password;
+                // Create a JSON object for the new user
+                JSONObject newUser = new JSONObject();
+                newUser.put("playerName", username);
+                newUser.put("playerPassword", password);
+                newUser.put("playerAge", playerAge);
 
-                // Use a map for JSON serialization
-                Map<String, String> userData = new HashMap<>();
-                userData.put("playerName", playerName);
-                userData.put("playerPassword", playerPassword);
-                userData.put("playerAge", String.valueOf(playerAge));
-
-                // Configure Json for clean output
-                Json json = new Json();
-                json.setOutputType(JsonWriter.OutputType.json); // Standard JSON output
-
-                // Write to user.json
+                // File where user data will be stored
                 FileHandle file = Gdx.files.local("user.json");
-                file.writeString(json.toJson(userData), false);
 
-                System.out.println("User registered: " + playerName + ", Age: " + playerAge);
+                // If the file exists, read its content and append new data
+                JSONArray usersArray = new JSONArray();
+                if (file.exists()) {
+                    String existingJson = file.readString();
+                    // If file is not empty, parse the existing data
+                    if (!existingJson.isEmpty()) {
+                        usersArray = new JSONArray(existingJson);
+                    }
+                }
+
+                // Add the new user to the array
+                usersArray.put(newUser);
+
+                // Write the updated JSON array back to the file
+                file.writeString(usersArray.toString(4), false); // '4' for pretty print with indentation
+
+                System.out.println("User registered: " + username + ", Age: " + playerAge);
 
                 // Redirect to Main Menu
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
@@ -142,6 +148,15 @@ public class SignupScreen extends MainMenu implements Screen {
         });
 
 
+        loginTexture = new Texture(Gdx.files.internal("login.png"));
+        loginButton = createImageTextButton(loginTexture, 80, 80);
+        loginButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Redirect to Sign-Up screen when Sign Up button is clicked
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginScreen(game, firstScreen));
+            }
+        });
         // Add components to table
         table.add(new Label("Username:", skin)).padBottom(10);
         table.add(usernameField).width(200).padBottom(10).row();
@@ -151,7 +166,8 @@ public class SignupScreen extends MainMenu implements Screen {
         table.add(passwordField).width(200).padBottom(20).row();
         table.add(new Label("Age", skin)).padBottom(10);
         table.add(ageField).width(200).padBottom(20).row();
-        table.add(signupButton).colspan(2).center();
+        table.add(signupButton).colspan(2).center().row();
+        table.add(loginButton).colspan(2).center();
 
         // Add table to the stage
         stage.addActor(table);
@@ -164,6 +180,8 @@ public class SignupScreen extends MainMenu implements Screen {
         button.add(buttonImage).size(width, height).expand().fill();
         if (texture == signupTexture) {
             buttonImage1 = buttonImage;
+        }else if (texture == loginTexture) {
+            buttonImage2 = buttonImage;
         }
 
         return button;
