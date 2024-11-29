@@ -39,9 +39,11 @@ public class MainMenu implements Screen {
 
 
 
-    public static String playerName="Maverick" ;
+    public static String playerName ;
     public static int playerLevel=1;
-    public static int playerAge=18;
+    public static int playerAge;
+    public static String playerPassword ;
+
 
 
 

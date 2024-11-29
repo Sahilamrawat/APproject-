@@ -755,20 +755,26 @@ public class Level_1 extends Levels implements Screen {
 
             // Initialize JSON Object
             JSONObject jsonObject;
-
             if (jsonContent.length() > 0) {
                 // If content exists, parse it
                 jsonObject = new JSONObject(jsonContent.toString());
             } else {
                 // If file is empty, initialize a new JSON object
                 jsonObject = new JSONObject();
-                jsonObject.put("savedGamesCount", 0);
-                jsonObject.put("games", new JSONArray());
             }
 
-            // Get the saved games count and increment it
-            int savedGamesCount = jsonObject.getInt("savedGamesCount");
-            jsonObject.put("savedGamesCount", savedGamesCount + 1);
+            // Check if the playerName key already exists, if not, create it
+            if (!jsonObject.has(playerName)) {
+                jsonObject.put(playerName, new JSONObject());
+            }
+
+            // Get the player data for the given playerName
+            JSONObject playerData = jsonObject.getJSONObject(playerName);
+
+            // Get the saved games count for the player and increment it
+            int savedGamesCount = playerData.optInt("savedGamesCount", 0);
+            playerData.put("savedGamesCount", savedGamesCount + 1);
+
             // Create the new game data
             JSONObject savedGame = new JSONObject();
             savedGame.put("level", levelName);
@@ -777,10 +783,16 @@ public class Level_1 extends Levels implements Screen {
             savedGame.put("pigs", listToJsonArray(pigs));    // Use updated helper method
             savedGame.put("materials", listToJsonArray(materials));  // Use updated helper method
 
-            // Add the saved game to the games array
-            JSONArray gamesArray = jsonObject.getJSONArray("games");
+            // Add the saved game to the player's games array
+            JSONArray gamesArray = playerData.optJSONArray("games");
+            if (gamesArray == null) {
+                gamesArray = new JSONArray();
+            }
             gamesArray.put(savedGame);
-            jsonObject.put("games", gamesArray);
+            playerData.put("games", gamesArray);
+
+            // Put the player's data back into the main JSON object
+            jsonObject.put(playerName, playerData);
 
             // Write the updated content to the file
             try (FileWriter writer = new FileWriter("data.json")) {
@@ -792,6 +804,7 @@ public class Level_1 extends Levels implements Screen {
             System.err.println("Error saving game: " + e.getMessage());
         }
     }
+
 
     // Updated helper method to convert ArrayList to JSONArray
     private static JSONArray listToJsonArray(ArrayList<?> list) {

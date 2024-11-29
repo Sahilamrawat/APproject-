@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 
-public class Levels implements Screen {
+public class Levels extends MainMenu implements Screen {
     private Stage stage;
     private Skin skin;
     private Table table;

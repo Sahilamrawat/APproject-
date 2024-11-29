@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class LoginScreen implements Screen {
+public class LoginScreen extends MainMenu implements Screen {
     private Stage stage;
     private Skin skin;
     private Image overlayImage;
@@ -26,7 +26,7 @@ public class LoginScreen implements Screen {
     // UI components for login
     private TextField usernameField;
     private TextField passwordField;
-    private ImageTextButton loginButton;
+    ImageTextButton loginButton;
 
     private Texture loginTexture;
     private Image buttonImage1;
@@ -74,16 +74,57 @@ public class LoginScreen implements Screen {
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
 
-        // Login button
-
+// Login button listener
         loginButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Handle login logic here
-                System.out.println("Logging in as: " + usernameField.getText());
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                String enteredUsername = usernameField.getText();
+                String enteredPassword = passwordField.getText();
+
+                // Replace these with the actual credentials for validation
+                String correctUsername = playerName;
+                String correctPassword = playerPassword;
+
+                // Check if the system has no registered user
+                if (correctUsername == null || correctPassword == null || correctUsername.isEmpty() || correctPassword.isEmpty()) {
+                    Dialog signUpPrompt = new Dialog("No User Found", skin) {
+                        @Override
+                        protected void result(Object object) {
+                            if ((boolean) object) {
+                                // Redirect to Sign-Up screen
+                                ((Game) Gdx.app.getApplicationListener()).setScreen(new SignupScreen(game,firstScreen));
+                            }
+                        }
+                    };
+                    signUpPrompt.text("No user is registered. Would you like to sign up?");
+                    signUpPrompt.button("Yes", true);  // Pass true when Yes is clicked
+                    signUpPrompt.button("No", false); // Pass false when No is clicked
+                    signUpPrompt.show(stage);         // Ensure `stage` is the current Stage
+                    return;
+                }
+
+                // Validate username and password
+                if (enteredUsername.equals(correctUsername) && enteredPassword.equals(correctPassword)) {
+                    // Valid login: proceed to Main Menu
+                    System.out.println("Logging in as: " + enteredUsername);
+                    playerName = enteredUsername;
+                    playerPassword = enteredPassword;
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                } else {
+                    // Invalid login: show error message
+                    Dialog invalidDialog = new Dialog("Invalid Login", skin) {
+                        @Override
+                        protected void result(Object object) {
+                            // Handle dialog close action if needed
+                        }
+                    };
+                    invalidDialog.text("Invalid username or password!");
+                    invalidDialog.button("OK");
+                    invalidDialog.show(stage); // Ensure `stage` is the current Stage
+                }
             }
         });
+
 
         // Add components to table
         table.add(new Label("Username:", skin)).padBottom(10);

@@ -1,392 +1,97 @@
-{
-    "games": [
-        {
-            "pigs": [
-                {
-                    "image": "small_pig.png",
-                    "score": 500,
-                    "SpriteWidth": 0,
-                    "density": 0,
-                    "restitution": 0,
-                    "health": 10,
-                    "position": {
-                        "x": 21.3,
-                        "y": -14.5
-                    },
-                    "SpriteHeight": 0,
-                    "isActive": false,
-                    "type": "small",
-                    "radius": 0,
-                    "friction": 0
+{"sahil": {
+    "games": [{
+        "pigs": [
+            {
+                "image": "small_pig.png",
+                "score": 500,
+                "SpriteWidth": 2,
+                "density": 2.5,
+                "restitution": 0.1,
+                "health": 10,
+                "position": {
+                    "x": 20.3,
+                    "y": -6.5
                 },
-                {
-                    "image": "small_pig.png",
-                    "score": 500,
-                    "SpriteWidth": 0,
-                    "density": 0,
-                    "restitution": 0,
-                    "health": 14,
-                    "position": {
-                        "x": 14.1,
-                        "y": 4
-                    },
-                    "SpriteHeight": 0,
-                    "isActive": false,
-                    "type": "small",
-                    "radius": 0,
-                    "friction": 0
+                "SpriteHeight": 1.5,
+                "isActive": false,
+                "type": "small",
+                "radius": 0.7,
+                "friction": 1
+            },
+            {
+                "image": "big_pig.png",
+                "score": 2000,
+                "SpriteWidth": 4,
+                "density": 2.5,
+                "restitution": 0.1,
+                "health": 30,
+                "position": {
+                    "x": 17.1,
+                    "y": -14.5
                 },
-                {
-                    "image": "small_pig.png",
-                    "score": 500,
-                    "SpriteWidth": 0,
-                    "density": 0,
-                    "restitution": 0,
-                    "health": 10,
-                    "position": {
-                        "x": 11.1,
-                        "y": 4
-                    },
-                    "SpriteHeight": 0,
-                    "isActive": false,
-                    "type": "small",
-                    "radius": 0,
-                    "friction": 0
+                "SpriteHeight": 3,
+                "isActive": false,
+                "type": "big",
+                "radius": 1.1,
+                "friction": 1
+            }
+        ],
+        "level": "1",
+        "materials": [],
+        "birds": [
+            {
+                "image": "redbird.png",
+                "SpriteWidth": 2,
+                "density": 2.5,
+                "restitution": 0.1,
+                "angularDamping": 0.7,
+                "position": {
+                    "x": -25,
+                    "y": -14.5
                 },
-                {
-                    "image": "big_pig.png",
-                    "score": 2000,
-                    "SpriteWidth": 0,
-                    "density": 0,
-                    "restitution": 0,
-                    "health": 10,
-                    "position": {
-                        "x": 17.1,
-                        "y": -14.5
-                    },
-                    "SpriteHeight": 0,
-                    "isActive": false,
-                    "type": "big",
-                    "radius": 0,
-                    "friction": 0
-                }
-            ],
-            "level": "3",
-            "materials": [
-                {
-                    "image": "wood_block.png",
-                    "damage": 10,
-                    "score": 100,
-                    "density": 0,
-                    "restitution": 0,
-                    "width": 0,
-                    "position": {
-                        "x": 22.6,
-                        "y": -6
-                    },
-                    "isActive": false,
-                    "type": "wood",
-                    "friction": 0,
-                    "height": 0
+                "power": 27,
+                "SpriteHeight": 2,
+                "isActive": false,
+                "type": "redBird",
+                "radius": 1,
+                "friction": 1
+            },
+            {
+                "image": "bluebird.png",
+                "SpriteWidth": 2,
+                "density": 2.5,
+                "restitution": 0.1,
+                "angularDamping": 0.7,
+                "position": {
+                    "x": -24,
+                    "y": -14.5
                 },
-                {
-                    "image": "wood_block.png",
-                    "damage": 10,
-                    "score": 100,
-                    "density": 0,
-                    "restitution": 0,
-                    "width": 0,
-                    "position": {
-                        "x": 22.6,
-                        "y": 4
-                    },
-                    "isActive": false,
-                    "type": "wood",
-                    "friction": 0,
-                    "height": 0
+                "power": 20,
+                "SpriteHeight": 2,
+                "isActive": false,
+                "type": "blueBird",
+                "radius": 1,
+                "friction": 1
+            },
+            {
+                "image": "yellowbird.png",
+                "SpriteWidth": 2,
+                "density": 2.5,
+                "restitution": 0.1,
+                "angularDamping": 0.7,
+                "position": {
+                    "x": -23,
+                    "y": -14.5
                 },
-                {
-                    "image": "wood_block.png",
-                    "damage": 10,
-                    "score": 100,
-                    "density": 0,
-                    "restitution": 0,
-                    "width": 0,
-                    "position": {
-                        "x": 22.6,
-                        "y": -11.5
-                    },
-                    "isActive": false,
-                    "type": "wood",
-                    "friction": 0,
-                    "height": 0
-                }
-            ],
-            "birds": [
-                {
-                    "image": "redbird.png",
-                    "SpriteWidth": 0,
-                    "density": 0,
-                    "restitution": 0,
-                    "angularDamping": 0,
-                    "position": {
-                        "x": -25,
-                        "y": -14.5
-                    },
-                    "power": 27,
-                    "SpriteHeight": 0,
-                    "isActive": false,
-                    "type": "redBird",
-                    "radius": 0,
-                    "friction": 0
-                },
-                {
-                    "image": "bluebird.png",
-                    "SpriteWidth": 0,
-                    "density": 0,
-                    "restitution": 0,
-                    "angularDamping": 0,
-                    "position": {
-                        "x": -24,
-                        "y": -14.5
-                    },
-                    "power": 20,
-                    "SpriteHeight": 0,
-                    "isActive": true,
-                    "type": "blueBird",
-                    "radius": 0,
-                    "friction": 0
-                },
-                {
-                    "image": "yellowbird.png",
-                    "SpriteWidth": 0,
-                    "density": 0,
-                    "restitution": 0,
-                    "angularDamping": 0,
-                    "position": {
-                        "x": -23,
-                        "y": -14.5
-                    },
-                    "power": 25,
-                    "SpriteHeight": 0,
-                    "isActive": true,
-                    "type": "blackBird",
-                    "radius": 0,
-                    "friction": 0
-                },
-                {
-                    "image": "blackbird.png",
-                    "SpriteWidth": 0,
-                    "density": 0,
-                    "restitution": 0,
-                    "angularDamping": 0,
-                    "position": {
-                        "x": -22,
-                        "y": -14.5
-                    },
-                    "power": 30,
-                    "SpriteHeight": 0,
-                    "isActive": true,
-                    "type": "yellowBird",
-                    "radius": 0,
-                    "friction": 0
-                }
-            ],
-            "points": 9800
-        },
-        {
-            "pigs": [
-                {
-                    "image": "small_pig.png",
-                    "score": 500,
-                    "SpriteWidth": 2,
-                    "density": 2.5,
-                    "restitution": 0.1,
-                    "health": 10,
-                    "position": {
-                        "x": 20.3,
-                        "y": -6.5
-                    },
-                    "SpriteHeight": 1.5,
-                    "isActive": false,
-                    "type": "small",
-                    "radius": 0.7,
-                    "friction": 1
-                },
-                {
-                    "image": "medium_pig.png",
-                    "score": 1000,
-                    "SpriteWidth": 2,
-                    "density": 2.5,
-                    "restitution": 0.1,
-                    "health": 20,
-                    "position": {
-                        "x": 17.1,
-                        "y": -3
-                    },
-                    "SpriteHeight": 2,
-                    "isActive": false,
-                    "type": "medium",
-                    "radius": 1,
-                    "friction": 1
-                },
-                {
-                    "image": "big_pig.png",
-                    "score": 2000,
-                    "SpriteWidth": 4,
-                    "density": 2.5,
-                    "restitution": 0.1,
-                    "health": 30,
-                    "position": {
-                        "x": 17.1,
-                        "y": -14.5
-                    },
-                    "SpriteHeight": 3,
-                    "isActive": false,
-                    "type": "big",
-                    "radius": 1.1,
-                    "friction": 1
-                }
-            ],
-            "level": "1",
-            "materials": [
-                {
-                    "image": "wood_block.png",
-                    "damage": 5,
-                    "score": 100,
-                    "density": 5,
-                    "restitution": 0,
-                    "width": 0.5,
-                    "position": {
-                        "x": 14.4,
-                        "y": -10
-                    },
-                    "isActive": false,
-                    "type": "wood",
-                    "friction": 1,
-                    "height": 3
-                },
-                {
-                    "image": "stone_block.png",
-                    "damage": 10,
-                    "score": 200,
-                    "density": 5,
-                    "restitution": 0,
-                    "width": 5,
-                    "position": {
-                        "x": 17.1,
-                        "y": -7
-                    },
-                    "isActive": false,
-                    "type": "stone",
-                    "friction": 1,
-                    "height": 0.5
-                },
-                {
-                    "image": "ice_block.png",
-                    "damage": 12,
-                    "score": 150,
-                    "density": 5,
-                    "restitution": 0,
-                    "width": 1.2,
-                    "position": {
-                        "x": 17.1,
-                        "y": -6
-                    },
-                    "isActive": false,
-                    "type": "ice",
-                    "friction": 1,
-                    "height": 1.2
-                },
-                {
-                    "image": "wood_block.png",
-                    "damage": 5,
-                    "score": 100,
-                    "density": 5,
-                    "restitution": 0,
-                    "width": 0.5,
-                    "position": {
-                        "x": 19.6,
-                        "y": -10
-                    },
-                    "isActive": false,
-                    "type": "wood",
-                    "friction": 1,
-                    "height": 3
-                }
-            ],
-            "birds": [
-                {
-                    "image": "redbird.png",
-                    "SpriteWidth": 2,
-                    "density": 2.5,
-                    "restitution": 0.1,
-                    "angularDamping": 0.7,
-                    "position": {
-                        "x": -25,
-                        "y": -14.5
-                    },
-                    "power": 27,
-                    "SpriteHeight": 2,
-                    "isActive": false,
-                    "type": "redBird",
-                    "radius": 1,
-                    "friction": 1
-                },
-                {
-                    "image": "bluebird.png",
-                    "SpriteWidth": 2,
-                    "density": 2.5,
-                    "restitution": 0.1,
-                    "angularDamping": 0.7,
-                    "position": {
-                        "x": -24,
-                        "y": -14.5
-                    },
-                    "power": 20,
-                    "SpriteHeight": 2,
-                    "isActive": false,
-                    "type": "blueBird",
-                    "radius": 1,
-                    "friction": 1
-                },
-                {
-                    "image": "yellowbird.png",
-                    "SpriteWidth": 2,
-                    "density": 2.5,
-                    "restitution": 0.1,
-                    "angularDamping": 0.7,
-                    "position": {
-                        "x": -23,
-                        "y": -14.5
-                    },
-                    "power": 25,
-                    "SpriteHeight": 2,
-                    "isActive": false,
-                    "type": "blackBird",
-                    "radius": 1,
-                    "friction": 1
-                },
-                {
-                    "image": "blackbird.png",
-                    "SpriteWidth": 2,
-                    "density": 2.5,
-                    "restitution": 0.1,
-                    "angularDamping": 0.7,
-                    "position": {
-                        "x": -22,
-                        "y": -14.5
-                    },
-                    "power": 30,
-                    "SpriteHeight": 2,
-                    "isActive": true,
-                    "type": "yellowBird",
-                    "radius": 1,
-                    "friction": 1
-                }
-            ],
-            "points": 500
-        }
-    ],
-    "savedGamesCount": 2
-}
+                "power": 25,
+                "SpriteHeight": 2,
+                "isActive": false,
+                "type": "blackBird",
+                "radius": 1,
+                "friction": 1
+            }
+        ],
+        "points": 2050
+    }],
+    "savedGamesCount": 1
+}}

@@ -3,6 +3,7 @@ package com.angrybird.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,10 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class SignupScreen implements Screen {
+import java.util.HashMap;
+import java.util.Map;
+
+public class SignupScreen extends MainMenu implements Screen {
     private Stage stage;
     private Skin skin;
     private Image overlayImage;
@@ -24,17 +30,21 @@ public class SignupScreen implements Screen {
     private Image backgroundImage;
 
     // UI components for signup
-    private TextField usernameField;
-    private TextField emailField;
-    private TextField passwordField;
-
-    private ImageTextButton signupButton;
+    TextField usernameField;
+    TextField emailField;
+    TextField passwordField;
+    TextField ageField;
+    ImageTextButton signupButton;
     private Texture signupTexture;
     private Image buttonImage1;
 
     public SignupScreen(Game game, Screen firstScreen) {
         this.game = game;
         this.firstScreen = firstScreen;
+    }
+
+    public SignupScreen() {
+
     }
 
     @Override
@@ -71,17 +81,66 @@ public class SignupScreen implements Screen {
         passwordField = new TextField("", skin);
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
+        ageField = new TextField("", skin);
+        ageField.setMessageText("Enter Age");
 
-        // Signup button
+// Sign-up button
         signupButton = createImageTextButton(signupTexture, 80, 80);
         signupButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Handle signup logic here
-                System.out.println("Signing up as: " + usernameField.getText() + ", Email: " + emailField.getText());
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+                String ageText = ageField.getText();
+
+                // Validate input
+                if (username.isEmpty() || password.isEmpty() || ageText.isEmpty()) {
+                    Dialog errorDialog = new Dialog("Error", skin);
+                    errorDialog.text("All fields must be filled!");
+                    errorDialog.button("OK");
+                    errorDialog.show(stage);
+                    return;
+                }
+
+                // Validate age
+                try {
+                    playerAge = Integer.parseInt(ageText);
+                    if (playerAge < 0 || playerAge > 120) {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException e) {
+                    Dialog errorDialog = new Dialog("Error", skin);
+                    errorDialog.text("Age must be a valid number between 0 and 120!");
+                    errorDialog.button("OK");
+                    errorDialog.show(stage);
+                    return;
+                }
+
+                // Save player details
+                playerName = username;
+                playerPassword = password;
+
+                // Use a map for JSON serialization
+                Map<String, String> userData = new HashMap<>();
+                userData.put("playerName", playerName);
+                userData.put("playerPassword", playerPassword);
+                userData.put("playerAge", String.valueOf(playerAge));
+
+                // Configure Json for clean output
+                Json json = new Json();
+                json.setOutputType(JsonWriter.OutputType.json); // Standard JSON output
+
+                // Write to user.json
+                FileHandle file = Gdx.files.local("user.json");
+                file.writeString(json.toJson(userData), false);
+
+                System.out.println("User registered: " + playerName + ", Age: " + playerAge);
+
+                // Redirect to Main Menu
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
+
 
         // Add components to table
         table.add(new Label("Username:", skin)).padBottom(10);
@@ -90,6 +149,8 @@ public class SignupScreen implements Screen {
         table.add(emailField).width(200).padBottom(10).row();
         table.add(new Label("Password:", skin)).padBottom(10);
         table.add(passwordField).width(200).padBottom(20).row();
+        table.add(new Label("Age", skin)).padBottom(10);
+        table.add(ageField).width(200).padBottom(20).row();
         table.add(signupButton).colspan(2).center();
 
         // Add table to the stage

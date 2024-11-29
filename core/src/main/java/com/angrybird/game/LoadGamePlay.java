@@ -124,14 +124,15 @@ public class LoadGamePlay extends Levels implements Screen {
 
 
     public void loadData(int gameIndex) {
-
-
         System.out.println("DATA IS GETTING LOADED");
+
+        // Open the data file
         File file = new File("data.json");
         if (file.length() == 0) {
             System.out.println("The data file is empty. Nothing to load.");
             return;  // Exit the method if the file is empty
         }
+
         try (BufferedReader reader = new BufferedReader(new FileReader("data.json"))) {
             StringBuilder jsonContent = new StringBuilder();
             String line;
@@ -139,17 +140,27 @@ public class LoadGamePlay extends Levels implements Screen {
                 jsonContent.append(line);
             }
 
+            // Parse the JSON content
             JSONObject jsonObject = new JSONObject(jsonContent.toString());
 
-            int savedGamesCount = jsonObject.getInt("savedGamesCount");
+            // Check if player exists
+            if (!jsonObject.has(playerName)) {
+                System.out.println("Player with name " + playerName + " not found in the data.");
+                return;  // Exit if the player data doesn't exist
+            }
+
+            // Get the player's data
+            JSONObject playerData = jsonObject.getJSONObject(playerName);
+
+            // Check the saved games count
+            int savedGamesCount = playerData.getInt("savedGamesCount");
             if (gameIndex < 0 || gameIndex >= savedGamesCount) {
                 System.out.println("Invalid game index. Please choose a valid game.");
                 return;
             }
 
             // Get the selected game data
-            JSONArray gamesArray = jsonObject.getJSONArray("games");
-
+            JSONArray gamesArray = playerData.getJSONArray("games");
             JSONObject selectedGame = gamesArray.getJSONObject(gameIndex);
 
             // Load the selected game's data
@@ -203,7 +214,7 @@ public class LoadGamePlay extends Levels implements Screen {
                 ));
             }
 
-            System.out.println("Game loaded successfully for game index: " + gameIndex);
+            System.out.println("Game loaded successfully for player: " + playerName + " and game index: " + gameIndex);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -211,6 +222,7 @@ public class LoadGamePlay extends Levels implements Screen {
             System.out.println("Error parsing JSON data: " + e.getMessage());
         }
     }
+
 
 
 

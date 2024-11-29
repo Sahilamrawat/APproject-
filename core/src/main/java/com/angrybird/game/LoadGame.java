@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -62,10 +63,27 @@ public class LoadGame extends Levels implements Screen {
             e.printStackTrace();
         }
 
-        // Parse JSON and get "savedGamesCount"
-        JSONObject jsonObject = new JSONObject(jsonData.toString());
-        return jsonObject.getInt("savedGamesCount");
+        // Parse JSON and get saved games count for the specific player
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData.toString());
+
+            // Check if the player exists in the JSON
+            if (!jsonObject.has(playerName)) {
+                System.out.println("Player with name " + playerName + " not found in the data.");
+                return 0;  // Return 0 if the player does not exist
+            }
+
+            // Get the player's data and return the saved games count
+            JSONObject playerData = jsonObject.getJSONObject(playerName);
+            return playerData.getInt("savedGamesCount");
+
+        } catch (JSONException e) {
+            System.out.println("Error parsing JSON data: " + e.getMessage());
+        }
+
+        return 0;  // Return 0 if there's an error or player data is missing
     }
+
 
     @Override
     public void show() {
