@@ -140,6 +140,9 @@ Restore Game: A restore menu allows players to load a previously saved game stat
 - **Name**: Vaibhav Sorot, **ID**: 2023573
 
 ****************************************************************************************************************************************************************************************************************
+## Gameplay Clip
+-[Gameplay clip](https://drive.google.com/file/d/1_G0b8fk-0CrZIM31wranFaSEWJQwCHNY/view?usp=drive_link)
+****************************************************************************************************************************************************************************************************************
 ## GitHub Repository
 
 - [Main Repository](https://github.com/Sahilamr/APproject-.git)
